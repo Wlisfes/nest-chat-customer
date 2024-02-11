@@ -1,0 +1,7 @@
+.n-scrollbar.is-customize {
+    .n-scrollbar-content {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+}
