@@ -5,6 +5,7 @@ import { useCurrentElement } from '@vueuse/core'
 import { ScrollbarInst } from 'naive-ui'
 import { zh_CN, Faker } from '@faker-js/faker'
 import { useState } from '@/hooks/hook-state'
+import { useMoment } from '@/hooks/hook-moment'
 export const faker = new Faker({
     locale: [zh_CN]
 })
@@ -42,10 +43,19 @@ export default defineComponent({
         const context = ref<HTMLElement>()
         const inst = ref<ScrollbarInst>()
         const scrollTop = ref<number>(0)
+        const { moment, divineDateTransfor } = useMoment()
         const { state, setState } = useState<IState>({
             loading: true,
             dataSource: []
         })
+
+        // console.log(
+        //     divineDateTransfor('2024-03-18 14:30:00 UTC+08:00', {
+        //         // current: 'Pacific/Honolulu', //夏威夷-10:00
+        //         // target: 'America/New_York' //加拿大-04:00
+        //         target: 'Europe/London' //英国-00:00
+        //     })
+        // )
 
         onMounted(async () => {
             await setState({
