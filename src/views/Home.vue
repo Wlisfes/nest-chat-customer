@@ -6,6 +6,7 @@ import { ScrollbarInst } from 'naive-ui'
 import { zh_CN, Faker } from '@faker-js/faker'
 import { useState } from '@/hooks/hook-state'
 import { useMoment } from '@/hooks/hook-moment'
+import { io } from 'socket.io-client'
 export const faker = new Faker({
     locale: [zh_CN]
 })
@@ -47,6 +48,37 @@ export default defineComponent({
         const { state, setState } = useState<IState>({
             loading: true,
             dataSource: []
+        })
+        const socket = io('ws://localhost:34577?token=daskjdhjwqheqweqwjkeq')
+        socket.on('connect', function () {
+            console.log('Connected')
+
+            socket.emit('sender', {
+                name: 'John'
+            })
+
+            socket.on('sender', response => {
+                console.log('sender:', response)
+            })
+        })
+        socket.on('disconnect', function () {
+            console.log('Disconnected')
+        })
+
+        const socket1 = io('ws://localhost:34577?token=daskjdhjwqheqweqwjkeq')
+        socket1.on('connect', function () {
+            console.log('Connected')
+
+            socket1.emit('sender', {
+                name: 'John'
+            })
+
+            socket1.on('sender', response => {
+                console.log('sender:', response)
+            })
+        })
+        socket1.on('disconnect', function () {
+            console.log('Disconnected')
         })
 
         // console.log(
