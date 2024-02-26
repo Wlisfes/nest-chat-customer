@@ -12,3 +12,14 @@ export function isNotEmpty(value: any) {
 export function divineWherer<T>(where: boolean, value: T, defaultValue?: T): T {
     return (where ? value : defaultValue) as T
 }
+
+/**延时方法**/
+export function divineDelay(delay = 100, handler?: Function) {
+    return new Promise(resolve => {
+        const timeout = setTimeout(() => {
+            handler?.()
+            resolve(undefined)
+            clearTimeout(timeout)
+        }, delay)
+    })
+}

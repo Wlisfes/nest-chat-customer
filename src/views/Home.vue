@@ -6,6 +6,7 @@ import { ScrollbarInst } from 'naive-ui'
 import { zh_CN, Faker } from '@faker-js/faker'
 import { useState } from '@/hooks/hook-state'
 import { useMoment } from '@/hooks/hook-moment'
+import { divineDelay } from '@/utils/utils-common'
 import { io } from 'socket.io-client'
 export const faker = new Faker({
     locale: [zh_CN]
@@ -24,17 +25,6 @@ interface IState {
             birthday: string
         }>
     >
-}
-
-/**延时方法**/
-export function divineDelay(delay = 100, handler?: Function) {
-    return new Promise(resolve => {
-        const timeout = setTimeout(() => {
-            handler?.()
-            resolve(undefined)
-            clearTimeout(timeout)
-        }, delay)
-    })
 }
 
 export default defineComponent({
@@ -62,22 +52,6 @@ export default defineComponent({
             })
         })
         socket.on('disconnect', function () {
-            console.log('Disconnected')
-        })
-
-        const socket1 = io('ws://localhost:34577?token=daskjdhjwqheqweqwjkeq')
-        socket1.on('connect', function () {
-            console.log('Connected')
-
-            socket1.emit('sender', {
-                name: 'John'
-            })
-
-            socket1.on('sender', response => {
-                console.log('sender:', response)
-            })
-        })
-        socket1.on('disconnect', function () {
             console.log('Disconnected')
         })
 
