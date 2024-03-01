@@ -58,6 +58,7 @@ export default defineComponent({
         height: 100%;
         margin: auto;
         box-sizing: border-box;
+        box-shadow: var(--box-shadow-2);
         background-color: var(--layout-context);
         transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     }

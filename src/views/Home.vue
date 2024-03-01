@@ -8,7 +8,7 @@ export default defineComponent({
             <layout-provider
                 v-slots={{
                     sider: () => <chat-sider></chat-sider>,
-                    default: () => <chat-content></chat-content>
+                    default: () => <chat-context></chat-context>
                 }}
             ></layout-provider>
         )
