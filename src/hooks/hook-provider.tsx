@@ -1,7 +1,12 @@
 import { computed, ComputedRef } from 'vue'
 import { useThemeVars, darkTheme, lightTheme, GlobalThemeOverrides, ThemeCommonVars } from 'naive-ui'
 import { useConfiger } from '@/store/configer'
-export interface CustomThemeCommonVars extends ThemeCommonVars {}
+export interface CustomThemeCommonVars extends ThemeCommonVars {
+    '--chat-layout-before': string
+    '--chat-layout-color': string
+    '--chat-layout-context': string
+    '--chat-compose-color': string
+}
 
 export function useProvider() {
     const configer = useConfiger()
@@ -19,13 +24,20 @@ export function useProvider() {
     const lightThemeOverrides = computed<GlobalThemeOverrides & { common: Omix<Partial<CustomThemeCommonVars>> }>(() => ({
         common: {
             fontWeightStrong: '600',
-            primaryColor: configer.primaryColor
-            // layoutBackground: 'linear-gradient(var(--primary-color) 200px, #e3e3de 0)'
+            primaryColor: configer.primaryColor,
+            '--chat-layout-before': 'var(--primary-color)',
+            '--chat-layout-color': '#e6e3dd',
+            '--chat-layout-context': '#f0f2f5',
+            '--chat-compose-color': '#f0f2f5'
         }
     }))
     const darkThemeOverrides = computed<GlobalThemeOverrides>(() => ({
         common: {
-            fontWeightStrong: '600'
+            fontWeightStrong: '600',
+            '--chat-layout-before': '#0d1317',
+            '--chat-layout-color': '#0d1317',
+            '--chat-layout-context': '#232e35',
+            '--chat-compose-color': '#202c33'
         }
     }))
 

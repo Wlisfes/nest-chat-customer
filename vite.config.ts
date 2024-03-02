@@ -26,14 +26,20 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
                 extensions: ['vue', 'tsx'],
                 include: [/\.vue$/, /\.vue\?vue/, /\.tsx$/, /\.tsx\?tsx/],
                 dirs: ['src/components', 'src/layouts'],
-                resolvers: [NaiveUiResolver()]
+                resolvers: [
+                    NaiveUiResolver(),
+                    IconsResolver({
+                        prefix: false,
+                        enabledCollections: ['iv']
+                    })
+                ]
             }),
             Icons({
                 scale: 1,
                 autoInstall: true,
                 compiler: 'vue3',
                 customCollections: {
-                    icon: FileSystemIconLoader('./src/assets/icons')
+                    iv: FileSystemIconLoader('./src/assets/icons')
                 }
             })
         ],

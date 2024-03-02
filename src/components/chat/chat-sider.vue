@@ -6,6 +6,7 @@ export default defineComponent({
     setup(props) {
         return () => (
             <div class="chat-sider n-chunk n-column n-auto">
+                <chat-compose></chat-compose>
                 <div class="chat-sider__scrollbar">
                     <n-scrollbar>dsada</n-scrollbar>
                 </div>
