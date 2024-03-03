@@ -5,17 +5,24 @@ export default defineComponent({
     name: 'ChatCompose',
     setup(props) {
         return () => (
-            <div class="chat-compose">
+            <div class="chat-compose n-chunk n-center n-space">
                 <n-avatar
                     round
                     size={40}
                     src="https://oss.lisfes.cn/cloud/avatar/2021-08/1628499198955.jpg?x-oss-process=style/resize-1-1"
                 />
-                <common-icon
-                    component={<Iv-BsDynamic />}
-                    spin={<common-loadiner />}
-                    onClick={(scope: Omix) => scope.done({ loading: true })}
-                ></common-icon>
+                <n-space wrap-item={false} size={[16, 0]}>
+                    <common-icon size={34} component={<Iv-BsSociety />} spin={<common-loadiner />}></common-icon>
+                    <common-icon size={34} component={<Iv-BsDynamic />} spin={<common-loadiner />}></common-icon>
+                    <common-icon size={34} component={<Iv-BsChane />} spin={<common-loadiner />}></common-icon>
+                    <common-icon size={34} component={<Iv-BsDialog />} spin={<common-loadiner />}></common-icon>
+                    <common-icon
+                        size={34}
+                        component={<Iv-BsMore />}
+                        spin={<common-loadiner />}
+                        //onClick={(scope: Omix) => scope.done({ loading: true })}
+                    ></common-icon>
+                </n-space>
             </div>
         )
     }

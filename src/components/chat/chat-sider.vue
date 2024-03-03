@@ -7,6 +7,7 @@ export default defineComponent({
         return () => (
             <div class="chat-sider n-chunk n-column n-auto">
                 <chat-compose></chat-compose>
+                <chat-searcher></chat-searcher>
                 <div class="chat-sider__scrollbar">
                     <n-scrollbar>dsada</n-scrollbar>
                 </div>

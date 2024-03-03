@@ -6,6 +6,9 @@ export interface CustomThemeCommonVars extends ThemeCommonVars {
     '--chat-layout-color': string
     '--chat-layout-context': string
     '--chat-compose-color': string
+    '--chat-searcher-color': string
+    '--chat-searcher-wrapper': string
+    '--chat-context-color': string
 }
 
 export function useProvider() {
@@ -28,7 +31,10 @@ export function useProvider() {
             '--chat-layout-before': 'var(--primary-color)',
             '--chat-layout-color': '#e6e3dd',
             '--chat-layout-context': '#f0f2f5',
-            '--chat-compose-color': '#f0f2f5'
+            '--chat-compose-color': '#f0f2f5',
+            '--chat-searcher-color': '#ffffff',
+            '--chat-searcher-wrapper': '#f0f2f5',
+            '--chat-context-color': '#f0f2f5'
         }
     }))
     const darkThemeOverrides = computed<GlobalThemeOverrides>(() => ({
@@ -37,7 +43,10 @@ export function useProvider() {
             '--chat-layout-before': '#0d1317',
             '--chat-layout-color': '#0d1317',
             '--chat-layout-context': '#232e35',
-            '--chat-compose-color': '#202c33'
+            '--chat-compose-color': '#202c33',
+            '--chat-searcher-color': '#111b21',
+            '--chat-searcher-wrapper': '#202c33',
+            '--chat-context-color': '#232e35'
         }
     }))
 
