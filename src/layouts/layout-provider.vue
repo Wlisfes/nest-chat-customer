@@ -48,7 +48,7 @@ export default defineComponent({
         top: 0;
         left: 0;
         right: 0;
-        height: 180px;
+        height: 128px;
         background-color: var(--chat-layout-before);
         transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     }

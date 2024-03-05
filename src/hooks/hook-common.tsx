@@ -1,13 +1,18 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import { zh_CN, en, Faker } from '@faker-js/faker'
 import { isNotEmpty, divineWherer } from '@/utils/utils-common'
-
 dayjs.extend(timezone)
 dayjs.extend(utc)
 
 /**dayjs实例**/
 export const moment = dayjs
+
+/**虚拟数据实例**/
+export const faker = new Faker({
+    locale: [zh_CN, en]
+})
 
 export function useMoment() {
     /**获取当前时区**/
