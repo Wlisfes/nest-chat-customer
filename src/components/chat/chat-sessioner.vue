@@ -46,9 +46,16 @@ export default defineComponent({
         return () => (
             <div class="chat-sessioner n-chunk n-column n-auto">
                 <n-scrollbar class="is-customize" trigger="none" size={60} on-scroll={onScroller}>
-                    {state.dataSource.map((item: Omix) => (
-                        <chat-node-sessioner key={item.keyId} node={item}></chat-node-sessioner>
-                    ))}
+                    <n-element class="n-chunk n-column">
+                        <div style={{ position: 'relative' }}>
+                            {state.dataSource.map((item: Omix) => (
+                                <chat-node-sessioner key={item.keyId} node={item}></chat-node-sessioner>
+                            ))}
+                        </div>
+                        <div class="n-chunk n-middle" style={{ padding: '15px 20px' }}>
+                            <common-loadiner size={32}></common-loadiner>
+                        </div>
+                    </n-element>
                 </n-scrollbar>
             </div>
         )
