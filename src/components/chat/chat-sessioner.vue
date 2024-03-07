@@ -18,12 +18,12 @@ export default defineComponent({
 
         async function fetchColumn(): Promise<Array<any>> {
             await setState({ loading: true })
-            await divineDelay(1500)
-            return Array.from({ length: 20 }, () => ({
+            await divineDelay(500)
+            return Array.from({ length: 30 }, () => ({
                 keyId: faker.string.uuid(),
                 uid: faker.string.uuid(),
                 // avatar: faker.image.avatar(),
-                avatar: 'https://picsum.photos/200',
+                avatar: `https://oss.lisfes.cn/cloud/avatar/2021-08/1628499198955.jpg?x-oss-process=style/resize-1-1`,
                 fullName: faker.person.fullName(),
                 phoneNumber: faker.phone.number(),
                 email: faker.internet.email(),
@@ -34,7 +34,7 @@ export default defineComponent({
 
         async function onScroller(evt: { target: HTMLElement }) {
             const { scrollTop, clientHeight, scrollHeight } = evt.target
-            if (scrollTop + clientHeight * 2 >= scrollHeight && !state.loading) {
+            if (scrollTop + clientHeight * 3 >= scrollHeight && !state.loading) {
                 const data = await fetchColumn()
                 return await setState({
                     dataSource: state.dataSource.concat(data as any) as any,

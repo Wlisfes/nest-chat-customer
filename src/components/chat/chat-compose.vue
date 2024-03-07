@@ -1,9 +1,12 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
+import { useConfiger } from '@/store/configer'
 
 export default defineComponent({
     name: 'ChatCompose',
     setup(props) {
+        const configer = useConfiger()
+
         return () => (
             <div class="chat-compose n-chunk n-center n-space">
                 <n-avatar
@@ -20,6 +23,7 @@ export default defineComponent({
                         size={34}
                         component={<Iv-BsMore />}
                         spin={<common-loadiner />}
+                        onClick={(scope: Omix) => configer.setTheme(configer.theme === 'light' ? 'dark' : 'light')}
                         //onClick={(scope: Omix) => scope.done({ loading: true })}
                     ></common-icon>
                 </n-space>
