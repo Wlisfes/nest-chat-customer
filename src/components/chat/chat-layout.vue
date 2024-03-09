@@ -21,9 +21,13 @@ export default defineComponent({
                 {width.value > 0 && (
                     <div class="chat-layout__context n-chunk">
                         <div class="chunk-sider n-chunk n-column">
-                            <div class="chunk-sider__element n-chunk n-column n-auto">{slots.sider && slots.sider()}</div>
+                            <div class="chunk-sider__element n-chunk n-column n-auto">
+                                <chat-sider></chat-sider>
+                            </div>
                         </div>
-                        <div class="chunk-context n-chunk n-column n-auto">{slots.default && slots.default()}</div>
+                        <div class="chunk-context n-chunk n-column n-auto">
+                            <chat-context></chat-context>
+                        </div>
                     </div>
                 )}
             </n-element>
