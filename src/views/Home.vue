@@ -7,7 +7,7 @@ export default defineComponent({
     name: 'Home',
     setup(props) {
         const { state, setState } = useState({
-            token: getCookie(APP_COMMON.CHAT_TOKEN)
+            token: false //getCookie(APP_COMMON.CHAT_TOKEN)
         })
 
         return () => (

@@ -1,71 +1,31 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, Fragment } from 'vue'
 import { useConfiger } from '@/store/configer'
+import { useState } from '@/hooks/hook-state'
+import { APP_COMMON, getCookie, setCookie, delCookie } from '@/utils/utils-cookie'
 
 export default defineComponent({
     name: 'AuthLayout',
     setup(props, { slots }) {
         const configer = useConfiger()
+        const { state, setState } = useState({
+            authorize: getCookie(APP_COMMON.CHAT_AUTH_LAYOUT) ?? 'login'
+        })
+
+        console.log(state)
 
         return () => (
             <n-element class="auth-layout n-chunk n-column">
                 <common-rainbow></common-rainbow>
-                <div class="auth-layout__context n-chunk n-column">
-                    {/* <n-h1 style={{ textAlign: 'center' }}>Log in</n-h1> */}
-                    <n-form size="large" label-placement="top">
-                        <n-form-item path="account" label="邮箱">
-                            <n-input
-                                //v-model:value={state.form.account}
-                                //disabled={state.disabled || state.loading}
-                                maxlength={32}
-                                type="text"
-                                input-props={{ autocomplete: 'off' }}
-                                placeholder="请输入邮箱"
-                                //onKeydown={(evt: KeyboardEvent) => enter(evt, onEventChecker)}
-                            ></n-input>
-                        </n-form-item>
-                        <n-form-item path="password" label="密码">
-                            <n-input
-                                //v-model:value={state.form.password}
-                                //disabled={state.disabled || state.loading}
-                                maxlength={18}
-                                type="password"
-                                show-password-on="mousedown"
-                                input-props={{ autocomplete: 'current-password' }}
-                                placeholder="请输入登录密码"
-                                //onKeydown={(evt: KeyboardEvent) => enter(evt, onEventChecker)}
-                            ></n-input>
-                        </n-form-item>
-                        <n-form-item show-label={false}>
-                            <n-button
-                                type="info"
-                                style={{ width: '100%' }}
-                                //disabled={state.disabled}
-                                //loading={state.loading}
-                                //onClick={(e: Event) => stop(e, onEventChecker)}
-                                onClick={(scope: Omix) => configer.setTheme(configer.theme === 'light' ? 'dark' : 'light')}
-                            >
-                                立即登录
-                            </n-button>
-                        </n-form-item>
-                        <n-space wrap-item={false} justify="space-between" style={{ width: '100%', marginBottom: '5px' }}>
-                            <n-button text focusable={false} style={{ fontSize: '18px' }}>
-                                忘记密码
-                            </n-button>
-                            <n-button text focusable={false} style={{ fontSize: '18px' }}>
-                                注册
-                            </n-button>
-                        </n-space>
-                        <n-space size={32} wrap-item={false} justify="center" align="center" style={{ margin: '24px 0 10px' }}>
-                            <n-button text focusable={false}>
-                                <n-icon size={44} component={<Iv-BsGithub />}></n-icon>
-                            </n-button>
-                            <n-icon size={24} color="#fff" component={<Iv-BsSpecor />}></n-icon>
-                            <n-button text focusable={false}>
-                                <n-icon size={44} component={<Iv-BsGoogle />}></n-icon>
-                            </n-button>
-                        </n-space>
-                    </n-form>
+                <div class="auth-layout__context n-chunk n-column n-center n-middle">
+                    {/* <div class="chunk-switch"></div> */}
+                    {state.authorize === 'login' ? (
+                        <Fragment>
+                            <auth-login></auth-login>
+                        </Fragment>
+                    ) : (
+                        <auth-register></auth-register>
+                    )}
                 </div>
             </n-element>
         )
@@ -83,35 +43,35 @@ export default defineComponent({
     padding: 28px;
     background-color: var(--base-color);
     transition: padding 0.3s var(--cubic-bezier-ease-in-out), background-color 0.3s var(--cubic-bezier-ease-in-out);
-    background-image: url('@/assets/images/chat-layout-yellow.svg'), url('@/assets/images/chat-layout-pink.svg'),
-        url('@/assets/images/chat-layout-blue.svg');
-    background-repeat: no-repeat, no-repeat, no-repeat;
-    background-size: 481px 203px, 241px 192px, 181px 275px;
-    background-position: 15% 0px, 3% 100%, 100% 32%;
+    background-image: url('@/assets/images/auth-layout.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
     &__context {
         position: relative;
         width: 100%;
+        height: 100%;
         max-width: 520px;
+        max-height: 520px;
         margin: auto;
         box-sizing: border-box;
         box-shadow: var(--box-shadow-1);
-        background-color: var(--action-color);
+        background-color: var(--auth-layout-color);
         transition: background-color 0.3s var(--cubic-bezier-ease-in-out), box-shadow 0.3s var(--cubic-bezier-ease-in-out);
         z-index: 2;
-        padding: 24px;
+        padding: 20px;
         border-radius: 6px;
+        .chunk-switch {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 80px;
+            height: 80px;
+            border-radius: 0 0 0 150%;
+            background-color: #489ecf;
+        }
         :deep(.n-form) {
-            .n-form-item {
-                --n-label-font-size: 18px;
-                --n-feedback-height: 30px;
-            }
-            .n-input {
-                --n-height: 48px;
-            }
-            .n-button {
-                --n-height: 48px;
-                --n-font-size: 18px;
-            }
+            width: 100%;
+            max-width: 320px;
         }
     }
 }
