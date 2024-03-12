@@ -9,8 +9,8 @@ export enum APP_COMMON {
     CHAT_AUTH_LAYOUT = 'APP_CHAT_AUTH_LAYOUT'
 }
 
-export function getCookie<T = any>(key: string): T {
-    return JSCookie.get(key) as T
+export function getCookie<T = any>(key: string, defaultValue?: T): T {
+    return (JSCookie.get(key) ?? defaultValue) as T
 }
 
 export async function setCookie(key: string, data: any, opts?: typeof JSCookie.attributes) {

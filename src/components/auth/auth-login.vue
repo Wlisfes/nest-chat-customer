@@ -1,42 +1,49 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
+import { useConfiger } from '@/store/configer'
+import { useProvider } from '@/hooks/hook-provider'
 
 export default defineComponent({
     name: 'AuthLogin',
     setup(props) {
+        const configer = useConfiger()
+        const { inverted } = useProvider()
+
         return () => (
             <n-form size="large" show-label={false}>
                 <n-h2 style={{ fontSize: '28px', fontWeight: 500 }}>
                     <n-text depth={2}>登录</n-text>
                 </n-h2>
-                <n-form-item path="account">
+                <n-form-item path="email">
                     <n-input
-                        //v-model:value={state.form.account}
-                        //disabled={state.disabled || state.loading}
                         maxlength={32}
                         type="text"
-                        input-props={{ autocomplete: 'off' }}
                         placeholder="请输入邮箱"
-                        //onKeydown={(evt: KeyboardEvent) => enter(evt, onEventChecker)}
-                        v-slots={{
-                            prefix: () => <n-icon size={20} component={<Iv-BsChane />}></n-icon>
-                        }}
+                        v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuUser />}></n-icon> }}
                     ></n-input>
                 </n-form-item>
                 <n-form-item path="password">
                     <n-input
-                        //v-model:value={state.form.password}
-                        //disabled={state.disabled || state.loading}
-                        maxlength={18}
+                        maxlength={32}
                         type="password"
-                        show-password-on="mousedown"
-                        input-props={{ autocomplete: 'current-password' }}
                         placeholder="请输入登录密码"
-                        //onKeydown={(evt: KeyboardEvent) => enter(evt, onEventChecker)}
+                        v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuOckes />}></n-icon> }}
                     ></n-input>
                 </n-form-item>
+                <n-form-item path="email">
+                    <n-space wrap-item={false} style={{ width: '100%' }}>
+                        <n-input
+                            style={{ flex: 1 }}
+                            type="text"
+                            maxlength={64}
+                            placeholder="请输入邮箱"
+                            v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuCodex />}></n-icon> }}
+                        ></n-input>
+                        <n-button secondary={inverted.value}>获取验证码</n-button>
+                    </n-space>
+                </n-form-item>
                 <n-form-item>
-                    <n-button type="info" style={{ width: '100%' }}>
+                    <n-button type="info" style={{ width: '100%' }} onClick={(evt: Event) => configer.setTheme('light')}>
                         立即登录
                     </n-button>
                 </n-form-item>
@@ -44,7 +51,7 @@ export default defineComponent({
                     <n-button text focusable={false}>
                         忘记密码
                     </n-button>
-                    <n-button text focusable={false}>
+                    <n-button text focusable={false} onClick={(evt: Event) => configer.setAuthorize('register')}>
                         注册账号
                     </n-button>
                 </n-space>

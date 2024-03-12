@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { APP_COMMON, getCookie, setCookie, delCookie } from '@/utils/utils-cookie'
 
 export const useConfiger = defineStore('configer', {
     persist: true,
@@ -6,7 +7,8 @@ export const useConfiger = defineStore('configer', {
         loading: true,
         collapsed: false,
         theme: 'light',
-        primaryColor: '#24B89E'
+        primaryColor: '#24B89E',
+        authorize: getCookie(APP_COMMON.CHAT_AUTH_LAYOUT, 'login')
     }),
     actions: {
         async setLoadiner(loading: boolean) {
@@ -20,6 +22,10 @@ export const useConfiger = defineStore('configer', {
         },
         async setPrimaryColor(primaryColor: string) {
             return (this.primaryColor = primaryColor)
+        },
+        async setAuthorize(authorize: 'login' | 'register') {
+            await setCookie(APP_COMMON.CHAT_AUTH_LAYOUT, authorize)
+            return (this.authorize = authorize)
         }
     }
 })

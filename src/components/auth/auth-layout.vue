@@ -1,25 +1,18 @@
 <script lang="tsx">
 import { defineComponent, Fragment } from 'vue'
 import { useConfiger } from '@/store/configer'
-import { useState } from '@/hooks/hook-state'
-import { APP_COMMON, getCookie, setCookie, delCookie } from '@/utils/utils-cookie'
 
 export default defineComponent({
     name: 'AuthLayout',
-    setup(props, { slots }) {
+    setup(props) {
         const configer = useConfiger()
-        const { state, setState } = useState({
-            authorize: getCookie(APP_COMMON.CHAT_AUTH_LAYOUT) ?? 'login'
-        })
-
-        console.log(state)
 
         return () => (
             <n-element class="auth-layout n-chunk n-column">
                 <common-rainbow></common-rainbow>
                 <div class="auth-layout__context n-chunk n-column n-center n-middle">
                     {/* <div class="chunk-switch"></div> */}
-                    {state.authorize === 'login' ? (
+                    {configer.authorize === 'login' ? (
                         <Fragment>
                             <auth-login></auth-login>
                         </Fragment>
@@ -58,7 +51,7 @@ export default defineComponent({
         background-color: var(--auth-layout-color);
         transition: background-color 0.3s var(--cubic-bezier-ease-in-out), box-shadow 0.3s var(--cubic-bezier-ease-in-out);
         z-index: 2;
-        padding: 20px;
+        padding: 24px;
         border-radius: 6px;
         .chunk-switch {
             position: absolute;
@@ -71,7 +64,10 @@ export default defineComponent({
         }
         :deep(.n-form) {
             width: 100%;
-            max-width: 320px;
+            max-width: 375px;
+            .n-input__prefix {
+                margin-right: var(--n-padding-left);
+            }
         }
     }
 }
