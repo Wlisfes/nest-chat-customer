@@ -41,6 +41,7 @@ export default defineComponent({
     row-gap: 8px;
     background-color: var(--chat-searcher-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
+    border-bottom: 1px solid var(--chat-border-color);
     &__wrapper {
         position: relative;
         :deep(.n-input) {

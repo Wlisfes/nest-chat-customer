@@ -5,6 +5,7 @@ export interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
     '--chat-layout-before': string
     '--chat-layout-color': string
     '--chat-layout-context': string
+    '--chat-border-color': string
     '--chat-compose-color': string
     '--chat-searcher-color': string
     '--chat-searcher-wrapper': string
@@ -31,6 +32,7 @@ export function useProvider() {
             '--chat-layout-before': 'var(--primary-color)',
             '--chat-layout-color': '#e6e3dd',
             '--chat-layout-context': '#f0f2f5',
+            '--chat-border-color': 'rgba(134, 150, 160, 0.15)',
             '--chat-compose-color': '#f0f2f5',
             '--chat-searcher-color': '#ffffff',
             '--chat-searcher-wrapper': '#f0f2f5',
@@ -43,10 +45,11 @@ export function useProvider() {
             '--chat-layout-before': '#0d1317',
             '--chat-layout-color': '#0d1317',
             '--chat-layout-context': '#232e35',
+            '--chat-border-color': 'rgba(134, 150, 160, 0.15)',
             '--chat-compose-color': '#202c33',
             '--chat-searcher-color': '#111b21',
             '--chat-searcher-wrapper': '#202c33',
-            '--chat-context-color': '#232e35'
+            '--chat-context-color': '#0b141a'
         }
     }))
 

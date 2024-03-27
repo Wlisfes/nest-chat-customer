@@ -8,8 +8,8 @@ export default defineComponent({
             <div class="chat-sider n-chunk n-column n-auto">
                 <chat-compose></chat-compose>
                 <chat-searcher></chat-searcher>
-                <div class="chat-sider__scrollbar">
-                    <n-scrollbar>dsada</n-scrollbar>
+                <div class="chat-sider__scrollbar n-chunk n-column">
+                    <chat-sessioner></chat-sessioner>
                 </div>
             </div>
         )
@@ -25,6 +25,8 @@ export default defineComponent({
         flex: 1;
         position: relative;
         overflow: hidden;
+        background-color: var(--chat-searcher-color);
+        transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     }
 }
 </style>

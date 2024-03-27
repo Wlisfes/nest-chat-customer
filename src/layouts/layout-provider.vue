@@ -18,12 +18,14 @@ export default defineComponent({
 
         return () => (
             <n-element class="layout-provider" style={compute.value}>
-                <div class="layout-context n-chunk">
-                    <div class="chunk-sider n-chunk n-column">
-                        <div class="chunk-sider__element n-chunk n-column n-auto">{slots.sider && slots.sider()}</div>
+                {width.value > 0 && (
+                    <div class="layout-context n-chunk">
+                        <div class="chunk-sider n-chunk n-column">
+                            <div class="chunk-sider__element n-chunk n-column n-auto">{slots.sider && slots.sider()}</div>
+                        </div>
+                        <div class="chunk-context n-chunk n-column n-auto">{slots.default && slots.default()}</div>
                     </div>
-                    <div class="chunk-context n-chunk n-column n-auto">{slots.default && slots.default()}</div>
-                </div>
+                )}
             </n-element>
         )
     }
