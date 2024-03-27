@@ -2,7 +2,8 @@ import JSCookie from 'js-cookie'
 
 export enum APP_COMMON {
     /**语言存储键**/
-    CONST_LOCALE = 'APP_COMMON_LOCALE'
+    CHAT_LOCALE = 'APP_CHAT_LOCALE',
+    CHAT_TOKEN = 'APP_CHAT_TOKEN'
 }
 
 export function getCookie<T = any>(key: string): T {

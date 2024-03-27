@@ -16,8 +16,8 @@ export const i18n = createI18n({
 
 /**获取默认语言**/
 export function getDefaultLocale() {
-    if (getCookie(APP_COMMON.CONST_LOCALE)) {
-        return getCookie(APP_COMMON.CONST_LOCALE)
+    if (getCookie(APP_COMMON.CHAT_LOCALE)) {
+        return getCookie(APP_COMMON.CHAT_LOCALE)
     } else if (['zh', 'zh-CN', 'zh-TW', 'zh-HK'].includes(navigator.language)) {
         return 'cn'
     }
@@ -26,7 +26,7 @@ export function getDefaultLocale() {
 
 /**切换语言**/
 export async function setI18nLocale(value: 'cn' | 'en') {
-    return await setCookie(APP_COMMON.CONST_LOCALE, value).then(() => {
+    return await setCookie(APP_COMMON.CHAT_LOCALE, value).then(() => {
         locale.value = value
         return (i18n.global.locale.value = value)
     })

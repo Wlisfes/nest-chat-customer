@@ -5,7 +5,7 @@ import { useConfiger } from '@/store/configer'
 import { divineWherer } from '@/utils/utils-common'
 
 export default defineComponent({
-    name: 'LayoutProvider',
+    name: 'ChatLayout',
     setup(props, { slots }) {
         const configer = useConfiger()
         const element = useCurrentElement<HTMLElement>()
@@ -17,9 +17,9 @@ export default defineComponent({
         }))
 
         return () => (
-            <n-element class="layout-provider" style={compute.value}>
+            <n-element class="chat-layout" style={compute.value}>
                 {width.value > 0 && (
-                    <div class="layout-context n-chunk">
+                    <div class="chat-layout__context n-chunk">
                         <div class="chunk-sider n-chunk n-column">
                             <div class="chunk-sider__element n-chunk n-column n-auto">{slots.sider && slots.sider()}</div>
                         </div>
@@ -33,7 +33,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.layout-provider {
+.chat-layout {
     position: relative;
     width: 100%;
     height: 100%;
@@ -55,7 +55,7 @@ export default defineComponent({
     @media (max-width: 1440px) {
         padding: 0;
     }
-    .layout-context {
+    &__context {
         position: relative;
         width: 100%;
         max-width: var(--chat-layout-max-width);
