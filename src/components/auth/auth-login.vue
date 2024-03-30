@@ -1,13 +1,11 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
 import { useConfiger } from '@/store/configer'
-import { useProvider } from '@/hooks/hook-provider'
 
 export default defineComponent({
     name: 'AuthLogin',
     setup(props) {
         const configer = useConfiger()
-        const { inverted } = useProvider()
 
         return () => (
             <n-form size="large" show-label={false}>
@@ -39,9 +37,7 @@ export default defineComponent({
                             placeholder="请输入邮箱"
                             v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuCodex />}></n-icon> }}
                         ></n-input>
-                        <n-button secondary={inverted.value} style={{ '--n-padding': '0px' }}>
-                            <n-image preview-disabled src="http://localhost:34570/web-service/common/grapher"></n-image>
-                        </n-button>
+                        <common-grapher></common-grapher>
                     </n-space>
                 </n-form-item>
                 <n-form-item>
