@@ -39,7 +39,9 @@ export default defineComponent({
                             placeholder="请输入邮箱"
                             v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuCodex />}></n-icon> }}
                         ></n-input>
-                        <n-button secondary={inverted.value}>获取验证码</n-button>
+                        <n-button secondary={inverted.value} style={{ '--n-padding': '0px' }}>
+                            <n-image preview-disabled src="http://localhost:34570/web-service/common/grapher"></n-image>
+                        </n-button>
                     </n-space>
                 </n-form-item>
                 <n-form-item>

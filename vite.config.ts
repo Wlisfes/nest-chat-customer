@@ -10,10 +10,16 @@ import VueJsx from '@vitejs/plugin-vue-jsx'
 import path from 'path'
 
 export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
-    const root = process.cwd()
-    const env = loadEnv(mode, root)
-
     return {
+        build: {
+            outDir: 'dist',
+            assetsDir: 'static'
+        },
+        resolve: {
+            alias: {
+                '@': path.resolve(__dirname, 'src')
+            }
+        },
         plugins: [
             Vue(),
             VueJsx(),
@@ -43,25 +49,17 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
                 }
             })
         ],
-        resolve: {
-            alias: {
-                '@': path.resolve(__dirname, 'src')
-            }
-        },
-        build: {
-            outDir: 'dist',
-            assetsDir: 'static'
-        },
-        css: {
-            modules: {
-                generateScopedName: '[local]___[hash:5]',
-                localsConvention: 'camelCase'
-            }
-        },
         server: {
             hmr: true,
             port: 5050,
-            host: '127.0.0.1'
+            host: '127.0.0.1',
+            proxy: {
+                [`/web-service`]: {
+                    target: `http://localhost:34570`,
+                    ws: true,
+                    changeOrigin: true
+                }
+            }
         }
     }
 })
