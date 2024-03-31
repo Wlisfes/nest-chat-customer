@@ -3,15 +3,18 @@ import { defineComponent } from 'vue'
 import { isEmpty, isEmail } from 'class-validator'
 import { useConfiger } from '@/store/configer'
 import { useProvider } from '@/hooks/hook-provider'
+import { useLocale } from '@/hooks/hook-locale'
 import { useFormCustomize } from '@/hooks/hook-customize'
 import { useTiminer } from '@/hooks/hook-common'
-import * as http from '@/api/instance.service'
+import { createNotice } from '@/utils/utils-component'
+import { httpUserRegister, httpNodemailerSender } from '@/api/instance.service'
 
 export default defineComponent({
     name: 'AuthRegister',
     setup(props) {
         const configer = useConfiger()
         const { inverted } = useProvider()
+        const { setupNotice } = useLocale()
         const { duration, complete, setDuration } = useTiminer()
         const { formRef, form, rules, loading, setLoading, divineFormValidater } = useFormCustomize({
             form: {
@@ -48,16 +51,19 @@ export default defineComponent({
                 }
                 try {
                     await done({ loading: true })
-                    const { data } = await http.httpNodemailerSender({ email: form.value.email, source: 'register' })
-                    await setDuration(60)
-
-                    await done({ loading: false })
+                    return await httpNodemailerSender({ email: form.value.email, source: 'register' }).then(async ({ data }) => {
+                        await setDuration(60)
+                        await createNotice({ content: setupNotice(data.message) })
+                        return await done({ loading: false })
+                    })
                 } catch (e) {
-                    await done({ loading: false })
+                    await createNotice({ type: 'error', content: setupNotice(e) })
+                    return await done({ loading: false })
                 }
             })
         }
 
+        /**提交注册**/
         function onSubmit() {
             divineFormValidater().then(async valid => {
                 if (!valid) {
@@ -65,16 +71,18 @@ export default defineComponent({
                 }
                 try {
                     await setLoading(true)
-                    const { data } = await http.httpUserRegister({
+                    return await httpUserRegister({
                         nickname: form.value.nickname,
                         email: form.value.email,
                         code: form.value.code,
                         password: window.btoa(form.value.password)
+                    }).then(async ({ data }) => {
+                        await createNotice({ content: setupNotice(data.message) })
+                        await setLoading(false)
+                        return await configer.setAuthorize('login')
                     })
-                    console.log(data)
-                    await setLoading(false)
-                    return configer.setAuthorize('login')
                 } catch (e) {
+                    await createNotice({ type: 'error', content: setupNotice(e) })
                     return await setLoading(false)
                 }
             })
@@ -139,15 +147,30 @@ export default defineComponent({
                     </n-space>
                 </n-form-item>
                 <n-form-item path="password">
-                    <n-input
-                        class="n-deep-style"
-                        type="password"
-                        placeholder="请输入登录密码"
-                        maxlength={32}
-                        style={{ '--input-password-right': '46px' }}
-                        v-model:value={form.value.password}
-                        v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuOckes />}></n-icon> }}
-                    ></n-input>
+                    <common-state
+                        data-render={(scope: Omix<{ loading: boolean }>, done: Function) => (
+                            <n-input
+                                class="n-deep-style"
+                                maxlength={32}
+                                placeholder="请输入登录密码"
+                                type={scope.loading ? 'text' : 'password'}
+                                style={{ '--input-password-right': '46px' }}
+                                v-model:value={form.value.password}
+                                v-slots={{
+                                    prefix: () => <n-icon size={22} component={<Iv-AuOckes />}></n-icon>,
+                                    suffix: () => (
+                                        <n-icon
+                                            class="n-pointer"
+                                            color="var(--text-color-3)"
+                                            size={22}
+                                            component={scope.loading ? <Iv-BsEyc /> : <Iv-BsEye />}
+                                            onClick={(evt: Event) => done({ loading: !scope.loading })}
+                                        ></n-icon>
+                                    )
+                                }}
+                            ></n-input>
+                        )}
+                    ></common-state>
                 </n-form-item>
                 <n-form-item>
                     <n-button

@@ -9,6 +9,8 @@ export default defineComponent({
         const configer = useConfiger()
         const user = useUser()
 
+        console.log(user.nickname)
+
         return () => <n-element id="app-element">{user.token ? <chat-layout></chat-layout> : <auth-layout></auth-layout>}</n-element>
     }
 })

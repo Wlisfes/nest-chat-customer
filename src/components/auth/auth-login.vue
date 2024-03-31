@@ -2,13 +2,19 @@
 import { defineComponent } from 'vue'
 import { isEmpty, isEmail } from 'class-validator'
 import { useConfiger } from '@/store/configer'
+import { useUser } from '@/store/user'
+import { useLocale } from '@/hooks/hook-locale'
 import { useFormCustomize } from '@/hooks/hook-customize'
-import * as http from '@/api/instance.service'
+import { createNotice } from '@/utils/utils-component'
+import { APP_COMMON, setCookie } from '@/utils/utils-cookie'
+import { httpUserAuthorizer } from '@/api/instance.service'
 
 export default defineComponent({
     name: 'AuthLogin',
     setup(props) {
         const configer = useConfiger()
+        const user = useUser()
+        const { setupNotice } = useLocale()
         const { formRef, form, rules, loading, setLoading, divineFormValidater } = useFormCustomize({
             form: {
                 email: '',
@@ -40,10 +46,20 @@ export default defineComponent({
                 }
                 try {
                     await setLoading(true)
-                    const { data } = await http.httpUserAuthorizer(form.value)
-
-                    console.log(data)
+                    return await httpUserAuthorizer({
+                        email: form.value.email,
+                        code: form.value.code,
+                        password: window.btoa(form.value.password)
+                    }).then(async ({ data, message }) => {
+                        await setCookie(APP_COMMON.CHAT_TOKEN, data.token)
+                        await user.fetchUserResolver()
+                        await user.setState({ token: data.token })
+                        return await createNotice({ content: setupNotice(message) }).then(() => {
+                            return setLoading(false)
+                        })
+                    })
                 } catch (e) {
+                    await createNotice({ type: 'error', content: setupNotice(e) })
                     return await setLoading(false)
                 }
             })

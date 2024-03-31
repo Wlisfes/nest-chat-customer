@@ -35,3 +35,17 @@ export async function setI18nLocale(value: 'cn' | 'en') {
 export function setupI18n(app: App<Element>) {
     app.use(i18n)
 }
+
+/**错误code转换**/
+export function setupNotice(AxiosError: any): string {
+    if (typeof AxiosError === 'string') {
+        return AxiosError
+    }
+    //根据请求axios库内置信息判断
+    const IsTimeout = /timeout of .+ exceeded/.test(AxiosError?.message)
+    if (IsTimeout) {
+        /**接口超时**/
+        return `网络超时，请稍后在试！`
+    }
+    return AxiosError.message ?? `系统错误，请稍后在试！`
+}
