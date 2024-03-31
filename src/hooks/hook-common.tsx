@@ -2,7 +2,8 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import { zh_CN, en, Faker } from '@faker-js/faker'
-import { isNotEmpty, divineWherer } from '@/utils/utils-common'
+import { divineWherer } from '@/utils/utils-common'
+import { isNotEmpty } from 'class-validator'
 dayjs.extend(timezone)
 dayjs.extend(utc)
 

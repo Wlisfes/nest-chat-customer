@@ -1,11 +1,12 @@
-/**验证参数是否为空**/
-export function isEmpty(value: any) {
-    return ['', null, undefined].includes(value)
+export function prevent(evt: Event, handler?: Function) {
+    evt.preventDefault()
+    return handler?.(evt)
 }
 
-/**验证参数是否不为空**/
-export function isNotEmpty(value: any) {
-    return !isEmpty(value)
+export function stop(evt: Event, handler?: Function) {
+    evt.preventDefault()
+    evt.stopPropagation()
+    return handler?.(evt)
 }
 
 /**根据条件返回不同参数**/
@@ -22,4 +23,19 @@ export function divineDelay(delay = 100, handler?: Function) {
             clearTimeout(timeout)
         }, delay)
     })
+}
+
+/**条件函数执行**/
+export async function divineHandler<T>(value: boolean | Function, handler: Function, callback?: Function): Promise<T | void> {
+    if ((typeof value === 'boolean' && value) || (typeof value === 'function' && (await value()))) {
+        return await handler()
+    } else if (typeof callback === 'function') {
+        return await callback()
+    }
+    return undefined
+}
+
+/**参数组合函数**/
+export async function divineParameter<T>(data: T) {
+    return data
 }
