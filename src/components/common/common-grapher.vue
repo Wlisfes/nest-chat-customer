@@ -2,6 +2,7 @@
 import { defineComponent, onMounted } from 'vue'
 import { useProvider } from '@/hooks/hook-provider'
 import { useState } from '@/hooks/hook-state'
+import { BaseURL } from '@/utils/utils-request'
 
 export default defineComponent({
     name: 'CommonGrapher',
@@ -15,8 +16,8 @@ export default defineComponent({
 
         async function onRepeat(loading: boolean) {
             return await setState({
-                loading: true,
-                BaseURL: `${import.meta.env.VITE_WEB_PREFIX}/common/grapher?t=${Math.random()}`
+                loading: loading,
+                BaseURL: `${BaseURL}/common/grapher?t=${Math.random()}`
             })
         }
 
