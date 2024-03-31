@@ -6,7 +6,10 @@ import { BaseURL } from '@/utils/utils-request'
 
 export default defineComponent({
     name: 'CommonGrapher',
-    setup() {
+    props: {
+        disabled: { type: Boolean }
+    },
+    setup(props, { expose }) {
         const { inverted } = useProvider()
         const { state, setState } = useState({ initialize: true, loading: false, BaseURL: '' })
 
@@ -14,9 +17,9 @@ export default defineComponent({
             onRepeat(false)
         })
 
-        async function onRepeat(loading: boolean) {
+        async function onRepeat(loading: boolean = true) {
             return await setState({
-                loading: loading,
+                loading: Boolean(loading),
                 BaseURL: `${BaseURL}/common/grapher?t=${Math.random()}`
             })
         }
@@ -25,13 +28,15 @@ export default defineComponent({
             return setState({ initialize: false, loading: false })
         }
 
+        expose({ done: onRepeat })
+
         return () => (
             <n-spin class="common-grapher n-chunk n-column" size="small" show={state.loading}>
                 <n-button
                     size="large"
-                    disabled={state.initialize || state.loading}
+                    disabled={state.initialize || state.loading || props.disabled}
                     secondary={inverted.value}
-                    onClick={(evt: Event) => onRepeat(true)}
+                    onClick={onRepeat}
                 >
                     <n-image preview-disabled src={state.BaseURL} on-load={setDone} on-error={setDone}>
                         {{

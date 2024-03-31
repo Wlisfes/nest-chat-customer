@@ -89,7 +89,7 @@ export default defineComponent({
         }
 
         return () => (
-            <n-form size="large" ref={formRef} model={form.value} rules={rules.value} show-label={false}>
+            <n-form size="large" ref={formRef} model={form.value} rules={rules.value} disabled={loading.value} show-label={false}>
                 <n-h2 style={{ fontSize: '28px', fontWeight: 500 }}>
                     <n-text depth={2}>注册</n-text>
                 </n-h2>
@@ -120,8 +120,9 @@ export default defineComponent({
                             class="n-deep-style"
                             type="text"
                             placeholder="请输入邮箱验证码"
-                            style={{ flex: 1 }}
                             maxlength={6}
+                            style={{ flex: 1 }}
+                            input-props={{ autocomplete: 'off' }}
                             v-model:value={form.value.code}
                             v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuCodex />}></n-icon> }}
                         ></n-input>
@@ -131,7 +132,7 @@ export default defineComponent({
                                     focusable={false}
                                     secondary={inverted.value}
                                     loading={scope.loading}
-                                    disabled={duration.value > 0 || scope.loading || !form.value.email}
+                                    disabled={duration.value > 0 || scope.loading || !form.value.email || loading.value}
                                     onClick={(evt: Event) => fetchNodemailerSender(done)}
                                 >
                                     {duration.value === 0 && complete.value ? (
@@ -159,13 +160,18 @@ export default defineComponent({
                                 v-slots={{
                                     prefix: () => <n-icon size={22} component={<Iv-AuOckes />}></n-icon>,
                                     suffix: () => (
-                                        <n-icon
-                                            class="n-pointer"
-                                            color="var(--text-color-3)"
-                                            size={22}
-                                            component={scope.loading ? <Iv-BsEyc /> : <Iv-BsEye />}
+                                        <n-button
+                                            text
+                                            focusable={false}
+                                            disabled={loading.value}
                                             onClick={(evt: Event) => done({ loading: !scope.loading })}
-                                        ></n-icon>
+                                        >
+                                            <n-icon
+                                                color="var(--text-color-3)"
+                                                size={22}
+                                                component={scope.loading ? <Iv-BsEyc /> : <Iv-BsEye />}
+                                            ></n-icon>
+                                        </n-button>
                                     )
                                 }}
                             ></n-input>

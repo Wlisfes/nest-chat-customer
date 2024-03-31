@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { isEmpty, isEmail } from 'class-validator'
 import { useConfiger } from '@/store/configer'
 import { useUser } from '@/store/user'
@@ -12,6 +12,7 @@ import { httpUserAuthorizer } from '@/api/instance.service'
 export default defineComponent({
     name: 'AuthLogin',
     setup(props) {
+        const grapher = ref<Omix<{ done: Function }>>()
         const configer = useConfiger()
         const user = useUser()
         const { setupNotice } = useLocale()
@@ -60,13 +61,14 @@ export default defineComponent({
                     })
                 } catch (e) {
                     await createNotice({ type: 'error', content: setupNotice(e) })
-                    return await setLoading(false)
+                    await setLoading(false)
+                    return grapher.value?.done(true)
                 }
             })
         }
 
         return () => (
-            <n-form size="large" ref={formRef} model={form.value} rules={rules.value} show-label={false}>
+            <n-form size="large" ref={formRef} model={form.value} rules={rules.value} disabled={loading.value} show-label={false}>
                 <n-h2 style={{ fontSize: '28px', fontWeight: 500 }}>
                     <n-text depth={2}>登录</n-text>
                 </n-h2>
@@ -93,13 +95,18 @@ export default defineComponent({
                                 v-slots={{
                                     prefix: () => <n-icon size={22} component={<Iv-AuOckes />}></n-icon>,
                                     suffix: () => (
-                                        <n-icon
-                                            class="n-pointer"
-                                            color="var(--text-color-3)"
-                                            size={22}
-                                            component={scope.loading ? <Iv-BsEyc /> : <Iv-BsEye />}
+                                        <n-button
+                                            text
+                                            focusable={false}
+                                            disabled={loading.value}
                                             onClick={(evt: Event) => done({ loading: !scope.loading })}
-                                        ></n-icon>
+                                        >
+                                            <n-icon
+                                                color="var(--text-color-3)"
+                                                size={22}
+                                                component={scope.loading ? <Iv-BsEyc /> : <Iv-BsEye />}
+                                            ></n-icon>
+                                        </n-button>
                                     )
                                 }}
                             ></n-input>
@@ -111,13 +118,14 @@ export default defineComponent({
                         <n-input
                             class="n-deep-style"
                             type="text"
-                            style={{ flex: 1 }}
-                            maxlength={64}
                             placeholder="验证码"
+                            maxlength={4}
+                            style={{ flex: 1 }}
+                            input-props={{ autocomplete: 'off' }}
                             v-model:value={form.value.code}
                             v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuCodex />}></n-icon> }}
                         ></n-input>
-                        <common-grapher></common-grapher>
+                        <common-grapher ref={grapher} disabled={loading.value}></common-grapher>
                     </n-space>
                 </n-form-item>
                 <n-form-item>
