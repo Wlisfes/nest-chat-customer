@@ -4,14 +4,15 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "dev": "vite --mode development",
-        "build": "vue-tsc && vite build --mode production",
+        "dev": "vite",
+        "build": "vue-tsc && vite build",
         "preview": "vite preview"
     },
     "dependencies": {
         "@faker-js/faker": "^8.4.1",
         "@vueuse/components": "^10.9.0",
         "@vueuse/core": "^10.9.0",
+        "axios": "^1.6.8",
         "dayjs": "^1.11.10",
         "js-cookie": "^3.0.5",
         "naive-ui": "^2.38.1",
