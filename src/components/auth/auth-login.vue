@@ -16,7 +16,7 @@ export default defineComponent({
                 code: ''
             },
             rules: {
-                password: { required: true, trigger: 'blur', min: 6, max: 32, message: '请输入登录密码 (密码长度必须保存6~32位)' },
+                password: { required: true, trigger: 'blur', min: 6, max: 32, message: '请输入登录密码 (密码必须保持6~32位)' },
                 code: { required: true, trigger: 'blur', message: '请输入验证码' },
                 email: {
                     required: true,

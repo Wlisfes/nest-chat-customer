@@ -43,7 +43,7 @@ export function useFormCustomize<T extends Omix>(scope: ScopeOption<T>) {
     }
 
     /**验证表单**/
-    function divineFormValidater(app: { formatter?: (e: FormItemRule) => boolean } = {}) {
+    function divineFormValidater(formatter?: (e: Omix<FormItemRule>) => boolean) {
         return new Promise((resolve, reject) => {
             if (!formRef.value) {
                 return reject('不存在formRef实例')
@@ -53,7 +53,7 @@ export function useFormCustomize<T extends Omix>(scope: ScopeOption<T>) {
                 if (!err) {
                     return resolve(true)
                 }
-            }, app.formatter).catch(err => {
+            }, formatter).catch(err => {
                 return resolve(false)
             })
         })

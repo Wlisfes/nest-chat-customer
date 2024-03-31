@@ -1,9 +1,10 @@
+import { ref } from 'vue'
+import { isNotEmpty } from 'class-validator'
+import { zh_CN, en, Faker } from '@faker-js/faker'
+import { divineWherer } from '@/utils/utils-common'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
-import { zh_CN, en, Faker } from '@faker-js/faker'
-import { divineWherer } from '@/utils/utils-common'
-import { isNotEmpty } from 'class-validator'
 dayjs.extend(timezone)
 dayjs.extend(utc)
 
@@ -15,6 +16,7 @@ export const faker = new Faker({
     locale: [zh_CN, en]
 })
 
+/**时间处理hook**/
 export function useMoment() {
     /**获取当前时区**/
     function divineTimezone() {
@@ -35,4 +37,43 @@ export function useMoment() {
         }
     }
     return { moment, divineTimezone, divineDateTransfor }
+}
+
+/**倒计时处理**/
+export function useTiminer(scope: Partial<Omix<{ seconds: number }>> = {}) {
+    const complete = ref<boolean>(true)
+    const duration = ref<number>(scope.seconds ?? 0)
+    const run = ref<NodeJS.Timeout>()
+
+    function pause() {
+        if (run.value) {
+            clearInterval(run.value)
+            run.value = undefined
+        }
+    }
+
+    function resume() {
+        run.value = setInterval(() => {
+            duration.value--
+            if (duration.value <= 0) {
+                pause()
+            }
+        }, 1000)
+    }
+
+    async function setDuration(seconds: number) {
+        if (duration.value > 0 || seconds <= 0) {
+            return
+        } else {
+            duration.value = seconds
+            complete.value = false
+            if (seconds > 0) {
+                return resume()
+            } else {
+                return pause()
+            }
+        }
+    }
+
+    return { complete, duration, setDuration }
 }

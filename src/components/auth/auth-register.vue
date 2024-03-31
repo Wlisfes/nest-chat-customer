@@ -4,6 +4,7 @@ import { isEmpty, isEmail } from 'class-validator'
 import { useConfiger } from '@/store/configer'
 import { useProvider } from '@/hooks/hook-provider'
 import { useFormCustomize } from '@/hooks/hook-customize'
+import { useTiminer } from '@/hooks/hook-common'
 import * as http from '@/api/instance.service'
 
 export default defineComponent({
@@ -11,6 +12,7 @@ export default defineComponent({
     setup(props) {
         const configer = useConfiger()
         const { inverted } = useProvider()
+        const { duration, complete, setDuration } = useTiminer()
         const { formRef, form, rules, loading, setLoading, divineFormValidater } = useFormCustomize({
             form: {
                 nickname: '',
@@ -19,9 +21,11 @@ export default defineComponent({
                 code: ''
             },
             rules: {
-                password: { required: true, trigger: 'blur', min: 6, max: 32, message: '请输入登录密码 (密码长度必须保存6~32位)' },
+                nickname: { required: true, trigger: 'blur', min: 2, max: 32, message: '请输入昵称 (昵称必须保持2~32位)' },
+                password: { required: true, trigger: 'blur', min: 6, max: 32, message: '请输入登录密码 (密码必须保持6~32位)' },
                 code: { required: true, trigger: 'blur', message: '请输入验证码' },
                 email: {
+                    key: 'email',
                     required: true,
                     trigger: 'blur',
                     validator: (rule, value) => {
@@ -36,6 +40,24 @@ export default defineComponent({
             }
         })
 
+        /**发送邮件验证码**/
+        function fetchNodemailerSender(done: Function) {
+            divineFormValidater(rule => rule.key === 'email').then(async valid => {
+                if (!valid) {
+                    return false
+                }
+                try {
+                    await done({ loading: true })
+                    const { data } = await http.httpNodemailerSender({ email: form.value.email, source: 'register' })
+                    await setDuration(60)
+
+                    await done({ loading: false })
+                } catch (e) {
+                    await done({ loading: false })
+                }
+            })
+        }
+
         function onSubmit() {
             divineFormValidater().then(async valid => {
                 if (!valid) {
@@ -43,9 +65,15 @@ export default defineComponent({
                 }
                 try {
                     await setLoading(true)
-                    const { data } = await http.httpUserRegister(form.value)
-
+                    const { data } = await http.httpUserRegister({
+                        nickname: form.value.nickname,
+                        email: form.value.email,
+                        code: form.value.code,
+                        password: window.btoa(form.value.password)
+                    })
                     console.log(data)
+                    await setLoading(false)
+                    return configer.setAuthorize('login')
                 } catch (e) {
                     return await setLoading(false)
                 }
@@ -89,7 +117,25 @@ export default defineComponent({
                             v-model:value={form.value.code}
                             v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuCodex />}></n-icon> }}
                         ></n-input>
-                        <n-button secondary={inverted.value}>获取验证码</n-button>
+                        <common-state
+                            data-render={(scope: Omix<{ loading: boolean }>, done: Function) => (
+                                <n-button
+                                    focusable={false}
+                                    secondary={inverted.value}
+                                    loading={scope.loading}
+                                    disabled={duration.value > 0 || scope.loading || !form.value.email}
+                                    onClick={(evt: Event) => fetchNodemailerSender(done)}
+                                >
+                                    {duration.value === 0 && complete.value ? (
+                                        <span>发送验证码</span>
+                                    ) : duration.value === 0 && !complete.value ? (
+                                        <span>重新发送</span>
+                                    ) : (
+                                        <span>{`${duration.value} 秒后重新发送`}</span>
+                                    )}
+                                </n-button>
+                            )}
+                        ></common-state>
                     </n-space>
                 </n-form-item>
                 <n-form-item path="password">
