@@ -5,15 +5,15 @@ import { useState } from '@/hooks/hook-state'
 
 export default defineComponent({
     name: 'CommonGrapher',
-    setup(props, { slots }) {
+    setup() {
         const { inverted } = useProvider()
         const { state, setState } = useState({ initialize: true, loading: false, BaseURL: '' })
 
         onMounted(() => {
-            onRepeat()
+            onRepeat(false)
         })
 
-        async function onRepeat() {
+        async function onRepeat(loading: boolean) {
             return await setState({
                 loading: true,
                 BaseURL: `${import.meta.env.VITE_WEB_PREFIX}/common/grapher?t=${Math.random()}`
@@ -26,7 +26,12 @@ export default defineComponent({
 
         return () => (
             <n-spin class="common-grapher n-chunk n-column" size="small" show={state.loading}>
-                <n-button size="large" disabled={state.initialize || state.loading} secondary={inverted.value} onClick={onRepeat}>
+                <n-button
+                    size="large"
+                    disabled={state.initialize || state.loading}
+                    secondary={inverted.value}
+                    onClick={(evt: Event) => onRepeat(true)}
+                >
                     <n-image preview-disabled src={state.BaseURL} on-load={setDone} on-error={setDone}>
                         {{
                             placeholder: () => (
