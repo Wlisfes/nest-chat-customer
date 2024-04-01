@@ -99,6 +99,7 @@ export default defineComponent({
                         type="text"
                         placeholder="请输入昵称"
                         maxlength={32}
+                        input-props={{ autocomplete: 'on' }}
                         v-model:value={form.value.nickname}
                         v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuUser />}></n-icon> }}
                     ></n-input>
@@ -110,9 +111,42 @@ export default defineComponent({
                         placeholder="请输入邮箱"
                         style={{ flex: 1 }}
                         maxlength={64}
+                        input-props={{ autocomplete: 'on' }}
                         v-model:value={form.value.email}
                         v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuMobile />}></n-icon> }}
                     ></n-input>
+                </n-form-item>
+                <n-form-item path="password">
+                    <common-state
+                        data-render={(scope: Omix<{ loading: boolean }>, done: Function) => (
+                            <n-input
+                                class="n-deep-style"
+                                maxlength={32}
+                                placeholder="请输入登录密码"
+                                type={scope.loading ? 'text' : 'password'}
+                                input-props={{ autocomplete: 'new-password' }}
+                                style={{ '--input-password-right': '46px' }}
+                                v-model:value={form.value.password}
+                                v-slots={{
+                                    prefix: () => <n-icon size={22} component={<Iv-AuOckes />}></n-icon>,
+                                    suffix: () => (
+                                        <n-button
+                                            text
+                                            focusable={false}
+                                            disabled={loading.value}
+                                            onClick={(evt: Event) => done({ loading: !scope.loading })}
+                                        >
+                                            <n-icon
+                                                color="var(--text-color-3)"
+                                                size={22}
+                                                component={scope.loading ? <Iv-BsEyc /> : <Iv-BsEye />}
+                                            ></n-icon>
+                                        </n-button>
+                                    )
+                                }}
+                            ></n-input>
+                        )}
+                    ></common-state>
                 </n-form-item>
                 <n-form-item path="code">
                     <n-space wrap-item={false} style={{ width: '100%' }}>
@@ -122,7 +156,6 @@ export default defineComponent({
                             placeholder="请输入邮箱验证码"
                             maxlength={6}
                             style={{ flex: 1 }}
-                            input-props={{ autocomplete: 'off' }}
                             v-model:value={form.value.code}
                             v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuCodex />}></n-icon> }}
                         ></n-input>
@@ -147,37 +180,7 @@ export default defineComponent({
                         ></common-state>
                     </n-space>
                 </n-form-item>
-                <n-form-item path="password">
-                    <common-state
-                        data-render={(scope: Omix<{ loading: boolean }>, done: Function) => (
-                            <n-input
-                                class="n-deep-style"
-                                maxlength={32}
-                                placeholder="请输入登录密码"
-                                type={scope.loading ? 'text' : 'password'}
-                                style={{ '--input-password-right': '46px' }}
-                                v-model:value={form.value.password}
-                                v-slots={{
-                                    prefix: () => <n-icon size={22} component={<Iv-AuOckes />}></n-icon>,
-                                    suffix: () => (
-                                        <n-button
-                                            text
-                                            focusable={false}
-                                            disabled={loading.value}
-                                            onClick={(evt: Event) => done({ loading: !scope.loading })}
-                                        >
-                                            <n-icon
-                                                color="var(--text-color-3)"
-                                                size={22}
-                                                component={scope.loading ? <Iv-BsEyc /> : <Iv-BsEye />}
-                                            ></n-icon>
-                                        </n-button>
-                                    )
-                                }}
-                            ></n-input>
-                        )}
-                    ></common-state>
-                </n-form-item>
+
                 <n-form-item>
                     <n-button
                         type="info"

@@ -90,6 +90,7 @@ export default defineComponent({
                                 maxlength={32}
                                 placeholder="请输入登录密码"
                                 type={scope.loading ? 'text' : 'password'}
+                                input-props={{ autocomplete: 'new-password' }}
                                 style={{ '--input-password-right': '46px' }}
                                 v-model:value={form.value.password}
                                 v-slots={{
@@ -121,7 +122,6 @@ export default defineComponent({
                             placeholder="验证码"
                             maxlength={4}
                             style={{ flex: 1 }}
-                            input-props={{ autocomplete: 'off' }}
                             v-model:value={form.value.code}
                             v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuCodex />}></n-icon> }}
                         ></n-input>
