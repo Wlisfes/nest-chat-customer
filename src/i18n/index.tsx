@@ -1,7 +1,7 @@
 import { ref, App } from 'vue'
 import { createI18n } from 'vue-i18n'
 import { messages } from '@/i18n/messages'
-import { APP_COMMON, getCookie, setCookie } from '@/utils/utils-cookie'
+import { APP_COMMON, getStore, setStore } from '@/utils/utils-storage'
 export * from '@/i18n/messages'
 export * from '@/i18n/i18n-interface'
 
@@ -16,8 +16,8 @@ export const i18n = createI18n({
 
 /**获取默认语言**/
 export function getDefaultLocale() {
-    if (getCookie(APP_COMMON.CHAT_LOCALE)) {
-        return getCookie(APP_COMMON.CHAT_LOCALE)
+    if (getStore(APP_COMMON.CHAT_LOCALE)) {
+        return getStore(APP_COMMON.CHAT_LOCALE)
     } else if (['zh', 'zh-CN', 'zh-TW', 'zh-HK'].includes(navigator.language)) {
         return 'cn'
     }
@@ -26,7 +26,7 @@ export function getDefaultLocale() {
 
 /**切换语言**/
 export async function setI18nLocale(value: 'cn' | 'en') {
-    return await setCookie(APP_COMMON.CHAT_LOCALE, value).then(() => {
+    return await setStore(APP_COMMON.CHAT_LOCALE, value).then(() => {
         locale.value = value
         return (i18n.global.locale.value = value)
     })

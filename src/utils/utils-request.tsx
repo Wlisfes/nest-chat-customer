@@ -1,5 +1,5 @@
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios'
-import { APP_COMMON, getCookie } from '@/utils/utils-cookie'
+import { APP_COMMON, getStore } from '@/utils/utils-storage'
 import { locale } from '@/i18n'
 
 export const BaseURL = `/web-service`
@@ -17,7 +17,7 @@ function inizeNotice(response: AxiosResponse) {
 
 request.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-        const token = getCookie<string>(APP_COMMON.CHAT_TOKEN)
+        const token = getStore<string>(APP_COMMON.CHAT_TOKEN)
         if (token) {
             config.headers.Authorization = token
         }

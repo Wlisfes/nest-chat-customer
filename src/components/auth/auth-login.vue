@@ -6,7 +6,6 @@ import { useUser } from '@/store/user'
 import { useLocale } from '@/hooks/hook-locale'
 import { useFormCustomize } from '@/hooks/hook-customize'
 import { createNotice } from '@/utils/utils-component'
-import { APP_COMMON, setCookie } from '@/utils/utils-cookie'
 import { httpUserAuthorizer } from '@/api/instance.service'
 
 export default defineComponent({
@@ -52,9 +51,8 @@ export default defineComponent({
                         code: form.value.code,
                         password: window.btoa(form.value.password)
                     }).then(async ({ data, message }) => {
-                        await setCookie(APP_COMMON.CHAT_TOKEN, data.token)
+                        await user.setToken(data.token)
                         await user.fetchUserResolver()
-                        await user.setState({ token: data.token })
                         return await createNotice({ content: setupNotice(message) }).then(() => {
                             return setLoading(false)
                         })

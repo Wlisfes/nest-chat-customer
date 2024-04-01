@@ -1,12 +1,12 @@
 import { toRefs } from 'vue'
 import { defineStore } from 'pinia'
 import { useState } from '@/hooks/hook-state'
-import { APP_COMMON, getCookie, setCookie, delCookie } from '@/utils/utils-cookie'
+import { APP_COMMON, getStore, setStore, delStore } from '@/utils/utils-storage'
 import { httpUserResolver } from '@/api/instance.service'
 
 export const useUser = defineStore('user', () => {
     const { state, setState } = useState({
-        token: getCookie(APP_COMMON.CHAT_TOKEN, ''),
+        token: getStore(APP_COMMON.CHAT_TOKEN, ''),
         uid: '',
         nickname: ''
     })
@@ -21,5 +21,11 @@ export const useUser = defineStore('user', () => {
         })
     }
 
-    return { state, ...toRefs(state), setState, fetchUserResolver }
+    async function setToken(token: string) {
+        return await setStore(APP_COMMON.CHAT_TOKEN, token).then(async () => {
+            return await setState({ token })
+        })
+    }
+
+    return { state, ...toRefs(state), setState, setToken, fetchUserResolver }
 })
