@@ -1,6 +1,6 @@
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import { APP_COMMON, getCookie } from '@/utils/utils-cookie'
-import { getDefaultLocale } from '@/i18n'
+import { locale } from '@/i18n'
 
 export const BaseURL = `/web-service`
 export const request = axios.create({
@@ -18,10 +18,10 @@ function inizeNotice(response: AxiosResponse) {
 request.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
         const token = getCookie<string>(APP_COMMON.CHAT_TOKEN)
-        config.headers['x-locale'] = getDefaultLocale()
         if (token) {
             config.headers.Authorization = token
         }
+        config.headers['x-locale'] = locale.value
         return config
     },
     error => Promise.reject(error)
