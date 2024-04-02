@@ -1,21 +1,20 @@
 <script lang="tsx">
 import { defineComponent, ComputedRef } from 'vue'
 import { injectLocal } from '@vueuse/core'
-import { useUser, useConfiger } from '@/store/instance.store'
+import { useUser } from '@/store/instance.store'
 import { fetchResolver } from '@/components/layer/instance.layer'
 import * as vide from '@/utils/utils-provide'
 
 export default defineComponent({
     name: 'ChatCompose',
     setup(props) {
-        const configer = useConfiger()
         const user = useUser()
         const element = injectLocal(vide.APP_CHAT_PROVIDE_ELEMENT) as ComputedRef<HTMLElement>
 
         async function fetchUseResolver() {
-            console.log(user)
             const { unmount } = await fetchResolver({
                 element: element.value,
+                width: 'var(--chat-layout-sider-element-width)',
                 onClose: () => unmount(300)
             })
         }
@@ -28,13 +27,7 @@ export default defineComponent({
                     <common-icon size={34} component={<Iv-BsDynamic />} spin={<common-loadiner />}></common-icon>
                     <common-icon size={34} component={<Iv-BsChane />} spin={<common-loadiner />}></common-icon>
                     <common-icon size={34} component={<Iv-BsDialog />} spin={<common-loadiner />}></common-icon>
-                    <common-icon
-                        size={34}
-                        component={<Iv-BsMore />}
-                        spin={<common-loadiner />}
-                        onClick={(scope: Omix) => configer.setTheme(configer.theme === 'light' ? 'dark' : 'light')}
-                        //onClick={(scope: Omix) => scope.done({ loading: true })}
-                    ></common-icon>
+                    <common-icon size={34} component={<Iv-BsMore />} spin={<common-loadiner />}></common-icon>
                 </n-space>
             </div>
         )

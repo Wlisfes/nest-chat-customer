@@ -24,10 +24,7 @@ export default defineComponent({
 
         return () => (
             <div class="chat-messenger n-chunk n-column n-auto" style={chunk.value}>
-                <n-scrollbar class="is-customize" trigger="none" size={60} on-scroll={onScroller}>
-                    大撒大撒
-                    <n-button>dsada</n-button>
-                </n-scrollbar>
+                <n-scrollbar class="is-customize" trigger="none" size={60} on-scroll={onScroller}></n-scrollbar>
             </div>
         )
     }
@@ -49,9 +46,6 @@ export default defineComponent({
         background-image: url('@/assets/images/chat-messager.png');
         opacity: var(--chat-messenger-opacity);
         transition: opacity 0.3s var(--cubic-bezier-ease-in-out);
-    }
-    :deep(.n-scrollbar.is-customize) {
-        --n-scrollbar-width: 7px;
     }
 }
 </style>

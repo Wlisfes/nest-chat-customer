@@ -11,7 +11,8 @@ export const useUser = defineStore(APP_STORE.STORE_USER, () => {
         nickname: '',
         avatar: '',
         email: '',
-        status: ''
+        status: '',
+        comment: ''
     })
 
     /**拉取账号信息**/
@@ -22,7 +23,8 @@ export const useUser = defineStore(APP_STORE.STORE_USER, () => {
                 nickname: data.nickname,
                 avatar: data.avatar,
                 email: data.email,
-                status: data.status
+                status: data.status,
+                comment: data.comment
             })
         })
     }

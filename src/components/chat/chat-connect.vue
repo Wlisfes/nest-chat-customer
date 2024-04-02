@@ -1,14 +1,23 @@
 <script lang="tsx">
 import { defineComponent, computed } from 'vue'
+import { useUser, useConfiger } from '@/store/instance.store'
 import { useProvider } from '@/hooks/hook-provider'
 import { divineWherer } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'ChatComment',
     setup(props) {
+        const configer = useConfiger()
+        const user = useUser()
         const { inverted } = useProvider()
 
-        return () => <div class="chat-connect n-chunk n-column"></div>
+        return () => (
+            <div class="chat-connect n-chunk n-column n-center n-middle">
+                <n-button type="primary" onClick={(scope: Omix) => configer.setTheme(configer.theme === 'light' ? 'dark' : 'light')}>
+                    {configer.theme}
+                </n-button>
+            </div>
+        )
     }
 })
 </script>

@@ -16,6 +16,8 @@ export interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
     '--chat-header-color': string
     '--chat-header-text-color': string
     '--auth-layout-color': string
+    '--layer-resolver-color': string
+    '--layer-resolver-form-item': string
 }
 
 export function useProvider() {
@@ -48,7 +50,9 @@ export function useProvider() {
             '--chat-connect-color': '#f0f2f5',
             '--chat-header-color': '#008069',
             '--chat-header-text-color': '#ffffff',
-            '--auth-layout-color': '#ffffff'
+            '--auth-layout-color': '#ffffff',
+            '--layer-resolver-color': '#f0f2f5',
+            '--layer-resolver-form-item': '#ffffff'
         }
     }))
     const darkThemeOverrides = computed<GlobalThemeOverrides>(() => ({
@@ -67,7 +71,9 @@ export function useProvider() {
             '--chat-connect-color': '#202c33',
             '--chat-header-color': '#202c33',
             '--chat-header-text-color': 'var(--text-color-2)',
-            '--auth-layout-color': '#0d1317'
+            '--auth-layout-color': '#0d1317',
+            '--layer-resolver-color': '#111b21',
+            '--layer-resolver-form-item': '#0d1317'
         }
     }))
 

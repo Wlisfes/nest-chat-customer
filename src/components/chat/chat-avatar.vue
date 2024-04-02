@@ -1,14 +1,11 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, PropType, CSSProperties } from 'vue'
 
 export default defineComponent({
     name: 'ChatAvatar',
-    props: {
-        title: { type: String }
-    },
     setup(props, { emit }) {
         return () => (
-            <div class="chat-avatar n-pointer">
+            <div class="chat-avatar n-chunk n-center n-middle n-pointer">
                 <n-avatar
                     round
                     size={200}
@@ -19,9 +16,3 @@ export default defineComponent({
     }
 })
 </script>
-
-<style lang="scss" scoped>
-.chat-avatar {
-    padding: 24px;
-}
-</style>

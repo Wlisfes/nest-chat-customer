@@ -6,6 +6,7 @@ export interface SchemaUser extends env.CommonSchema {
     avatar: string
     email: string
     password: string
+    comment: string
     status: 'enable' | 'disable'
 }
 
