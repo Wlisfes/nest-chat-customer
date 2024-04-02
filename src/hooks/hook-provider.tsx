@@ -13,6 +13,8 @@ export interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
     '--chat-messenger-color': string
     '--chat-comment-color': string
     '--chat-connect-color': string
+    '--chat-header-color': string
+    '--chat-header-text-color': string
     '--auth-layout-color': string
 }
 
@@ -44,6 +46,8 @@ export function useProvider() {
             '--chat-messenger-color': '#efeae2',
             '--chat-comment-color': '#f0f2f5',
             '--chat-connect-color': '#f0f2f5',
+            '--chat-header-color': '#008069',
+            '--chat-header-text-color': '#ffffff',
             '--auth-layout-color': '#ffffff'
         }
     }))
@@ -61,6 +65,8 @@ export function useProvider() {
             '--chat-messenger-color': '#0b141a',
             '--chat-comment-color': '#202c33',
             '--chat-connect-color': '#202c33',
+            '--chat-header-color': '#202c33',
+            '--chat-header-text-color': 'var(--text-color-2)',
             '--auth-layout-color': '#0d1317'
         }
     }))

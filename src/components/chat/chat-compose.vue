@@ -13,11 +13,11 @@ export default defineComponent({
 
         async function fetchUseResolver() {
             const { unmount } = await fetchResolver({
-                element: element.value
+                element: element.value,
                 // title: titles[source],
                 // source: source,
                 // node: scope,
-                // onClose: () => unmount(300),
+                onClose: () => unmount(300)
                 // onSubmit: async (done: Function) => {
                 //     await done(false)
                 //     return await fetchUpdate().finally(() => {
@@ -30,6 +30,7 @@ export default defineComponent({
         return () => (
             <div class="chat-compose n-chunk n-center n-space">
                 <n-avatar
+                    class="n-pointer"
                     round
                     size={40}
                     src="https://oss.lisfes.cn/cloud/avatar/2021-08/1628499198955.jpg?x-oss-process=style/resize-1-1"
