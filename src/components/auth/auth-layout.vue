@@ -33,7 +33,7 @@ export default defineComponent({
     height: 100%;
     overflow: hidden;
     box-sizing: border-box;
-    padding: 28px;
+    padding: 24px;
     background-color: var(--base-color);
     transition: padding 0.3s var(--cubic-bezier-ease-in-out), background-color 0.3s var(--cubic-bezier-ease-in-out);
     background-image: url('@/assets/images/auth-layout.jpg');

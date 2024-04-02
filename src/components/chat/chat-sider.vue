@@ -1,8 +1,11 @@
 <script lang="tsx">
-import { defineComponent, ref, onMounted, nextTick, Fragment } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 export default defineComponent({
     name: 'ChatSider',
+    props: {
+        element: { type: Object as PropType<HTMLElement> }
+    },
     setup(props) {
         return () => (
             <div class="chat-sider n-chunk n-column n-auto">

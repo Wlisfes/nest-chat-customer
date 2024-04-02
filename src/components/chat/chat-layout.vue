@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, computed, CSSProperties } from 'vue'
+import { defineComponent, ref, computed, CSSProperties } from 'vue'
 import { useCurrentElement, useElementSize } from '@vueuse/core'
 import { useConfiger } from '@/store/configer'
 import { divineWherer } from '@/utils/utils-common'
@@ -8,8 +8,9 @@ export default defineComponent({
     name: 'ChatLayout',
     setup(props, { slots }) {
         const configer = useConfiger()
-        const element = useCurrentElement<HTMLElement>()
-        const { width } = useElementSize(element)
+        const layout = useCurrentElement<HTMLElement>()
+        const element = ref<HTMLElement>()
+        const { width } = useElementSize(layout)
         const compute = computed<CSSProperties>(() => ({
             '--chat-layout-max-width': divineWherer(width.value > 2000, Math.floor(width.value * 0.8) + 'px', '1600px'),
             '--chat-layout-sider-width': divineWherer(width.value > 2000, '520px', divineWherer(width.value < 960, '0px', '420px')),
@@ -18,18 +19,20 @@ export default defineComponent({
 
         return () => (
             <n-element class="chat-layout" style={compute.value}>
-                {width.value > 0 && (
-                    <div class="chat-layout__context n-chunk">
-                        <div class="chunk-sider n-chunk n-column">
-                            <div class="chunk-sider__element n-chunk n-column n-auto">
-                                <chat-sider></chat-sider>
+                <div ref={element} class="chat-layout__context">
+                    {width.value > 0 && (
+                        <div class="chat-layout__container n-chunk">
+                            <div class="chunk-sider n-chunk n-column">
+                                <div class="chunk-sider__element n-chunk n-column n-auto">
+                                    <chat-sider layout={layout.value} element={element.value}></chat-sider>
+                                </div>
+                            </div>
+                            <div class="chunk-context n-chunk n-column n-auto">
+                                <chat-context layout={layout.value} element={element.value}></chat-context>
                             </div>
                         </div>
-                        <div class="chunk-context n-chunk n-column n-auto">
-                            <chat-context></chat-context>
-                        </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </n-element>
         )
     }
@@ -61,14 +64,22 @@ export default defineComponent({
     }
     &__context {
         position: relative;
+        overflow: hidden;
         width: 100%;
         max-width: var(--chat-layout-max-width);
         height: 100%;
         margin: auto;
         box-sizing: border-box;
+        transition: max-width 0.3s var(--cubic-bezier-ease-in-out);
+    }
+    &__container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
         box-shadow: var(--box-shadow-2);
         background-color: var(--chat-layout-context);
-        transition: max-width 0.3s var(--cubic-bezier-ease-in-out), background-color 0.3s var(--cubic-bezier-ease-in-out);
+        transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     }
 }
 

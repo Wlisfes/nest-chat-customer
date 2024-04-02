@@ -26,6 +26,7 @@ export default defineComponent({
             <div class="chat-messenger n-chunk n-column n-auto" style={chunk.value}>
                 <n-scrollbar class="is-customize" trigger="none" size={60} on-scroll={onScroller}>
                     大撒大撒
+                    <n-button>dsada</n-button>
                 </n-scrollbar>
             </div>
         )
