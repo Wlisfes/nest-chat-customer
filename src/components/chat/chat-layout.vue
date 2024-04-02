@@ -1,8 +1,9 @@
 <script lang="tsx">
 import { defineComponent, ref, computed, CSSProperties } from 'vue'
-import { useCurrentElement, useElementSize } from '@vueuse/core'
+import { useCurrentElement, useElementSize, provideLocal } from '@vueuse/core'
 import { useConfiger } from '@/store/configer'
 import { divineWherer } from '@/utils/utils-common'
+import * as vide from '@/utils/utils-provide'
 
 export default defineComponent({
     name: 'ChatLayout',
@@ -17,6 +18,11 @@ export default defineComponent({
             '--chat-layout-sider-element-width': divineWherer(width.value > 2000, '520px', '420px')
         }))
 
+        /**注入布局容器节点**/ //prettier-ignore
+        provideLocal(vide.APP_CHAT_PROVIDE_LAYOUT, computed(() => layout.value))
+        /**注入挂载容器节点**/ //prettier-ignore
+        provideLocal(vide.APP_CHAT_PROVIDE_ELEMENT, computed(() => element.value))
+
         return () => (
             <n-element class="chat-layout" style={compute.value}>
                 <div ref={element} class="chat-layout__context">
@@ -24,11 +30,11 @@ export default defineComponent({
                         <div class="chat-layout__container n-chunk">
                             <div class="chunk-sider n-chunk n-column">
                                 <div class="chunk-sider__element n-chunk n-column n-auto">
-                                    <chat-sider layout={layout.value} element={element.value}></chat-sider>
+                                    <chat-sider></chat-sider>
                                 </div>
                             </div>
                             <div class="chunk-context n-chunk n-column n-auto">
-                                <chat-context layout={layout.value} element={element.value}></chat-context>
+                                <chat-context></chat-context>
                             </div>
                         </div>
                     )}

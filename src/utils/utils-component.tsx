@@ -6,8 +6,8 @@ import { setupStore } from '@/store'
 export interface ComponentResolver {
     element: HTMLElement
     app: App<Element>
-    mounte: () => Promise<Omix<unknown>>
-    unmount: (delay: number) => Promise<Omix<unknown>>
+    mounte: () => Promise<Omix<any>>
+    unmount: (delay: number) => Promise<Omix<any>>
 }
 
 /**创建组件实例**/

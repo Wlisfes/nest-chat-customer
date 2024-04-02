@@ -1,11 +1,8 @@
 <script lang="tsx">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
     name: 'ChatSider',
-    props: {
-        element: { type: Object as PropType<HTMLElement> }
-    },
     setup(props) {
         return () => (
             <div class="chat-sider n-chunk n-column n-auto">

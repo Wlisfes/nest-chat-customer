@@ -39,7 +39,7 @@ export default defineComponent({
     overflow: hidden;
     background-color: var(--chat-messenger-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
-    &::after {
+    &::before {
         content: '';
         position: absolute;
         left: 0;

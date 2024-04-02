@@ -1,11 +1,8 @@
 <script lang="tsx">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
     name: 'ChatContext',
-    props: {
-        element: { type: Object as PropType<HTMLElement> }
-    },
     setup(props) {
         return () => (
             <div class="chat-context n-chunk n-column n-auto">
