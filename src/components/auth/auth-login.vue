@@ -77,6 +77,7 @@ export default defineComponent({
                         type="text"
                         placeholder="请输入登录邮箱"
                         v-model:value={form.value.email}
+                        input-props={{ autocomplete: 'on' }}
                         v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuUser />}></n-icon> }}
                     ></n-input>
                 </n-form-item>

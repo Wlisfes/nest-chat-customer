@@ -1,10 +1,10 @@
 import { toRefs } from 'vue'
 import { defineStore } from 'pinia'
 import { useState } from '@/hooks/hook-state'
-import { APP_COMMON, getStore, setStore, delStore } from '@/utils/utils-storage'
+import { APP_STORE, APP_COMMON, getStore, setStore, delStore } from '@/utils/utils-storage'
 import { httpUserResolver } from '@/api/instance.service'
 
-export const useUser = defineStore('user', () => {
+export const useUser = defineStore(APP_STORE.STORE_USER, () => {
     const { state, setState } = useState({
         token: getStore(APP_COMMON.CHAT_TOKEN, ''),
         uid: '',

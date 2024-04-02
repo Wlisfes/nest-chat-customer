@@ -1,21 +1,14 @@
 import { defineStore } from 'pinia'
+import { APP_STORE } from '@/utils/utils-storage'
 
-export const useConfiger = defineStore('configer', {
+export const useConfiger = defineStore(APP_STORE.STORE_CONFIGER, {
     persist: true,
     state: () => ({
-        loading: true,
-        collapsed: false,
         theme: 'light',
         primaryColor: '#24B89E',
         authorize: 'login'
     }),
     actions: {
-        async setLoadiner(loading: boolean) {
-            return (this.loading = loading)
-        },
-        async setCollapsed(collapsed: boolean) {
-            return (this.collapsed = collapsed)
-        },
         async setTheme(theme: 'light' | 'dark') {
             return (this.theme = theme)
         },
