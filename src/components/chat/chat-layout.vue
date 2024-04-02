@@ -1,14 +1,15 @@
 <script lang="tsx">
-import { defineComponent, ref, computed, CSSProperties } from 'vue'
+import { defineComponent, ref, computed, onMounted, CSSProperties } from 'vue'
 import { useCurrentElement, useElementSize, provideLocal } from '@vueuse/core'
-import { useConfiger } from '@/store/configer'
-import { divineWherer } from '@/utils/utils-common'
+import { useConfiger, useUser } from '@/store/instance.store'
+import { divineWherer, divineHandler } from '@/utils/utils-common'
 import * as vide from '@/utils/utils-provide'
 
 export default defineComponent({
     name: 'ChatLayout',
     setup(props, { slots }) {
         const configer = useConfiger()
+        const user = useUser()
         const layout = useCurrentElement<HTMLElement>()
         const element = ref<HTMLElement>()
         const { width } = useElementSize(layout)
@@ -17,6 +18,12 @@ export default defineComponent({
             '--chat-layout-sider-width': divineWherer(width.value > 2000, '520px', divineWherer(width.value < 960, '0px', '420px')),
             '--chat-layout-sider-element-width': divineWherer(width.value > 2000, '520px', '420px')
         }))
+
+        onMounted(async () => {
+            return await divineHandler(!Boolean(user.uid), () => {
+                return user.fetchUserResolver()
+            })
+        })
 
         /**注入布局容器节点**/ //prettier-ignore
         provideLocal(vide.APP_CHAT_PROVIDE_LAYOUT, computed(() => layout.value))

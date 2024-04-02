@@ -1,8 +1,7 @@
 <script lang="tsx">
 import { defineComponent, ref } from 'vue'
 import { isEmpty, isEmail } from 'class-validator'
-import { useConfiger } from '@/store/configer'
-import { useUser } from '@/store/user'
+import { useConfiger, useUser } from '@/store/instance.store'
 import { useLocale } from '@/hooks/hook-locale'
 import { useFormCustomize } from '@/hooks/hook-customize'
 import { enter } from '@/utils/utils-common'
@@ -52,7 +51,7 @@ export default defineComponent({
                         code: form.value.code,
                         password: window.btoa(form.value.password)
                     }).then(async ({ data, message }) => {
-                        await user.setToken(data.token)
+                        await user.setToken(data.token, data.expire * 1000)
                         await user.fetchUserResolver()
                         return await createNotice({ content: setupNotice(message) }).then(() => {
                             return setLoading(false)
