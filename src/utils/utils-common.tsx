@@ -9,6 +9,13 @@ export function stop(evt: Event, handler?: Function) {
     return handler?.(evt)
 }
 
+/**回车事件**/
+export function enter(e: KeyboardEvent, handler?: Function) {
+    if (e.key === 'Enter') {
+        typeof handler === 'function' && handler()
+    }
+}
+
 /**根据条件返回不同参数**/
 export function divineWherer<T>(where: boolean, value: T, defaultValue?: T): T {
     return (where ? value : defaultValue) as T

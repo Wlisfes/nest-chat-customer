@@ -6,6 +6,7 @@ import { useProvider } from '@/hooks/hook-provider'
 import { useLocale } from '@/hooks/hook-locale'
 import { useFormCustomize } from '@/hooks/hook-customize'
 import { useTiminer } from '@/hooks/hook-common'
+import { enter } from '@/utils/utils-common'
 import { createNotice } from '@/utils/utils-component'
 import { httpUserRegister, httpNodemailerSender } from '@/api/instance.service'
 
@@ -101,6 +102,7 @@ export default defineComponent({
                         maxlength={32}
                         input-props={{ autocomplete: 'on' }}
                         v-model:value={form.value.nickname}
+                        onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
                         v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuUser />}></n-icon> }}
                     ></n-input>
                 </n-form-item>
@@ -113,6 +115,7 @@ export default defineComponent({
                         maxlength={64}
                         input-props={{ autocomplete: 'on' }}
                         v-model:value={form.value.email}
+                        onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
                         v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuMobile />}></n-icon> }}
                     ></n-input>
                 </n-form-item>
@@ -127,6 +130,7 @@ export default defineComponent({
                                 input-props={{ autocomplete: 'new-password' }}
                                 style={{ '--input-password-right': '46px' }}
                                 v-model:value={form.value.password}
+                                onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
                                 v-slots={{
                                     prefix: () => <n-icon size={22} component={<Iv-AuOckes />}></n-icon>,
                                     suffix: () => (
@@ -157,6 +161,7 @@ export default defineComponent({
                             maxlength={6}
                             style={{ flex: 1 }}
                             v-model:value={form.value.code}
+                            onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
                             v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuCodex />}></n-icon> }}
                         ></n-input>
                         <common-state
@@ -180,7 +185,6 @@ export default defineComponent({
                         ></common-state>
                     </n-space>
                 </n-form-item>
-
                 <n-form-item>
                     <n-button
                         type="info"

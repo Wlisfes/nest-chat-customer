@@ -5,6 +5,7 @@ import { useConfiger } from '@/store/configer'
 import { useUser } from '@/store/user'
 import { useLocale } from '@/hooks/hook-locale'
 import { useFormCustomize } from '@/hooks/hook-customize'
+import { enter } from '@/utils/utils-common'
 import { createNotice } from '@/utils/utils-component'
 import { httpUserAuthorizer } from '@/api/instance.service'
 
@@ -78,6 +79,7 @@ export default defineComponent({
                         placeholder="请输入登录邮箱"
                         v-model:value={form.value.email}
                         input-props={{ autocomplete: 'on' }}
+                        onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
                         v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuUser />}></n-icon> }}
                     ></n-input>
                 </n-form-item>
@@ -92,6 +94,7 @@ export default defineComponent({
                                 input-props={{ autocomplete: 'new-password' }}
                                 style={{ '--input-password-right': '46px' }}
                                 v-model:value={form.value.password}
+                                onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
                                 v-slots={{
                                     prefix: () => <n-icon size={22} component={<Iv-AuOckes />}></n-icon>,
                                     suffix: () => (
@@ -122,6 +125,7 @@ export default defineComponent({
                             maxlength={4}
                             style={{ flex: 1 }}
                             v-model:value={form.value.code}
+                            onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
                             v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuCodex />}></n-icon> }}
                         ></n-input>
                         <common-grapher ref={grapher} disabled={loading.value}></common-grapher>
