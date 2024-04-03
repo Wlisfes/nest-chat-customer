@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, ComputedRef } from 'vue'
 import { injectLocal } from '@vueuse/core'
-import { useUser } from '@/store/instance.store'
+import { useUser } from '@/store'
 import { fetchResolver, fetchSociety, fetchSettings, fetchAnnotate, fetchAnswer, fetchDynamic } from '@/components/layer/instance.layer'
 import { divineHandler } from '@/utils/utils-common'
 import * as vide from '@/utils/utils-provide'

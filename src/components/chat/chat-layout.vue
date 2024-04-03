@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, ref, computed, onMounted, CSSProperties } from 'vue'
 import { useCurrentElement, useElementSize, provideLocal } from '@vueuse/core'
-import { useConfiger, useUser } from '@/store/instance.store'
+import { useConfiger, useUser } from '@/store'
 import { divineWherer, divineHandler, divineDelay } from '@/utils/utils-common'
 import * as vide from '@/utils/utils-provide'
 

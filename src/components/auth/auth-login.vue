@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, ref } from 'vue'
 import { isEmpty, isEmail } from 'class-validator'
-import { useConfiger, useUser } from '@/store/instance.store'
+import { useConfiger, useUser } from '@/store'
 import { useLocale } from '@/hooks/hook-locale'
 import { useFormCustomize } from '@/hooks/hook-customize'
 import { enter } from '@/utils/utils-common'

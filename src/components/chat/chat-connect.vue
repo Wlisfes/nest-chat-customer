@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, computed } from 'vue'
-import { useUser, useConfiger } from '@/store/instance.store'
+import { useUser, useConfiger } from '@/store'
 import { useProvider } from '@/hooks/hook-provider'
 import { divineWherer } from '@/utils/utils-common'
 
