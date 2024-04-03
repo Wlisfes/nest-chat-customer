@@ -1,8 +1,9 @@
 <script lang="tsx">
 import { defineComponent, onMounted, PropType } from 'vue'
-import { useState } from '@/hooks/hook-state'
 import { useUser } from '@/store/instance.store'
-import { stop, divineHandler } from '@/utils/utils-common'
+import { useState } from '@/hooks/hook-state'
+import { useFormCustomize } from '@/hooks/hook-customize'
+import { stop, divineHandler, divineDelay } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'LayerResolver',
@@ -13,13 +14,20 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const user = useUser()
-        const { state, setState } = useState({ visible: false })
 
-        onMounted(() => {
-            return setState({ visible: true })
+        const { form, visible, setVisible } = useFormCustomize({
+            form: {
+                nickname: user.nickname,
+                comment: user.comment
+            }
         })
 
-        function divineKeydown(evt: KeyboardEvent) {
+        onMounted(() => {
+            return setVisible(true)
+        })
+
+        /**回车事件拦截**/
+        function onKeydownHandler(evt: KeyboardEvent) {
             return divineHandler(evt.key === 'Enter', () => {
                 return stop(evt, async () => {
                     console.log(evt)
@@ -27,9 +35,27 @@ export default defineComponent({
             })
         }
 
+        async function onNicknameUpdate(scope: Omix, done: Function) {
+            if (!scope.disabled) {
+                return await done({ disabled: true })
+            } else if (!scope.loading) {
+                await done({ loading: true })
+                return await divineDelay(1500, () => done({ loading: false, disabled: false }))
+            }
+        }
+
+        async function onCommentUpdate(scope: Omix, done: Function) {
+            if (!scope.disabled) {
+                return await done({ disabled: true })
+            } else if (!scope.loading) {
+                await done({ loading: true })
+                return await divineDelay(1500, () => done({ loading: false, disabled: false }))
+            }
+        }
+
         return () => (
             <n-drawer
-                v-model:show={state.visible}
+                v-model:show={visible.value}
                 width={props.width}
                 to={props.element ?? document.body}
                 content-style={{ overflow: 'hidden', userSelect: 'none' }}
@@ -40,42 +66,74 @@ export default defineComponent({
                 on-after-leave={() => emit('close')}
             >
                 <n-element class="layer-resolver n-chunk n-column">
-                    <chat-header title="个人信息" onClose={(evt: Event) => setState({ visible: false })}></chat-header>
+                    <chat-header title="个人信息" onClose={(evt: Event) => setVisible(false)}></chat-header>
                     <chat-avatar style={{ padding: '32px' }}></chat-avatar>
                     <div style={{ flex: 1, overflow: 'hidden' }}>
                         <n-scrollbar class="is-customize" trigger="none" size={60}>
                             <n-form size="large" label-placement="top" show-feedback={false}>
                                 <n-form-item label="昵称">
-                                    <n-input
-                                        v-model:value={user.nickname}
-                                        type="textarea"
-                                        maxlength={32}
-                                        autosize={{ minRows: 1, maxRows: 3 }}
-                                        onKeydown={divineKeydown}
-                                        v-slots={{
-                                            suffix: () => (
-                                                <n-button text>
-                                                    <n-icon size={28} component={<Iv-BsEdit />}></n-icon>
-                                                </n-button>
-                                            )
-                                        }}
-                                    />
+                                    <common-state
+                                        data-render={(scope: Omix, done: Function) => (
+                                            <n-input
+                                                readonly={scope.loading || scope.disabled}
+                                                type="textarea"
+                                                maxlength={32}
+                                                autosize={{ minRows: 1, maxRows: 3 }}
+                                                onKeydown={onKeydownHandler}
+                                                v-model:value={form.value.nickname}
+                                                v-slots={{
+                                                    suffix: () => (
+                                                        <n-button
+                                                            disabled={scope.loading}
+                                                            text
+                                                            focusable={false}
+                                                            onClick={(evt: Event) => onNicknameUpdate(scope, done)}
+                                                        >
+                                                            {scope.loading ? (
+                                                                <common-loadiner size={22} size-iner={3}></common-loadiner>
+                                                            ) : scope.disabled ? (
+                                                                <n-icon size={28} component={<Iv-BsCheck />}></n-icon>
+                                                            ) : (
+                                                                <n-icon size={28} component={<Iv-BsEdit />}></n-icon>
+                                                            )}
+                                                        </n-button>
+                                                    )
+                                                }}
+                                            />
+                                        )}
+                                    ></common-state>
                                 </n-form-item>
                                 <n-form-item label="状态">
-                                    <n-input
-                                        v-model:value={user.nickname}
-                                        type="textarea"
-                                        maxlength={32}
-                                        autosize={{ minRows: 1, maxRows: 3 }}
-                                        onKeydown={divineKeydown}
-                                        v-slots={{
-                                            suffix: () => (
-                                                <n-button text>
-                                                    <n-icon size={28} component={<Iv-BsCheck />}></n-icon>
-                                                </n-button>
-                                            )
-                                        }}
-                                    />
+                                    <common-state
+                                        data-render={(scope: Omix, done: Function) => (
+                                            <n-input
+                                                readonly={scope.loading || scope.disabled}
+                                                type="textarea"
+                                                maxlength={32}
+                                                autosize={{ minRows: 1, maxRows: 3 }}
+                                                onKeydown={onKeydownHandler}
+                                                v-model:value={form.value.comment}
+                                                v-slots={{
+                                                    suffix: () => (
+                                                        <n-button
+                                                            disabled={scope.loading}
+                                                            text
+                                                            focusable={false}
+                                                            onClick={(evt: Event) => onCommentUpdate(scope, done)}
+                                                        >
+                                                            {scope.loading ? (
+                                                                <common-loadiner size={22} size-iner={3}></common-loadiner>
+                                                            ) : scope.disabled ? (
+                                                                <n-icon size={28} component={<Iv-BsCheck />}></n-icon>
+                                                            ) : (
+                                                                <n-icon size={28} component={<Iv-BsEdit />}></n-icon>
+                                                            )}
+                                                        </n-button>
+                                                    )
+                                                }}
+                                            />
+                                        )}
+                                    ></common-state>
                                 </n-form-item>
                             </n-form>
                         </n-scrollbar>
