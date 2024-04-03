@@ -26,11 +26,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .chat-header {
-    height: 128px;
     overflow: hidden;
     background-color: var(--chat-header-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
-    padding: 76px 24px 20px;
+    padding: 50px 24px 20px;
     font-size: 20px;
     line-height: 32px;
     gap: 20px;
