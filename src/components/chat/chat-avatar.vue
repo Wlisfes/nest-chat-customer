@@ -1,18 +1,26 @@
 <script lang="tsx">
-import { defineComponent, PropType, CSSProperties } from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
     name: 'ChatAvatar',
+    props: {
+        url: { type: String }
+    },
     setup(props, { emit }) {
         return () => (
-            <div class="chat-avatar n-chunk n-center n-middle n-pointer">
-                <n-avatar
-                    round
-                    size={200}
-                    src="https://oss.lisfes.cn/cloud/avatar/2021-08/1628499198955.jpg?x-oss-process=style/resize-1-1"
-                />
+            <div class="chat-avatar n-chunk n-center n-middle">
+                <div class="chat-pointer n-chunk n-center n-middle">
+                    <n-avatar round size={200} src={props.url} />
+                </div>
             </div>
         )
     }
 })
 </script>
+
+<style lang="scss" scoped>
+.chat-pointer {
+    cursor: pointer;
+    overflow: hidden;
+}
+</style>

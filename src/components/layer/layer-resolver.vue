@@ -67,7 +67,7 @@ export default defineComponent({
             >
                 <n-element class="layer-resolver n-chunk n-column">
                     <chat-header title="个人信息" onClose={(evt: Event) => setVisible(false)}></chat-header>
-                    <chat-avatar style={{ padding: '32px' }}></chat-avatar>
+                    <chat-avatar url={user.avatar} style={{ padding: '32px' }}></chat-avatar>
                     <div style={{ flex: 1, overflow: 'hidden' }}>
                         <n-scrollbar class="is-customize" trigger="none" size={60}>
                             <n-form size="large" label-placement="top" show-feedback={false}>
@@ -75,7 +75,7 @@ export default defineComponent({
                                     <common-state
                                         data-render={(scope: Omix, done: Function) => (
                                             <n-input
-                                                readonly={scope.loading || scope.disabled}
+                                                readonly={scope.loading || !scope.disabled}
                                                 type="textarea"
                                                 maxlength={32}
                                                 autosize={{ minRows: 1, maxRows: 3 }}
@@ -107,7 +107,7 @@ export default defineComponent({
                                     <common-state
                                         data-render={(scope: Omix, done: Function) => (
                                             <n-input
-                                                readonly={scope.loading || scope.disabled}
+                                                readonly={scope.loading || !scope.disabled}
                                                 type="textarea"
                                                 maxlength={32}
                                                 autosize={{ minRows: 1, maxRows: 3 }}

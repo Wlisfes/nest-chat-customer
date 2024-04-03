@@ -2,7 +2,7 @@
 import { defineComponent, ref, computed, onMounted, CSSProperties } from 'vue'
 import { useCurrentElement, useElementSize, provideLocal } from '@vueuse/core'
 import { useConfiger, useUser } from '@/store/instance.store'
-import { divineWherer, divineHandler } from '@/utils/utils-common'
+import { divineWherer, divineHandler, divineDelay } from '@/utils/utils-common'
 import * as vide from '@/utils/utils-provide'
 
 export default defineComponent({
@@ -20,8 +20,9 @@ export default defineComponent({
         }))
 
         onMounted(async () => {
-            return await divineHandler(!Boolean(user.uid), () => {
-                return user.fetchUserResolver()
+            return await divineHandler(!Boolean(user.uid), async () => {
+                await divineDelay(1500)
+                return await user.fetchUserResolver()
             })
         })
 
@@ -33,7 +34,7 @@ export default defineComponent({
         return () => (
             <n-element class="chat-layout" style={compute.value}>
                 <div ref={element} class="chat-layout__context">
-                    {width.value > 0 && (
+                    {user.uid && width.value > 0 && (
                         <div class="chat-layout__container n-chunk">
                             <div class="chunk-sider n-chunk n-column">
                                 <div class="chunk-sider__element n-chunk n-column n-auto">
@@ -46,6 +47,7 @@ export default defineComponent({
                         </div>
                     )}
                 </div>
+                {!user.uid && <div class="chat-layout__loadiner"></div>}
             </n-element>
         )
     }
@@ -74,6 +76,17 @@ export default defineComponent({
     }
     @media (max-width: 1440px) {
         padding: 0;
+    }
+    &__loadiner {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        overflow: hidden;
+        background-color: var(--chat-connect-color);
+        transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
+        z-index: 9;
     }
     &__context {
         position: relative;
