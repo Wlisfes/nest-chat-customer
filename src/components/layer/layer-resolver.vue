@@ -149,7 +149,7 @@ export default defineComponent({
 .layer-resolver {
     height: 100%;
     overflow: hidden;
-    background-color: var(--layer-resolver-color);
+    background-color: var(--layer-common-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     :deep(.n-form-item) {
         --n-label-height: 20px;

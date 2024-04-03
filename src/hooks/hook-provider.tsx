@@ -16,7 +16,7 @@ export interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
     '--chat-header-color': string
     '--chat-header-text-color': string
     '--auth-layout-color': string
-    '--layer-resolver-color': string
+    '--layer-common-color': string
     '--layer-resolver-form-item': string
 }
 
@@ -51,7 +51,7 @@ export function useProvider() {
             '--chat-header-color': '#008069',
             '--chat-header-text-color': '#ffffff',
             '--auth-layout-color': '#ffffff',
-            '--layer-resolver-color': '#f0f2f5',
+            '--layer-common-color': '#f0f2f5',
             '--layer-resolver-form-item': '#ffffff'
         }
     }))
@@ -72,7 +72,7 @@ export function useProvider() {
             '--chat-header-color': '#202c33',
             '--chat-header-text-color': 'var(--text-color-2)',
             '--auth-layout-color': '#0d1317',
-            '--layer-resolver-color': '#111b21',
+            '--layer-common-color': '#111b21',
             '--layer-resolver-form-item': '#0d1317'
         }
     }))
