@@ -1,6 +1,7 @@
 export enum APP_STORE {
     STORE_CONFIGER = 'APP_STORE_CONFIGER',
-    STORE_USER = 'APP_STORE_USER'
+    STORE_USER = 'APP_STORE_USER',
+    STORE_CHAT = 'APP_STORE_USER'
 }
 export enum APP_COMMON {
     /**语言存储键**/
