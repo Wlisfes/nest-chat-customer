@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, ref, computed, onMounted, Transition, CSSProperties } from 'vue'
 import { useCurrentElement, useElementSize, provideLocal } from '@vueuse/core'
-import { useConfiger, useUser } from '@/store'
+import { useConfiger, useUser, useChat } from '@/store'
 import { divineWherer, divineHandler, divineDelay } from '@/utils/utils-common'
 import { connectClient } from '@/utils/utils-websocket'
 import * as vide from '@/utils/utils-provide'
@@ -11,6 +11,7 @@ export default defineComponent({
     setup(props, { slots }) {
         const configer = useConfiger()
         const user = useUser()
+        const chat = useChat()
         const layout = useCurrentElement<HTMLElement>()
         const element = ref<HTMLElement>()
         const { width } = useElementSize(layout)
@@ -22,9 +23,10 @@ export default defineComponent({
 
         onMounted(async () => {
             return await divineHandler(!Boolean(user.uid), async () => {
-                await divineDelay(500)
+                await user.fetchUserResolver()
+                await chat.fetchSessionColumner()
+
                 // await connectClient()
-                return await user.fetchUserResolver()
             })
         })
 

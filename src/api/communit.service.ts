@@ -11,9 +11,9 @@ export function httpCommunitCreater(data: Omix<env.BodyCommunitCreater>) {
 }
 
 /**社群列表**/
-export function httpCommunitColumn() {
+export function httpCommunitColumner() {
     return request<env.ColumnResolver<env.SchemaCommunit>>({
-        url: `/communit/column`,
+        url: `/communit/columner`,
         method: 'GET'
     })
 }
