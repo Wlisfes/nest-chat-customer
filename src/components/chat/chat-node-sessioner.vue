@@ -1,14 +1,17 @@
 <script lang="tsx">
-import { defineComponent, computed, PropType } from 'vue'
+import { defineComponent, computed, Fragment, PropType } from 'vue'
+import { useUser } from '@/store'
 import { useProvider } from '@/hooks/hook-provider'
 import { divineWherer } from '@/utils/utils-common'
+import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
     name: 'ChatNodeSessioner',
     props: {
-        node: { type: Object as PropType<Omix>, required: true }
+        node: { type: Object as PropType<Omix<env.SchemaCession>>, required: true }
     },
     setup(props) {
+        const user = useUser()
         const { inverted } = useProvider()
         const chunk = computed(() => ({
             '--chat-hover-node-sessioner': divineWherer(inverted.value, '#202c33', '#f0f2f5'),
@@ -21,7 +24,17 @@ export default defineComponent({
 
         return () => (
             <div class="chat-node-sessioner n-chunk n-pointer" style={chunk.value}>
-                <n-image class="chat-avatar" preview-disabled src={props.node.avatar} />
+                {props.node.source === 'communit' ? (
+                    <n-image class="chat-avatar" preview-disabled src={props.node.communit.poster} />
+                ) : props.node.source === 'private' ? (
+                    <Fragment>
+                        {props.node.contact.sender.uid === user.uid ? (
+                            <n-image class="chat-avatar" preview-disabled src={props.node.contact.receive.avatar} />
+                        ) : (
+                            <n-image class="chat-avatar" preview-disabled src={props.node.contact.sender.avatar} />
+                        )}
+                    </Fragment>
+                ) : null}
                 <div class="chat-context n-chunk n-column n-auto" style={{ overflow: 'hidden' }}>
                     <div class="chat-source n-chunk n-center" style={{ columnGap: '10px', marginBottom: '6px' }}>
                         <div style={{ flex: 1, overflow: 'hidden' }}>

@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, ref, computed, onMounted, Transition, CSSProperties } from 'vue'
 import { useCurrentElement, useElementSize, provideLocal } from '@vueuse/core'
-import { useConfiger, useUser, useChat } from '@/store'
+import { useConfiger, useUser, useChat, useSession } from '@/store'
 import { divineWherer, divineHandler, divineDelay } from '@/utils/utils-common'
 import { connectClient } from '@/utils/utils-websocket'
 import * as vide from '@/utils/utils-provide'
@@ -9,11 +9,11 @@ import * as vide from '@/utils/utils-provide'
 export default defineComponent({
     name: 'ChatLayout',
     setup(props, { slots }) {
-        const configer = useConfiger()
-        const user = useUser()
-        const chat = useChat()
         const layout = useCurrentElement<HTMLElement>()
         const element = ref<HTMLElement>()
+        const configer = useConfiger()
+        const user = useUser()
+        const session = useSession()
         const { width } = useElementSize(layout)
         const compute = computed<CSSProperties>(() => ({
             '--chat-layout-max-width': divineWherer(width.value > 2000, Math.floor(width.value * 0.8) + 'px', '1600px'),
@@ -24,7 +24,7 @@ export default defineComponent({
         onMounted(async () => {
             return await divineHandler(!Boolean(user.uid), async () => {
                 await user.fetchUserResolver()
-                await chat.fetchSessionColumner()
+                await session.fetchSessionColumner()
 
                 // await connectClient()
             })
