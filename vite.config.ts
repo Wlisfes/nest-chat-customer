@@ -52,7 +52,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
         server: {
             hmr: true,
             port: 5050,
-            host: '127.0.0.1',
+            host: '0.0.0.0',
             proxy: {
                 [`/web-service`]: {
                     target: `http://localhost:34570`,

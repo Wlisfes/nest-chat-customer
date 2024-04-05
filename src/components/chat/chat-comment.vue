@@ -1,14 +1,29 @@
 <script lang="tsx">
 import { defineComponent, computed } from 'vue'
 import { useProvider } from '@/hooks/hook-provider'
+import { faker } from '@/hooks/hook-common'
 import { divineWherer } from '@/utils/utils-common'
+import { client } from '@/utils/utils-websocket'
+import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
     name: 'ChatComment',
     setup(props) {
         const { inverted } = useProvider()
 
-        return () => <div class="chat-comment n-chunk n-column"></div>
+        function onSender() {
+            client.value.emit('private-messager', {
+                uid: faker.string.uuid(),
+                fullName: faker.person.fullName(),
+                content: faker.lorem.text()
+            })
+        }
+
+        return () => (
+            <div class="chat-comment n-chunk">
+                <n-button onClick={onSender}>Sender</n-button>
+            </div>
+        )
     }
 })
 </script>

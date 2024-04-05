@@ -1,3 +1,5 @@
 export interface WebSocketConnectOption {
-    connect: (data: Omix) => void
+    connect?: () => void
+    disconnect?: (reason: string) => void
+    connect_error?: (err: Error) => void
 }
