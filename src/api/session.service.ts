@@ -2,9 +2,9 @@ import { request } from '@/utils/utils-request'
 import * as env from '@/interface/instance.resolver'
 
 /**会话列表**/
-export function httpSessionColumner() {
+export function httpSessionColumn() {
     return request<env.ColumnResolver<env.SchemaCession>>({
-        url: `/session/columner`,
+        url: `/session/column`,
         method: 'GET'
     })
 }

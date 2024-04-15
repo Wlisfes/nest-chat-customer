@@ -24,7 +24,7 @@ export default defineComponent({
         onMounted(async () => {
             return await divineHandler(!Boolean(user.uid), async () => {
                 await user.fetchUserResolver()
-                await session.fetchSessionColumner()
+                await session.fetchSessionColumn()
 
                 // await connectClient()
             })

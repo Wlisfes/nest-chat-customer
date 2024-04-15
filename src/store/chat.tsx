@@ -5,19 +5,7 @@ import { APP_STORE, APP_COMMON, getStore, setStore } from '@/utils/utils-storage
 import * as http from '@/api/instance.service'
 
 export const useChat = defineStore(APP_STORE.STORE_CHAT, () => {
-    const { state, setState } = useState({
-        dataCommunit: [],
-        dataSession: []
-    })
+    const { state, setState } = useState({})
 
-    /**会话列表**/
-    async function fetchSessionColumner() {
-        try {
-            const { data } = await http.httpSessionColumner()
-
-            console.log(data)
-        } catch (e) {}
-    }
-
-    return { state, ...toRefs(state), fetchSessionColumner }
+    return { state, ...toRefs(state) }
 })
