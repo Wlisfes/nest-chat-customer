@@ -1,9 +1,10 @@
 import * as env from '@/interface/instance.resolver'
 
-export interface SchemaCession extends env.CommonSchema {
+export interface SchemaSession extends env.CommonSchema {
     sid: string
-    source: 'private' | 'communit'
-    creator: env.SchemaUser
+    source: 'contact' | 'communit'
     communit: env.SchemaCommunit
+    communitId: string
     contact: env.SchemaContact
+    contactId: string
 }

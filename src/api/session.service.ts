@@ -3,7 +3,7 @@ import * as env from '@/interface/instance.resolver'
 
 /**会话列表**/
 export function httpSessionColumn() {
-    return request<env.ColumnResolver<env.SchemaCession>>({
+    return request<env.ColumnResolver<env.SchemaSession>>({
         url: `/session/column`,
         method: 'GET'
     })

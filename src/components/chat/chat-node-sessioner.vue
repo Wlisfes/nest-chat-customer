@@ -8,7 +8,7 @@ import * as env from '@/interface/instance.resolver'
 export default defineComponent({
     name: 'ChatNodeSessioner',
     props: {
-        node: { type: Object as PropType<Omix<env.SchemaCession>>, required: true }
+        node: { type: Object as PropType<Omix<env.SchemaSession>>, required: true }
     },
     setup(props) {
         const user = useUser()
@@ -26,21 +26,31 @@ export default defineComponent({
             <div class="chat-node-sessioner n-chunk n-pointer" style={chunk.value}>
                 {props.node.source === 'communit' ? (
                     <n-image class="chat-avatar" preview-disabled src={props.node.communit.poster} />
-                ) : props.node.source === 'private' ? (
+                ) : (
                     <Fragment>
-                        {props.node.contact.sender.uid === user.uid ? (
-                            <n-image class="chat-avatar" preview-disabled src={props.node.contact.receive.avatar} />
+                        {props.node.contact.userId === user.uid ? (
+                            <n-image class="chat-avatar" preview-disabled src={props.node.contact.nive.avatar} />
                         ) : (
-                            <n-image class="chat-avatar" preview-disabled src={props.node.contact.sender.avatar} />
+                            <n-image class="chat-avatar" preview-disabled src={props.node.contact.user.avatar} />
                         )}
                     </Fragment>
-                ) : null}
+                )}
                 <div class="chat-context n-chunk n-column n-auto" style={{ overflow: 'hidden' }}>
                     <div class="chat-source n-chunk n-center" style={{ columnGap: '10px', marginBottom: '6px' }}>
                         <div style={{ flex: 1, overflow: 'hidden' }}>
-                            <n-h2 style={{ fontSize: '16px', lineHeight: '22px', margin: 0 }}>
-                                <n-ellipsis tooltip={false}>{props.node.fullName}</n-ellipsis>
-                            </n-h2>
+                            {props.node.source === 'communit' ? (
+                                <n-h2 style={{ fontSize: '16px', lineHeight: '22px', margin: 0 }}>
+                                    <n-ellipsis tooltip={false}>{props.node.communit.name}</n-ellipsis>
+                                </n-h2>
+                            ) : (
+                                <n-h2 style={{ fontSize: '16px', lineHeight: '22px', margin: 0 }}>
+                                    {props.node.contact.userId === user.uid ? (
+                                        <n-ellipsis tooltip={false}>{props.node.contact.nive.nickname}</n-ellipsis>
+                                    ) : (
+                                        <n-ellipsis tooltip={false}>{props.node.contact.user.nickname}</n-ellipsis>
+                                    )}
+                                </n-h2>
+                            )}
                         </div>
                         <n-text depth={3} style={{ fontSize: '12px', lineHeight: '14px' }}>
                             星期一

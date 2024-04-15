@@ -7,7 +7,7 @@ import * as api from '@/api/instance.service'
 
 export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
     const { state, setState } = useState({
-        dataSource: [] as Array<env.SchemaCession>,
+        dataSource: [] as Array<env.SchemaSession>,
         total: 0,
         loading: true
     })
