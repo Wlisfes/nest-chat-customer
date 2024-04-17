@@ -14,4 +14,5 @@ export interface SchemaSession extends env.CommonSchema {
     communitId: string
     contact: env.SchemaContact
     contactId: string
+    message: env.SchemaMessager
 }

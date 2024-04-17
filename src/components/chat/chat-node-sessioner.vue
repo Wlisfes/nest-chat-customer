@@ -53,14 +53,20 @@ export default defineComponent({
                             )}
                         </div>
                         <n-text depth={3} style={{ fontSize: '12px', lineHeight: '14px' }}>
-                            星期一
+                            {props.node.message.createTime}
                         </n-text>
                     </div>
                     <div class="chat-message n-chunk n-center" style={{ columnGap: '10px', overflow: 'hidden' }}>
-                        <div style={{ flex: 1, overflow: 'hidden', lineHeight: '20px' }}>
-                            <n-text depth={3} style={{ fontSize: '14px' }}>
-                                <n-ellipsis tooltip={false}>{props.node.content}</n-ellipsis>
-                            </n-text>
+                        <div style={{ flex: 1, overflow: 'hidden', lineHeight: '20px', fontSize: '14px' }}>
+                            {props.node.message.source === env.EnumMessagerSource.text ? (
+                                <n-text depth={3}>
+                                    <n-ellipsis tooltip={false}>{props.node.message.text}</n-ellipsis>
+                                </n-text>
+                            ) : (
+                                <n-text depth={3}>
+                                    <n-ellipsis tooltip={false}>{`[${props.node.message.source}]`}</n-ellipsis>
+                                </n-text>
+                            )}
                         </div>
                         {false && (
                             <div class="chat-badge n-chunk n-center n-middle" style={badge.value}>
