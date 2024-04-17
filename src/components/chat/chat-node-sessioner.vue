@@ -25,7 +25,7 @@ export default defineComponent({
         return () => (
             <div class="chat-node-sessioner n-chunk n-pointer" style={chunk.value}>
                 {props.node.source === 'communit' ? (
-                    <n-image class="chat-avatar" preview-disabled src={props.node.communit.poster} />
+                    <n-image class="chat-avatar" preview-disabled src={props.node.communit.poster.fileURL} />
                 ) : (
                     <Fragment>
                         {props.node.contact.userId === user.uid ? (
