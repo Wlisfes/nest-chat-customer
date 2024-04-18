@@ -35,8 +35,8 @@ export default defineComponent({
                         </Fragment>
                     )}
                 </div>
-                <div class="chat-context n-chunk n-column n-auto" style={{ overflow: 'hidden' }}>
-                    <div class="chat-source n-chunk n-center" style={{ columnGap: '10px', marginBottom: '6px' }}>
+                <div class="chat-context n-chunk n-column n-auto" style={{ overflow: 'hidden', rowGap: '4px' }}>
+                    <div class="chat-source n-chunk n-center" style={{ columnGap: '10px' }}>
                         <div style={{ flex: 1, overflow: 'hidden' }}>
                             {props.node.source === 'communit' ? (
                                 <n-h2 style={{ fontSize: '16px', lineHeight: '22px', margin: 0 }}>
@@ -57,7 +57,7 @@ export default defineComponent({
                         </n-text>
                     </div>
                     <div class="chat-message n-chunk n-center" style={{ columnGap: '10px', overflow: 'hidden' }}>
-                        <div style={{ flex: 1, overflow: 'hidden', lineHeight: '20px', fontSize: '14px' }}>
+                        <div style={{ flex: 1, overflow: 'hidden', lineHeight: '22px', fontSize: '14px' }}>
                             {props.node.message.source === env.EnumMessagerSource.text ? (
                                 <n-text depth={3}>
                                     <n-ellipsis tooltip={false}>{props.node.message.text}</n-ellipsis>
@@ -84,8 +84,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .chat-node-sessioner {
     overflow: hidden;
-    padding: 14px 20px 14px 16px;
-    column-gap: 14px;
+    padding: 16px 10px 16px 16px;
+    column-gap: 16px;
     background-color: var(--chat-active-node-sessioner);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     &:hover {
@@ -95,7 +95,7 @@ export default defineComponent({
         content: '';
         position: absolute;
         left: 78px;
-        right: 20px;
+        right: 0;
         bottom: 0;
         border-top: 1px solid var(--chat-border-color);
         transition: border-top 0.3s var(--cubic-bezier-ease-in-out);
