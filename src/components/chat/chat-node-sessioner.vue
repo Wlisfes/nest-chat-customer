@@ -19,24 +19,22 @@ export default defineComponent({
             '--chat-hover-node-sessioner': divineWherer(inverted.value, '#202c33', '#f0f2f5'),
             '--chat-active-node-sessioner': divineWherer(false, 'var(--chat-hover-node-sessioner)', 'transparent')
         }))
-        const badge = computed(() => ({
-            '--chat-badge-color': divineWherer(inverted.value, '', '#25d366'),
-            '--chat-badge-text-color': divineWherer(inverted.value, '', '#ffffff')
-        }))
 
         return () => (
             <div class="chat-node-sessioner n-chunk n-pointer" style={chunk.value}>
-                {props.node.source === 'communit' ? (
-                    <n-image class="chat-avatar" preview-disabled src={props.node.communit.poster.fileURL} />
-                ) : (
-                    <Fragment>
-                        {props.node.contact.userId === user.uid ? (
-                            <n-image class="chat-avatar" preview-disabled src={props.node.contact.nive.avatar} />
-                        ) : (
-                            <n-image class="chat-avatar" preview-disabled src={props.node.contact.user.avatar} />
-                        )}
-                    </Fragment>
-                )}
+                <div class="chat-avatar">
+                    {props.node.source === 'communit' ? (
+                        <n-image preview-disabled src={props.node.communit.poster.fileURL} />
+                    ) : (
+                        <Fragment>
+                            {props.node.contact.userId === user.uid ? (
+                                <n-image preview-disabled src={props.node.contact.nive.avatar} />
+                            ) : (
+                                <n-image preview-disabled src={props.node.contact.user.avatar} />
+                            )}
+                        </Fragment>
+                    )}
+                </div>
                 <div class="chat-context n-chunk n-column n-auto" style={{ overflow: 'hidden' }}>
                     <div class="chat-source n-chunk n-center" style={{ columnGap: '10px', marginBottom: '6px' }}>
                         <div style={{ flex: 1, overflow: 'hidden' }}>
@@ -70,9 +68,9 @@ export default defineComponent({
                                 </n-text>
                             )}
                         </div>
-                        {props.node.unread.length > 0 && (
-                            <div class="chat-badge n-chunk n-center n-middle" style={badge.value}>
-                                {props.node.unread.length}
+                        {props.node.unread.length > 0 && props.node.source === env.EnumSessionSource.contact && (
+                            <div class="chat-badge n-chunk n-center n-middle">
+                                <span>{props.node.unread.length}</span>
                             </div>
                         )}
                     </div>
@@ -108,7 +106,10 @@ export default defineComponent({
     .chat-avatar {
         width: 48px;
         height: 48px;
-        border-radius: 50%;
+        border-radius: 4px;
+        position: relative;
+        overflow: hidden;
+        :deep(.n-image),
         :deep(img) {
             width: 100%;
             height: 100%;
@@ -116,15 +117,17 @@ export default defineComponent({
         }
     }
     .chat-badge {
-        min-width: 18px;
-        height: 18px;
+        min-width: 16px;
+        height: 16px;
         padding: 0 4px;
         box-sizing: border-box;
-        font-size: 12px;
+        font-size: 10px;
         line-height: 1;
-        color: var(--chat-badge-text-color);
-        background-color: var(--chat-badge-color);
-        border-radius: 9px;
+        text-align: center;
+        color: #ffffff;
+        background-color: #25d366;
+        border-radius: 99px;
+        user-select: none;
     }
 }
 </style>
