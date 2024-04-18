@@ -8,13 +8,16 @@ export default defineComponent({
         component: { type: Object as PropType<VNode> },
         spin: { type: Object as PropType<VNode> },
         size: { type: Number, default: 24 },
-        iconSize: { type: Number, default: 24 }
+        iconSize: { type: Number, default: 24 },
+        commonStyle: { type: Object as PropType<any>, default: () => ({}) },
+        circle: { type: Boolean, default: false }
     },
-    setup(props, { slots, emit }) {
+    setup(props, { emit }) {
         const compute = computed<CSSProperties>(() => ({
             '--n-padding': '0px',
             '--n-height': props.size + 'px',
-            '--n-width': props.size + 'px'
+            '--n-width': props.size + 'px',
+            ...props.commonStyle
         }))
 
         async function onHandle(data: Omix, done: Function, evt: MouseEvent) {
@@ -28,6 +31,7 @@ export default defineComponent({
                         <n-button
                             quaternary
                             focusable={false}
+                            circle={props.circle}
                             disabled={data.disabled || data.loading}
                             style={compute.value}
                             onClick={(evt: MouseEvent) => onHandle(data, done, evt)}
