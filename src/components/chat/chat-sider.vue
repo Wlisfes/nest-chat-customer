@@ -24,7 +24,7 @@ export default defineComponent({
                     ) : chat.current === 'settings' ? (
                         <chat-settings></chat-settings>
                     ) : chat.current === 'resolver' ? (
-                        <chat-settings></chat-settings>
+                        <chat-resolver></chat-resolver>
                     ) : null}
                 </div>
             </div>

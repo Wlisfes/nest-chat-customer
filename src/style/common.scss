@@ -19,6 +19,9 @@
     &.n-space {
         justify-content: space-between;
     }
+    &.n-disover {
+        overflow: hidden;
+    }
 }
 
 .n-pointer {

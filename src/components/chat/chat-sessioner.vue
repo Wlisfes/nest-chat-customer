@@ -22,8 +22,8 @@ export default defineComponent({
         }
 
         return () => (
-            <div class="chat-sessioner n-chunk n-column n-auto">
-                <chat-compose></chat-compose>
+            <div class="chat-sessioner n-chunk n-column n-auto n-disover">
+                <chat-compose title="Chats"></chat-compose>
                 <chat-searcher></chat-searcher>
                 <div class="n-chunk n-column n-auto" style={{ overflow: 'hidden' }}>
                     <n-scrollbar class="is-customize" trigger="none" size={60} on-scroll={onScroller}>
@@ -44,9 +44,3 @@ export default defineComponent({
     }
 })
 </script>
-
-<style lang="scss" scoped>
-.chat-sessioner {
-    overflow: hidden;
-}
-</style>

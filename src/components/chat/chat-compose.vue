@@ -24,8 +24,10 @@ export default defineComponent({
     background-color: var(--chat-compose-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     .n-h1 {
+        font-size: 24px;
         line-height: 40px;
         margin: 0;
+        user-select: none;
     }
 }
 </style>
