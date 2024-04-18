@@ -44,8 +44,5 @@ export default defineComponent({
 <style lang="scss" scoped>
 .chat-sessioner {
     overflow: hidden;
-    :deep(.n-scrollbar.is-customize) {
-        --n-scrollbar-width: 7px;
-    }
 }
 </style>

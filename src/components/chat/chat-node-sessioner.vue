@@ -2,6 +2,7 @@
 import { defineComponent, computed, Fragment, PropType } from 'vue'
 import { useUser } from '@/store'
 import { useProvider } from '@/hooks/hook-provider'
+import { useMoment } from '@/hooks/hook-common'
 import { divineWherer } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 
@@ -13,6 +14,7 @@ export default defineComponent({
     setup(props) {
         const user = useUser()
         const { inverted } = useProvider()
+        const { divineDateMomentTransfor } = useMoment()
         const chunk = computed(() => ({
             '--chat-hover-node-sessioner': divineWherer(inverted.value, '#202c33', '#f0f2f5'),
             '--chat-active-node-sessioner': divineWherer(false, 'var(--chat-hover-node-sessioner)', 'transparent')
@@ -53,7 +55,7 @@ export default defineComponent({
                             )}
                         </div>
                         <n-text depth={3} style={{ fontSize: '12px', lineHeight: '14px' }}>
-                            {props.node.message.createTime}
+                            {divineDateMomentTransfor(props.node.message.createTime)}
                         </n-text>
                     </div>
                     <div class="chat-message n-chunk n-center" style={{ columnGap: '10px', overflow: 'hidden' }}>
@@ -68,9 +70,9 @@ export default defineComponent({
                                 </n-text>
                             )}
                         </div>
-                        {false && (
+                        {props.node.unread.length > 0 && (
                             <div class="chat-badge n-chunk n-center n-middle" style={badge.value}>
-                                9
+                                {props.node.unread.length}
                             </div>
                         )}
                     </div>

@@ -5,8 +5,10 @@ import { divineWherer } from '@/utils/utils-common'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import weekday from 'dayjs/plugin/weekday'
 dayjs.extend(timezone)
 dayjs.extend(utc)
+dayjs.extend(weekday)
 
 /**dayjs实例**/
 export const moment = dayjs
@@ -36,7 +38,27 @@ export function useMoment() {
             date: date.format(scope.format ?? 'YYYY-MM-DD HH:mm:ss')
         }
     }
-    return { moment, divineTimezone, divineDateTransfor }
+
+    /**会话、记录日期时间转换**/
+    function divineDateMomentTransfor(date: Date | string, currentDate?: Date | string) {
+        const currentTime = moment(currentDate)
+        const targetTime = dayjs(date)
+        const yesterdayTime = currentTime.subtract(1, 'day').startOf('day')
+        if (currentTime.isSame(targetTime, 'day')) {
+            /**今天**/
+            return moment(date).format('HH:mm')
+        } else if (targetTime.isSame(yesterdayTime, 'day')) {
+            /**昨天**/
+            return moment(date).format('昨天 HH:mm')
+        } else if (currentTime.diff(targetTime, 'day') <= 7) {
+            /**一周内**/
+        } else {
+            /**其他时间**/
+            return moment(date).format('YYYY-MM-DD')
+        }
+    }
+
+    return { moment, divineTimezone, divineDateTransfor, divineDateMomentTransfor }
 }
 
 /**倒计时处理**/
