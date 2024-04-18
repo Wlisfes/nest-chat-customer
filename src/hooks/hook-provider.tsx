@@ -2,6 +2,7 @@ import { computed, ComputedRef } from 'vue'
 import { useThemeVars, darkTheme, lightTheme, GlobalThemeOverrides, ThemeCommonVars } from 'naive-ui'
 import { useConfiger } from '@/store/configer'
 export interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
+    '--auth-layout-color': string
     '--chat-layout-loadiner': string
     '--chat-layout-before': string
     '--chat-carte-color': string
@@ -19,7 +20,6 @@ export interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
     '--chat-context-color': string
     '--chat-header-color': string
     '--chat-header-text-color': string
-    '--auth-layout-color': string
     '--layer-common-color': string
     '--layer-resolver-form-item': string
 }
@@ -41,6 +41,7 @@ export function useProvider() {
         common: {
             fontWeightStrong: '600',
             primaryColor: configer.primaryColor,
+            '--auth-layout-color': '#ffffff',
             '--chat-layout-loadiner': '#f0f2f5',
             '--chat-layout-before': '#0000',
             '--chat-carte-color': '#f0f2f5',
@@ -59,7 +60,6 @@ export function useProvider() {
             // '--chat-context-color': '#f0f2f5',
             // '--chat-header-color': '#008069',
             // '--chat-header-text-color': '#ffffff',
-            // '--auth-layout-color': '#ffffff',
             // '--layer-common-color': '#f0f2f5',
             // '--layer-resolver-form-item': '#ffffff'
         }
@@ -67,6 +67,7 @@ export function useProvider() {
     const darkThemeOverrides = computed<GlobalThemeOverrides>(() => ({
         common: {
             fontWeightStrong: '600',
+            '--auth-layout-color': '#0d1317',
             '--chat-layout-loadiner': '#202c33',
             '--chat-layout-before': '#000000b3',
             '--chat-carte-color': '#202c33',
@@ -85,7 +86,6 @@ export function useProvider() {
             // '--chat-context-color': '#0b141a',
             // '--chat-header-color': '#202c33',
             // '--chat-header-text-color': 'var(--text-color-2)',
-            // '--auth-layout-color': '#0d1317',
             // '--layer-common-color': '#111b21',
             // '--layer-resolver-form-item': '#0d1317'
         }

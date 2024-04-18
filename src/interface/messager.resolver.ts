@@ -29,3 +29,9 @@ export interface SchemaMessager extends env.CommonSchema {
     status: EnumMessagerStatus
     reason: string
 }
+
+/**发送自定义消息**/
+export interface BodyCustomizeMessager extends Pick<SchemaMessager, 'sessionId' | 'source'> {
+    text?: string
+    fileId?: string
+}
