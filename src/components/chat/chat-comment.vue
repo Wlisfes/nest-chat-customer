@@ -3,7 +3,7 @@ import { defineComponent, computed } from 'vue'
 import { useProvider } from '@/hooks/hook-provider'
 import { faker } from '@/hooks/hook-common'
 import { divineWherer } from '@/utils/utils-common'
-import { client } from '@/utils/utils-websocket'
+import { socket } from '@/utils/utils-websocket'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -12,7 +12,7 @@ export default defineComponent({
         const { inverted } = useProvider()
 
         function onSender() {
-            client.value.emit('private-messager', {
+            socket.value.emit('private-messager', {
                 uid: faker.string.uuid(),
                 fullName: faker.person.fullName(),
                 content: faker.lorem.text()

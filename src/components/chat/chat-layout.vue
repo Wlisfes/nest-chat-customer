@@ -4,7 +4,7 @@ import { useCurrentElement, useElementSize, provideLocal } from '@vueuse/core'
 import { useConfiger, useUser, useChat, useSession } from '@/store'
 import { useState } from '@/hooks/hook-state'
 import { divineWherer, divineHandler, divineDelay } from '@/utils/utils-common'
-import { connectClient } from '@/utils/utils-websocket'
+import { socket, connectClient } from '@/utils/utils-websocket'
 import * as vide from '@/utils/utils-provide'
 
 export default defineComponent({
@@ -27,9 +27,9 @@ export default defineComponent({
             return await divineHandler(!Boolean(user.uid), async () => {
                 await user.fetchUserResolver()
                 await session.fetchSessionColumn()
+                await connectClient()
                 await divineDelay(500)
                 await setState({ loading: false })
-                // await connectClient()
             })
         })
 
@@ -56,11 +56,11 @@ export default defineComponent({
                             <div class="chat-layout__container n-chunk">
                                 <div class="chunk-sider n-chunk n-column">
                                     <div class="chunk-sider__element n-chunk n-column n-auto">
-                                        <chat-sider></chat-sider>
+                                        <chat-sider socket={socket.value}></chat-sider>
                                     </div>
                                 </div>
                                 <div class="chunk-context n-chunk n-column n-auto">
-                                    <chat-context></chat-context>
+                                    <chat-context socket={socket.value}></chat-context>
                                 </div>
                             </div>
                         )}
