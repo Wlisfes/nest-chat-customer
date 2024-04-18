@@ -84,6 +84,16 @@ export default defineComponent({
     background-repeat: no-repeat;
     background-size: cover;
     transition: padding 0.3s var(--cubic-bezier-ease-in-out);
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: var(--chat-layout-before);
+        transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
+    }
     @media (max-width: 1440px) {
         padding: 0;
     }

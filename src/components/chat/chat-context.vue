@@ -5,9 +5,9 @@ export default defineComponent({
     name: 'ChatContext',
     setup(props) {
         return () => (
-            <div class="chat-context n-chunk n-column n-auto">
+            <div class="chat-context n-chunk n-column n-auto n-disover">
                 <chat-connect></chat-connect>
-                <div class="chat-context__scrollbar n-chunk n-column n-auto">
+                <div class="n-chunk n-column n-auto n-disover">
                     <chat-messenger></chat-messenger>
                 </div>
                 <chat-comment></chat-comment>
@@ -16,15 +16,3 @@ export default defineComponent({
     }
 })
 </script>
-
-<style lang="scss" scoped>
-.chat-context {
-    position: relative;
-    overflow: hidden;
-    &__scrollbar {
-        flex: 1;
-        position: relative;
-        overflow: hidden;
-    }
-}
-</style>
