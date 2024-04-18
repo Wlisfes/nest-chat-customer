@@ -39,11 +39,11 @@ export default defineComponent({
                     <div class="chat-source n-chunk n-center" style={{ columnGap: '10px' }}>
                         <div style={{ flex: 1, overflow: 'hidden' }}>
                             {props.node.source === 'communit' ? (
-                                <n-h2 style={{ fontSize: '16px', lineHeight: '22px', margin: 0 }}>
+                                <n-h2 style={{ fontSize: '16px', lineHeight: '22px', fontWeight: 500, margin: 0 }}>
                                     <n-ellipsis tooltip={false}>{props.node.communit.name}</n-ellipsis>
                                 </n-h2>
                             ) : (
-                                <n-h2 style={{ fontSize: '16px', lineHeight: '22px', margin: 0 }}>
+                                <n-h2 style={{ fontSize: '16px', lineHeight: '22px', fontWeight: 500, margin: 0 }}>
                                     {props.node.contact.userId === user.uid ? (
                                         <n-ellipsis tooltip={false}>{props.node.contact.nive.nickname}</n-ellipsis>
                                     ) : (
@@ -57,7 +57,7 @@ export default defineComponent({
                         </n-text>
                     </div>
                     <div class="chat-message n-chunk n-center" style={{ columnGap: '10px', overflow: 'hidden' }}>
-                        <div style={{ flex: 1, overflow: 'hidden', lineHeight: '22px', fontSize: '14px' }}>
+                        <div style={{ flex: 1, overflow: 'hidden', lineHeight: '20px', fontSize: '14px' }}>
                             {props.node.message.source === env.EnumMessagerSource.text ? (
                                 <n-text depth={3}>
                                     <n-ellipsis tooltip={false}>{props.node.message.text}</n-ellipsis>
@@ -84,8 +84,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .chat-node-sessioner {
     overflow: hidden;
-    padding: 16px 10px 16px 16px;
-    column-gap: 16px;
+    padding: 14px;
+    column-gap: 14px;
     background-color: var(--chat-active-node-sessioner);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     &:hover {
@@ -104,8 +104,8 @@ export default defineComponent({
         --chat-border-color: transparent;
     }
     .chat-avatar {
-        width: 48px;
-        height: 48px;
+        width: 46px;
+        height: 46px;
         border-radius: 4px;
         position: relative;
         overflow: hidden;
@@ -128,6 +128,7 @@ export default defineComponent({
         background-color: #25d366;
         border-radius: 99px;
         user-select: none;
+        margin-top: 1px;
     }
 }
 </style>

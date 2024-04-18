@@ -62,6 +62,16 @@ export default defineComponent({
 .chat-carte {
     overflow: hidden;
     padding: 12px 10px 20px 10px;
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        border-right: 1px solid var(--chat-border-color);
+        transition: border-right 0.3s var(--cubic-bezier-ease-in-out);
+        z-index: 1;
+    }
     :deep(.n-image),
     :deep(.n-image > img) {
         width: 100%;

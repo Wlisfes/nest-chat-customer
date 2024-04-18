@@ -26,6 +26,7 @@ export default defineComponent({
     .n-h1 {
         font-size: 24px;
         line-height: 40px;
+        font-weight: 500;
         margin: 0;
         user-select: none;
     }
