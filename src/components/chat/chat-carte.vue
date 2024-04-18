@@ -62,6 +62,8 @@ export default defineComponent({
 .chat-carte {
     overflow: hidden;
     padding: 12px 10px 20px 10px;
+    background-color: var(--chat-carte-color);
+    transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     &::before {
         content: '';
         position: absolute;

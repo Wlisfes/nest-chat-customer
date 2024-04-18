@@ -24,7 +24,7 @@ export default defineComponent({
 .chat-searcher {
     position: relative;
     overflow: hidden;
-    padding: 8px 12px;
+    padding: 8px 14px;
     row-gap: 8px;
     background-color: var(--chat-searcher-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);

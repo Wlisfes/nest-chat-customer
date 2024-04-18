@@ -19,7 +19,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .chat-compose {
     height: 60px;
-    padding: 10px 16px;
+    padding: 10px 14px;
     box-sizing: border-box;
     background-color: var(--chat-compose-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);

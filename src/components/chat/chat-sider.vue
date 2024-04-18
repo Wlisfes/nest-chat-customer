@@ -8,11 +8,11 @@ export default defineComponent({
         const chat = useChat()
 
         return () => (
-            <div class="chat-sider n-chunk n-auto">
-                <div class="chat-sider__carte n-chunk n-column">
+            <div class="chat-sider n-chunk n-auto n-disover">
+                <div class="n-chunk n-column n-disover" style={{ width: '60px' }}>
                     <chat-carte></chat-carte>
                 </div>
-                <div class="chat-sider__container n-chunk n-column n-auto">
+                <div class="n-chunk n-column n-auto n-disover">
                     {chat.current === 'session' ? (
                         <chat-sessioner></chat-sessioner>
                     ) : chat.current === 'society' ? (
@@ -35,17 +35,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .chat-sider {
-    position: relative;
-    overflow: hidden;
-    &__carte {
-        width: 60px;
-        overflow: hidden;
-    }
-    &__container {
-        position: relative;
-        overflow: hidden;
-        background-color: var(--chat-searcher-color);
-        transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
-    }
+    background-color: var(--chat-chat-sider);
+    transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
 }
 </style>

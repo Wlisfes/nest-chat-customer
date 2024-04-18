@@ -28,7 +28,7 @@ export default defineComponent({
                 <div class="n-chunk n-column n-auto" style={{ overflow: 'hidden' }}>
                     <n-scrollbar class="is-customize" trigger="none" size={60} on-scroll={onScroller}>
                         <n-element class="n-chunk n-column">
-                            <div style={{ position: 'relative', paddingRight: '16px' }}>
+                            <div style={{ position: 'relative', paddingRight: '14px' }}>
                                 {session.dataSource.map((item: Omix) => (
                                     <chat-node-sessioner key={item.keyId} node={item}></chat-node-sessioner>
                                 ))}
