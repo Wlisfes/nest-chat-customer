@@ -1,14 +1,17 @@
-import { toRefs } from 'vue'
+import { toRefs, ref, Ref, VNodeRef } from 'vue'
 import { defineStore } from 'pinia'
+import { ScrollbarInst } from 'naive-ui'
 import { useState } from '@/hooks/hook-state'
 import { APP_STORE, APP_COMMON, getStore, setStore } from '@/utils/utils-storage'
 import * as env from '@/interface/instance.resolver'
 import * as api from '@/api/instance.service'
+export const element = ref<HTMLElement>() as Ref<HTMLElement>
+export const instance = ref<ScrollbarInst>() as Ref<ScrollbarInst>
 
 export const useMessenger = defineStore(APP_STORE.STORE_MESSANGER, () => {
     const { state, setState } = useState({
         sessionId: '',
-        limit: 20,
+        limit: 30,
         dataSource: [] as Array<env.SchemaMessager>,
         total: 0,
         next: false,

@@ -1,24 +1,46 @@
 <script lang="tsx">
 import { defineComponent, computed, onMounted } from 'vue'
-import { useCurrentElement } from '@vueuse/core'
 import { useMessenger } from '@/store'
+import { instance, element } from '@/store/messenger'
 import { useProvider } from '@/hooks/hook-provider'
-import { divineWherer } from '@/utils/utils-common'
+import { divineWherer, divineDelay } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'ChatSider',
     setup(props) {
-        const element = useCurrentElement<HTMLElement>()
         const message = useMessenger()
         const { inverted } = useProvider()
         const chunk = computed(() => ({
             '--chat-messenger-opacity': divineWherer(inverted.value, 0.1, 0.6)
         }))
 
-        onMounted(() => {})
+        // onMounted(() => {
+        //     messenger.observer.on(
+        //         'scrollBottom',
+        //         async (scope: MixType<{ behavior: 'auto' | 'instant' | 'smooth' }> = { behavior: 'smooth' }) => {
+        //             const target = await divineElementMomente()
+        //             if (scrollbar.value && target) {
+        //                 scrollbar.value.scrollTo({
+        //                     top: target.scrollHeight,
+        //                     behavior: scope.behavior ?? 'smooth'
+        //                 })
+        //             }
+        //         }
+        //     )
+        // })
+
+        /**获取滚动容器节点**/
+        async function divineElementMomente(): Promise<HTMLElement> {
+            const target = element.value.querySelector('.n-scrollbar-container')
+            if (target) {
+                return target as HTMLElement
+            }
+            await divineDelay(100)
+            return element.value.querySelector('.n-scrollbar-container') as HTMLElement
+        }
 
         async function onScroller(evt: { target: HTMLElement }) {
-            const { scrollTop, clientHeight, scrollHeight } = evt.target
+            // const { scrollTop, clientHeight, scrollHeight } = evt.target
             // if (scrollTop + clientHeight * 2 >= scrollHeight && !state.loading) {
             //     const data = await fetchColumn()
             //     return await setState({
@@ -26,34 +48,50 @@ export default defineComponent({
             //         loading: false
             //     })
             // }
+            // scrollTop.value = evt.target.scrollTop
+            // const scrollHeight = evt.target.scrollHeight
+            // if (evt.target.scrollTop <= evt.target.clientHeight * 2 && !messenger.messager.loading && messenger.messager.isMore) {
+            //     await messenger.setMessagerLoadiner(true)
+            //     await messenger.fetchChannelColumnMessenger({
+            //         type: 'loadiner',
+            //         page: messenger.messager.page + 1,
+            //         closure: false
+            //     })
+            //     const target = await divineElementMomente()
+            //     nextTick(async () => {
+            //         await scrollbar.value.scrollTo({
+            //             top: target.scrollHeight - scrollHeight + scrollTop.value,
+            //             behavior: 'auto'
+            //         })
+            //         await messenger.setMessagerLoadiner(false)
+            //     })
+            // }
         }
 
         return () => (
-            <div class="chat-messenger n-chunk n-column n-auto" style={chunk.value}>
-                <div class="n-chunk n-column n-auto n-disover">
-                    <n-scrollbar
-                        class="is-customize"
-                        trigger="none"
-                        size={60}
-                        style={{ transform: 'rotate(0deg)', 'writing-mode': 'vertical-rl' }}
-                    >
-                        <div class="n-chunk n-column n-auto">
-                            {Array.from({ length: 50 }, (x, i) => (
-                                <n-h2>{i}</n-h2>
-                            ))}
-                        </div>
-                    </n-scrollbar>
-                </div>
-                {/* <n-scrollbar class="is-customize" trigger="none" size={60} on-scroll={onScroller}>
-                    <n-element class="n-chunk n-column n-auto">
+            <div ref={element} class="chat-messenger n-chunk n-column n-auto n-disover" style={chunk.value}>
+                <n-scrollbar ref={instance} class="is-customize" trigger="none" size={60} on-scroll={onScroller}>
+                    {message.loading && message.total === 0 ? (
                         <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
                             <common-loadiner size={32} size-border={4}></common-loadiner>
                         </div>
-                        {message.dataSource.map(item => (
-                            <chat-node-messenger node={item}></chat-node-messenger>
-                        ))}
-                    </n-element>
-                </n-scrollbar> */}
+                    ) : !message.loading && message.total === 0 ? (
+                        <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
+                            <n-empty description="无数据"></n-empty>
+                        </div>
+                    ) : (
+                        <n-element class="n-chunk n-column n-auto">
+                            {message.next && (
+                                <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
+                                    <common-loadiner size={32} size-border={4}></common-loadiner>
+                                </div>
+                            )}
+                            {message.dataSource.map(item => (
+                                <chat-node-messenger node={item}></chat-node-messenger>
+                            ))}
+                        </n-element>
+                    )}
+                </n-scrollbar>
             </div>
         )
     }
@@ -62,7 +100,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .chat-messenger {
-    overflow: hidden;
     background-color: var(--chat-messenger-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     &::before {

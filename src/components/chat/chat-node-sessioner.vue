@@ -1,9 +1,10 @@
 <script lang="tsx">
 import { defineComponent, computed, Fragment, PropType } from 'vue'
 import { useUser, useMessenger } from '@/store'
+import { instance } from '@/store/messenger'
 import { useProvider } from '@/hooks/hook-provider'
 import { useMoment } from '@/hooks/hook-common'
-import { divineWherer, divineHandler } from '@/utils/utils-common'
+import { divineWherer, divineHandler, divineDelay } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -24,8 +25,15 @@ export default defineComponent({
         /**选择、切换会话**/
         async function onSessionSelector(node: Omix<env.SchemaSession>, evt: Event) {
             return await divineHandler(message.sessionId !== node.sid, async () => {
-                await message.setState({ sessionId: node.sid })
-                return await message.fetchSessionColumnMessager()
+                await message.setState({ loading: true, sessionId: node.sid, dataSource: [], total: 0 })
+                await message.fetchSessionColumnMessager()
+                await divineDelay(0)
+                return await divineHandler(Boolean(instance.value), () => {
+                    return instance.value.scrollTo({
+                        top: 9999999,
+                        behavior: 'auto'
+                    })
+                })
             })
         }
 
