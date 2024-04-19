@@ -35,3 +35,9 @@ export interface BodyCustomizeMessager extends Pick<SchemaMessager, 'sessionId' 
     text?: string
     fileId?: string
 }
+
+/**会话消息列表**/
+export interface QuerySessionColumnMessager extends Pick<SchemaMessager, 'sessionId'> {
+    offset: number
+    limit: number
+}

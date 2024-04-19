@@ -14,17 +14,15 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
 
     /**会话列表**/
     async function fetchSessionColumn() {
-        try {
-            const { data } = await api.httpSessionColumn()
-            return await setState({
-                loading: false,
-                dataSource: data.list ?? [],
-                total: data.total ?? 0
-            })
-        } catch (e) {
-            return await setState({ loading: false, dataSource: [], total: 0 })
-        }
+        return await setState({ loading: true }).then(async () => {
+            try {
+                const { data } = await api.httpSessionColumn()
+                return await setState({ loading: false, dataSource: data.list ?? [], total: data.total ?? 0 })
+            } catch (e) {
+                return await setState({ loading: false, dataSource: [], total: 0 })
+            }
+        })
     }
 
-    return { state, ...toRefs(state), fetchSessionColumn }
+    return { state, ...toRefs(state), setState, fetchSessionColumn }
 })

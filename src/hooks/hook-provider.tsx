@@ -14,10 +14,10 @@ export interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
     '--chat-connect-color': string
     '--chat-comment-color': string
     '--chat-messenger-color': string
+    '--chat-context-color': string
 
     '--chat-layout-color': string
     '--chat-layout-context': string
-    '--chat-context-color': string
     '--chat-header-color': string
     '--chat-header-text-color': string
     '--layer-common-color': string
@@ -52,12 +52,12 @@ export function useProvider() {
             '--chat-border-color': 'rgba(134, 150, 160, 0.15)',
             '--chat-connect-color': '#f0f2f5',
             '--chat-comment-color': '#f0f2f5',
-            '--chat-messenger-color': '#efeae2'
+            '--chat-messenger-color': '#efeae2',
+            '--chat-context-color': '#f0f2f5'
 
             // '--chat-layout-color': '#e6e3dd',
             // '--chat-layout-context': '#f0f2f5',
             // '--chat-carte-color': '#f0f2f5',
-            // '--chat-context-color': '#f0f2f5',
             // '--chat-header-color': '#008069',
             // '--chat-header-text-color': '#ffffff',
             // '--layer-common-color': '#f0f2f5',
@@ -78,12 +78,12 @@ export function useProvider() {
             '--chat-border-color': 'rgba(134, 150, 160, 0.15)',
             '--chat-connect-color': '#202c33',
             '--chat-comment-color': '#202c33',
-            '--chat-messenger-color': '#0b141a'
+            '--chat-messenger-color': '#0b141a',
+            '--chat-context-color': '#0b141a'
 
             // '--chat-layout-color': '#0d1317',
             // '--chat-layout-context': '#232e35',
             // '--chat-carte-color': '#111b21',
-            // '--chat-context-color': '#0b141a',
             // '--chat-header-color': '#202c33',
             // '--chat-header-text-color': 'var(--text-color-2)',
             // '--layer-common-color': '#111b21',

@@ -1,9 +1,9 @@
 <script lang="tsx">
 import { defineComponent, computed, Fragment, PropType } from 'vue'
-import { useUser } from '@/store'
+import { useUser, useMessenger } from '@/store'
 import { useProvider } from '@/hooks/hook-provider'
 import { useMoment } from '@/hooks/hook-common'
-import { divineWherer } from '@/utils/utils-common'
+import { divineWherer, divineHandler } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -13,15 +13,28 @@ export default defineComponent({
     },
     setup(props) {
         const user = useUser()
+        const message = useMessenger()
         const { inverted } = useProvider()
         const { divineDateMomentTransfor } = useMoment()
         const chunk = computed(() => ({
             '--chat-hover-node-sessioner': divineWherer(inverted.value, '#202c33', '#f0f2f5'),
-            '--chat-active-node-sessioner': divineWherer(false, 'var(--chat-hover-node-sessioner)', 'transparent')
+            '--chat-active-node-sessioner': divineWherer(message.sessionId === props.node.sid, 'var(--chat-hover-node-sessioner)', '#0000')
         }))
 
+        /**选择、切换会话**/
+        async function onSessionSelector(node: Omix<env.SchemaSession>, evt: Event) {
+            return await divineHandler(message.sessionId !== node.sid, async () => {
+                await message.setState({ sessionId: node.sid })
+                return await message.fetchSessionColumnMessager()
+            })
+        }
+
         return () => (
-            <div class="chat-node-sessioner n-chunk n-pointer" style={chunk.value}>
+            <div
+                class="chat-node-sessioner n-chunk n-pointer"
+                style={chunk.value}
+                onClick={(evt: Event) => onSessionSelector(props.node, evt)}
+            >
                 <div class="chat-avatar">
                     {props.node.source === 'communit' ? (
                         <n-image preview-disabled src={props.node.communit.poster.fileURL} />
@@ -87,6 +100,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .chat-node-sessioner {
+    user-select: none;
     overflow: hidden;
     padding: 14px;
     column-gap: 14px;
