@@ -4,7 +4,7 @@ import { useCurrentElement, useElementSize, provideLocal } from '@vueuse/core'
 import { useConfiger, useUser, useChat, useSession } from '@/store'
 import { useState } from '@/hooks/hook-state'
 import { divineWherer, divineHandler, divineDelay } from '@/utils/utils-common'
-import { socket, connectClient } from '@/utils/utils-websocket'
+import { connectClient } from '@/utils/utils-websocket'
 import * as vide from '@/utils/utils-provide'
 
 export default defineComponent({
@@ -23,20 +23,37 @@ export default defineComponent({
             '--chat-layout-sider-element-width': divineWherer(width.value > 2000, '520px', '420px')
         }))
 
-        onMounted(async () => {
-            return await divineHandler(!Boolean(user.uid), async () => {
-                await user.fetchUserResolver()
-                await session.fetchSessionColumn()
-                await connectClient()
-                await divineDelay(500)
-                await setState({ loading: false })
-            })
-        })
-
         /**注入布局容器节点**/ //prettier-ignore
         provideLocal(vide.APP_CHAT_PROVIDE_LAYOUT, computed(() => layout.value))
         /**注入挂载容器节点**/ //prettier-ignore
         provideLocal(vide.APP_CHAT_PROVIDE_ELEMENT, computed(() => element.value))
+
+        onMounted(async () => {
+            await user.fetchUserResolver()
+            await session.fetchSessionColumn()
+            await divineConnectSocketClient()
+        })
+
+        /**开启socket连接**/
+        async function divineConnectSocketClient() {
+            return await connectClient().then(client => {
+                /**监听socket连接**/
+                client.on('connect', async () => {
+                    console.log(`connect:`, 1111)
+                    return await setState({ loading: false })
+                })
+                /**监听socket断开连接**/
+                client.on('disconnect', async reason => {
+                    console.log(`disconnect:`, reason)
+                    return await setState({ loading: false, failure: true })
+                })
+                /**监听socket错误**/
+                client.on('connect_error', async err => {
+                    console.log(`connect_error:`, err)
+                    return await setState({ loading: false, failure: true })
+                })
+            })
+        }
 
         return () => (
             <n-element class="chat-layout" style={compute.value}>
@@ -56,11 +73,11 @@ export default defineComponent({
                             <div class="chat-layout__container n-chunk">
                                 <div class="chunk-sider n-chunk n-column">
                                     <div class="chunk-sider__element n-chunk n-column n-auto">
-                                        <chat-sider socket={socket.value}></chat-sider>
+                                        <chat-sider></chat-sider>
                                     </div>
                                 </div>
                                 <div class="chunk-context n-chunk n-column n-auto">
-                                    <chat-context socket={socket.value}></chat-context>
+                                    <chat-context></chat-context>
                                 </div>
                             </div>
                         )}

@@ -14,8 +14,9 @@ export default defineComponent({
         function onSender() {
             divineSocketCustomizeMessager(socket.value, {
                 sessionId: `2156085601013678080`,
-                source: env.EnumMessagerSource.text,
-                text: faker.lorem.text()
+                source: env.EnumMessagerSource.document,
+                text: faker.lorem.text(),
+                fileId: '2156661373931700224'
             }).then(response => {
                 console.log(response)
             })

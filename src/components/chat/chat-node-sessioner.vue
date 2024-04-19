@@ -52,28 +52,32 @@ export default defineComponent({
                                 </n-h2>
                             )}
                         </div>
-                        <n-text depth={3} style={{ fontSize: '12px', lineHeight: '14px' }}>
-                            {divineDateMomentTransfor(props.node.message.createTime)}
-                        </n-text>
-                    </div>
-                    <div class="chat-message n-chunk n-center" style={{ columnGap: '10px', overflow: 'hidden' }}>
-                        <div style={{ flex: 1, overflow: 'hidden', lineHeight: '20px', fontSize: '14px' }}>
-                            {props.node.message.source === env.EnumMessagerSource.text ? (
-                                <n-text depth={3}>
-                                    <n-ellipsis tooltip={false}>{props.node.message.text}</n-ellipsis>
-                                </n-text>
-                            ) : (
-                                <n-text depth={3}>
-                                    <n-ellipsis tooltip={false}>{`[${props.node.message.source}]`}</n-ellipsis>
-                                </n-text>
-                            )}
-                        </div>
-                        {props.node.unread.length > 0 && props.node.source === env.EnumSessionSource.contact && (
-                            <div class="chat-badge n-chunk n-center n-middle">
-                                <span>{props.node.unread.length}</span>
-                            </div>
+                        {props.node.message && (
+                            <n-text depth={3} style={{ fontSize: '12px', lineHeight: '14px' }}>
+                                {divineDateMomentTransfor(props.node.message.createTime)}
+                            </n-text>
                         )}
                     </div>
+                    {props.node.message && (
+                        <div class="chat-message n-chunk n-center" style={{ columnGap: '10px', overflow: 'hidden' }}>
+                            <div style={{ flex: 1, overflow: 'hidden', lineHeight: '20px', fontSize: '14px' }}>
+                                {props.node.message.source === env.EnumMessagerSource.text ? (
+                                    <n-text depth={3}>
+                                        <n-ellipsis tooltip={false}>{props.node.message.text}</n-ellipsis>
+                                    </n-text>
+                                ) : (
+                                    <n-text depth={3}>
+                                        <n-ellipsis tooltip={false}>{`[${props.node.message.source}]`}</n-ellipsis>
+                                    </n-text>
+                                )}
+                            </div>
+                            {props.node.unread.length > 0 && props.node.source === env.EnumSessionSource.contact && (
+                                <div class="chat-badge n-chunk n-center n-middle">
+                                    <span>{props.node.unread.length}</span>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         )

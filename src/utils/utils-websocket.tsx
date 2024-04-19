@@ -14,18 +14,6 @@ export async function connectClient(option: Omix<env.WebSocketConnectOption> = {
             authorization: getStore(APP_COMMON.CHAT_TOKEN)
         }
     })
-    client.on('connect', () => {
-        console.log(`connect:`, client)
-        option.connect && option.connect()
-    })
-    client.on('disconnect', reason => {
-        console.log(`disconnect:`, reason)
-        option.disconnect && option.disconnect(reason)
-    })
-    client.on('connect_error', err => {
-        console.log(`connect_error:`, err)
-        option.connectError && option.connectError(err as env.CustomizeError<Omix>)
-    })
     return (socket.value = client)
 }
 
