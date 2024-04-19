@@ -23,8 +23,8 @@ export async function connectClient(option: Omix<env.WebSocketConnectOption> = {
         option.disconnect && option.disconnect(reason)
     })
     client.on('connect_error', err => {
-        console.log('connect_error:', err.message)
-        option.connect_error && option.connect_error(err)
+        console.log(`connect_error:`, err)
+        option.connectError && option.connectError(err as env.CustomizeError<Omix>)
     })
     return (socket.value = client)
 }
