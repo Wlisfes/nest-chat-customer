@@ -32,6 +32,9 @@ export default defineComponent({
             await user.fetchUserResolver()
             await session.fetchSessionColumn()
             await divineConnectSocketClient()
+            setInterval(() => {
+                session.fetchSessionColumn()
+            }, 20000)
         })
 
         /**开启socket连接**/

@@ -13,10 +13,10 @@ export default defineComponent({
 
         function onSender() {
             divineSocketCustomizeMessager(socket.value, {
-                sessionId: `2156085601013678080`,
-                source: env.EnumMessagerSource.text,
-                text: faker.lorem.text()
-                // fileId: '2156661373931700224'
+                sessionId: `2156085764369235968`,
+                source: env.EnumMessagerSource.image,
+                text: faker.lorem.text(),
+                fileId: '2158176124776054784'
             }).then(response => {
                 console.log(response)
             })

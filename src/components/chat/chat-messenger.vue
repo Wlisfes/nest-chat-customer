@@ -70,6 +70,27 @@ export default defineComponent({
 
         return () => (
             <div ref={element} class="chat-messenger n-chunk n-column n-auto n-disover" style={chunk.value}>
+                {/* <div class="n-chunk n-column n-auto" style={{ overflowY: 'scroll', scrollSnapAlign: 'end' }}>
+                    <div class="n-chunk n-column n-auto" style={{}}>
+                        {((message.loading && message.total === 0) || message.next) && (
+                            <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
+                                <common-loadiner size={32} size-border={4}></common-loadiner>
+                            </div>
+                        )}
+                        {!message.loading && message.total === 0 ? (
+                            <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
+                                <n-empty description="无数据"></n-empty>
+                            </div>
+                        ) : !message.loading && message.total > 0 ? (
+                            <n-element class="n-chunk n-column n-auto" style={{ padding: '20px', rowGap: '20px' }}>
+                                {message.dataSource.map(item => (
+                                    <chat-node-messenger node={item}></chat-node-messenger>
+                                ))}
+                                <div style={{ flex: 1 }}></div>
+                            </n-element>
+                        ) : null}
+                    </div>
+                </div> */}
                 <n-scrollbar ref={instance} class="is-customize" trigger="none" size={60} on-scroll={onScroller}>
                     {((message.loading && message.total === 0) || message.next) && (
                         <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
@@ -85,6 +106,7 @@ export default defineComponent({
                             {message.dataSource.map(item => (
                                 <chat-node-messenger node={item}></chat-node-messenger>
                             ))}
+                            <div style={{ flex: 1 }}></div>
                         </n-element>
                     ) : null}
                 </n-scrollbar>

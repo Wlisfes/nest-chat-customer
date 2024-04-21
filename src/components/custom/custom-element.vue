@@ -42,13 +42,14 @@ export default defineComponent({
 
 .custom-content {
     user-select: none;
-    padding: 10px;
-    border-radius: 4px;
+    padding: 3px;
+    border-radius: 6px;
+    transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     &.chunk-current {
-        background-color: #b9ffda;
+        background-color: var(--custom-element-current-color);
     }
     &.chunk-other {
-        background-color: #ffffff;
+        background-color: var(--custom-element-other-color);
     }
 }
 .custom-element {
@@ -65,8 +66,9 @@ export default defineComponent({
             width: 0;
             height: 0;
             border-top: 7px solid transparent;
-            border-left: 10px solid #b9ffda;
             border-bottom: 7px solid transparent;
+            border-left: 10px solid var(--custom-element-current-color);
+            transition: border 0.3s var(--cubic-bezier-ease-in-out);
         }
     }
     &.chunk-other {
@@ -79,8 +81,9 @@ export default defineComponent({
             width: 0;
             height: 0;
             border-top: 7px solid transparent;
-            border-right: 10px solid #ffffff;
             border-bottom: 7px solid transparent;
+            border-right: 10px solid var(--custom-element-other-color);
+            transition: border 0.3s var(--cubic-bezier-ease-in-out);
         }
     }
 }

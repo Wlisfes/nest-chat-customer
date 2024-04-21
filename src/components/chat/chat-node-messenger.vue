@@ -17,17 +17,19 @@ export default defineComponent({
         const user = useUser()
         const current = computed(() => user.uid === node.value.userId)
 
-        console.log(node.value)
-
         return () => (
             <div class="chat-node-messenger">
                 {current.value ? (
                     <div class="chunk-messenger n-chunk n-end n-disover" style={{ columnGap: '10px' }}>
                         <custom-element v-model:node={node.value} current={current.value}>
                             {node.value.source === env.EnumMessagerSource.text ? (
-                                <custom-texter content={node.value.text}></custom-texter>
+                                <custom-texter max-width={540} content={node.value.text}></custom-texter>
+                            ) : node.value.source === env.EnumMessagerSource.image ? (
+                                <custom-image node={node.value}></custom-image>
+                            ) : node.value.source === env.EnumMessagerSource.document ? (
+                                <custom-document max-width={360} node={node.value}></custom-document>
                             ) : (
-                                <custom-texter node={node.value}></custom-texter>
+                                <custom-texter max-width={540} node={node.value}></custom-texter>
                             )}
                         </custom-element>
                         <custom-avatar src={node.value.user.avatar}></custom-avatar>
@@ -35,7 +37,17 @@ export default defineComponent({
                 ) : (
                     <div class="chunk-messenger n-chunk n-disover" style={{ columnGap: '10px' }}>
                         <custom-avatar src={node.value.user.avatar}></custom-avatar>
-                        <custom-element v-model:node={node.value} current={current.value}></custom-element>
+                        <custom-element v-model:node={node.value} current={current.value}>
+                            {node.value.source === env.EnumMessagerSource.text ? (
+                                <custom-texter max-width={540} content={node.value.text}></custom-texter>
+                            ) : node.value.source === env.EnumMessagerSource.image ? (
+                                <custom-image node={node.value}></custom-image>
+                            ) : node.value.source === env.EnumMessagerSource.document ? (
+                                <custom-document max-width={360} node={node.value}></custom-document>
+                            ) : (
+                                <custom-texter max-width={540} node={node.value}></custom-texter>
+                            )}
+                        </custom-element>
                     </div>
                 )}
             </div>

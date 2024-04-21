@@ -27,8 +27,7 @@ export default defineComponent({
             return await divineHandler(message.sessionId !== node.sid, async () => {
                 await message.setState({ loading: true, sessionId: node.sid, dataSource: [], total: 0 })
                 await message.fetchSessionColumnMessager()
-                await divineDelay(0)
-                return await divineHandler(Boolean(instance.value), () => {
+                await divineHandler(Boolean(instance.value), () => {
                     return instance.value.scrollTo({
                         top: 999999,
                         behavior: 'auto'
