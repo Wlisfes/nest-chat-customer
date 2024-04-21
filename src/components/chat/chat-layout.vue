@@ -39,7 +39,6 @@ export default defineComponent({
             return await connectClient().then(client => {
                 /**监听socket连接**/
                 client.on('connect', async () => {
-                    console.log(`connect:`, 1111)
                     return await setState({ loading: false })
                 })
                 /**监听socket断开连接**/

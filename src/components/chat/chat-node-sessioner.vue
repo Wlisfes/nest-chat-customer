@@ -30,7 +30,7 @@ export default defineComponent({
                 await divineDelay(0)
                 return await divineHandler(Boolean(instance.value), () => {
                     return instance.value.scrollTo({
-                        top: 9999999,
+                        top: 999999,
                         behavior: 'auto'
                     })
                 })

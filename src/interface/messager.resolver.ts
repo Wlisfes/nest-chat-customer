@@ -22,6 +22,7 @@ export interface SchemaMessager extends env.CommonSchema {
     sid: string
     sessionId: string
     userId: string
+    user: env.RestUserResolver
     contactId: string
     communitId: string
     text: string

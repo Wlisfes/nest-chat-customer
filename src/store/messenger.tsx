@@ -11,7 +11,7 @@ export const instance = ref<ScrollbarInst>() as Ref<ScrollbarInst>
 export const useMessenger = defineStore(APP_STORE.STORE_MESSANGER, () => {
     const { state, setState } = useState({
         sessionId: '',
-        limit: 30,
+        limit: 20,
         dataSource: [] as Array<env.SchemaMessager>,
         total: 0,
         next: false,

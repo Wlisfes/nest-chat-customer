@@ -71,26 +71,22 @@ export default defineComponent({
         return () => (
             <div ref={element} class="chat-messenger n-chunk n-column n-auto n-disover" style={chunk.value}>
                 <n-scrollbar ref={instance} class="is-customize" trigger="none" size={60} on-scroll={onScroller}>
-                    {message.loading && message.total === 0 ? (
+                    {((message.loading && message.total === 0) || message.next) && (
                         <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
                             <common-loadiner size={32} size-border={4}></common-loadiner>
                         </div>
-                    ) : !message.loading && message.total === 0 ? (
+                    )}
+                    {!message.loading && message.total === 0 ? (
                         <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
                             <n-empty description="无数据"></n-empty>
                         </div>
-                    ) : (
-                        <n-element class="n-chunk n-column n-auto">
-                            {message.next && (
-                                <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
-                                    <common-loadiner size={32} size-border={4}></common-loadiner>
-                                </div>
-                            )}
+                    ) : !message.loading && message.total > 0 ? (
+                        <n-element class="n-chunk n-column n-auto" style={{ padding: '20px', rowGap: '20px' }}>
                             {message.dataSource.map(item => (
                                 <chat-node-messenger node={item}></chat-node-messenger>
                             ))}
                         </n-element>
-                    )}
+                    ) : null}
                 </n-scrollbar>
             </div>
         )
@@ -113,9 +109,5 @@ export default defineComponent({
         opacity: var(--chat-messenger-opacity);
         transition: opacity 0.3s var(--cubic-bezier-ease-in-out);
     }
-    // :deep(.is-customize.n-scrollbar > .n-scrollbar-rail--vertical) {
-    //     right: inherit;
-    //     left: 4px;
-    // }
 }
 </style>
