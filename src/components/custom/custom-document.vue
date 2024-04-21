@@ -1,5 +1,6 @@
 <script lang="tsx">
 import { defineComponent, computed, Fragment, PropType } from 'vue'
+import { divineBytefor } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 import pdf from '@/assets/images/chat-pdf.png'
 
@@ -12,13 +13,13 @@ export default defineComponent({
     },
     setup(props) {
         const media = computed(() => (props.node.medias.length > 0 ? props.node.medias[0] : null))
-        const suffix = computed(() => media.value?.fileName.split('.').pop()?.toLowerCase())
+        const suffix = computed(() => media.value?.fileName.split('.').pop()?.toUpperCase())
 
         return () => (
             <div class={{ 'custom-document n-chunk n-column n-disover': true }} style={{ width: props.maxWidth + 'px' }}>
                 {media.value && (
                     <Fragment>
-                        {suffix.value === 'pdf' && (
+                        {suffix.value === 'PDF' && (
                             <div class="document-cover">
                                 <div class="document-cover__container">
                                     <n-image preview-disabled src={media.value.depater.fileURL} />
@@ -33,11 +34,31 @@ export default defineComponent({
                             </div>
                             <div class="n-chunk n-column n-auto">
                                 <div style={{ fontSize: '14px', lineHeight: '22px' }}>
-                                    <n-text depth={1}>{media.value?.fileName}</n-text>
+                                    <n-text depth={1}>
+                                        <n-ellipsis tooltip={false}>{media.value?.fileName}</n-ellipsis>
+                                    </n-text>
                                 </div>
-                                <div style={{ fontSize: '12px', lineHeight: '20px' }}>
-                                    <n-text depth={3}>{media.value?.fileName}</n-text>
+                                <div class="n-chunk n-center" style={{ fontSize: '12px', lineHeight: '20px' }}>
+                                    {suffix.value && (
+                                        <Fragment>
+                                            <n-text depth={3}>{suffix.value}</n-text>
+                                            <n-text depth={3} style={{ padding: '0 5px' }}>
+                                                •
+                                            </n-text>
+                                        </Fragment>
+                                    )}
+                                    <n-text depth={3}>{divineBytefor(media.value?.fileSize ?? 0)}</n-text>
                                 </div>
+                            </div>
+                            <div class="n-chunk n-center n-middle" style={{ width: '42px' }}>
+                                <common-icon
+                                    circle
+                                    size={42}
+                                    icon-size={24}
+                                    spin={<common-loadiner size={24}></common-loadiner>}
+                                    component={<Iv-BsDownload />}
+                                    onClick={(scope: Omix<{ done: Function }>) => scope.done({ loading: true })}
+                                ></common-icon>
                             </div>
                         </div>
                     </Fragment>

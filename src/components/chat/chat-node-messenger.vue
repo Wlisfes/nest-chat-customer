@@ -10,6 +10,7 @@ import * as env from '@/interface/instance.resolver'
 export default defineComponent({
     name: 'ChatNodeMessenger',
     props: {
+        order: { type: Number, default: 0 },
         node: { type: Object as PropType<Omix<env.SchemaMessager>>, required: true }
     },
     setup(props, { emit }) {
@@ -18,7 +19,7 @@ export default defineComponent({
         const current = computed(() => user.uid === node.value.userId)
 
         return () => (
-            <div class="chat-node-messenger">
+            <div class="chat-node-messenger" style={{ order: props.order }}>
                 {current.value ? (
                     <div class="chunk-messenger n-chunk n-end n-disover" style={{ columnGap: '10px' }}>
                         <custom-element v-model:node={node.value} current={current.value}>

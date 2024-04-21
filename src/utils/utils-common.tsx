@@ -46,3 +46,13 @@ export async function divineHandler<T>(value: boolean | Function, handler: Funct
 export async function divineParameter<T>(data: T) {
     return data
 }
+
+/**字节转换文字输出**/
+export function divineBytefor(byte: number, dec: number = 2) {
+    if (byte === 0) return 'Byte'
+    const k = 1024
+    const dm = dec < 0 ? 0 : dec
+    const sizes = ['Byte', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+    const i = Math.floor(Math.log(byte) / Math.log(k))
+    return parseFloat((byte / Math.pow(k, i)).toFixed(dm)) + sizes[i]
+}

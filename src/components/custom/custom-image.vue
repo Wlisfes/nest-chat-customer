@@ -43,6 +43,7 @@ export default defineComponent({
     .n-image,
     :deep(img) {
         width: 100%;
+        height: 100%;
         display: block;
     }
 }

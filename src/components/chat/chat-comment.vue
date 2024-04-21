@@ -1,22 +1,20 @@
 <script lang="tsx">
 import { defineComponent, computed } from 'vue'
-import { useProvider } from '@/hooks/hook-provider'
 import { faker } from '@/hooks/hook-common'
-import { divineWherer } from '@/utils/utils-common'
+import { useMessenger } from '@/store'
 import { socket, divineSocketCustomizeMessager } from '@/utils/utils-websocket'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
     name: 'ChatComment',
     setup(props) {
-        const { inverted } = useProvider()
+        const message = useMessenger()
 
         function onSender() {
             divineSocketCustomizeMessager(socket.value, {
-                sessionId: `2156085764369235968`,
-                source: env.EnumMessagerSource.image,
-                text: faker.lorem.text(),
-                fileId: '2158176124776054784'
+                sessionId: message.sessionId,
+                source: env.EnumMessagerSource.text,
+                text: faker.lorem.text()
             }).then(response => {
                 console.log(response)
             })

@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, computed, onMounted } from 'vue'
+import { defineComponent, ref, computed, onMounted } from 'vue'
 import { useMessenger } from '@/store'
 import { instance, element } from '@/store/messenger'
 import { useProvider } from '@/hooks/hook-provider'
@@ -70,27 +70,6 @@ export default defineComponent({
 
         return () => (
             <div ref={element} class="chat-messenger n-chunk n-column n-auto n-disover" style={chunk.value}>
-                {/* <div class="n-chunk n-column n-auto" style={{ overflowY: 'scroll', scrollSnapAlign: 'end' }}>
-                    <div class="n-chunk n-column n-auto" style={{}}>
-                        {((message.loading && message.total === 0) || message.next) && (
-                            <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
-                                <common-loadiner size={32} size-border={4}></common-loadiner>
-                            </div>
-                        )}
-                        {!message.loading && message.total === 0 ? (
-                            <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
-                                <n-empty description="无数据"></n-empty>
-                            </div>
-                        ) : !message.loading && message.total > 0 ? (
-                            <n-element class="n-chunk n-column n-auto" style={{ padding: '20px', rowGap: '20px' }}>
-                                {message.dataSource.map(item => (
-                                    <chat-node-messenger node={item}></chat-node-messenger>
-                                ))}
-                                <div style={{ flex: 1 }}></div>
-                            </n-element>
-                        ) : null}
-                    </div>
-                </div> */}
                 <n-scrollbar ref={instance} class="is-customize" trigger="none" size={60} on-scroll={onScroller}>
                     {((message.loading && message.total === 0) || message.next) && (
                         <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
@@ -102,11 +81,10 @@ export default defineComponent({
                             <n-empty description="无数据"></n-empty>
                         </div>
                     ) : !message.loading && message.total > 0 ? (
-                        <n-element class="n-chunk n-column n-auto" style={{ padding: '20px', rowGap: '20px' }}>
-                            {message.dataSource.map(item => (
-                                <chat-node-messenger node={item}></chat-node-messenger>
+                        <n-element class="ctx-messenger n-chunk n-column n-auto">
+                            {message.dataSource.map((item, index) => (
+                                <chat-node-messenger node={item} order={message.dataSource.length - index}></chat-node-messenger>
                             ))}
-                            <div style={{ flex: 1 }}></div>
                         </n-element>
                     ) : null}
                 </n-scrollbar>
@@ -130,6 +108,17 @@ export default defineComponent({
         background-image: url('@/assets/images/chat-messager.png');
         opacity: var(--chat-messenger-opacity);
         transition: opacity 0.3s var(--cubic-bezier-ease-in-out);
+    }
+}
+
+.ctx-messenger {
+    position: relative;
+    padding: 40px 20px 60px;
+    :deep(.chat-node-messenger) {
+        margin-bottom: 20px;
+        &:first-child {
+            margin-bottom: 0px;
+        }
     }
 }
 </style>
