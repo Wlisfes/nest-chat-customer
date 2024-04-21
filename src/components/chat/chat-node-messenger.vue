@@ -27,7 +27,7 @@ export default defineComponent({
                             ) : node.value.source === env.EnumMessagerSource.image ? (
                                 <custom-image node={node.value}></custom-image>
                             ) : node.value.source === env.EnumMessagerSource.document ? (
-                                <custom-document max-width={360} node={node.value}></custom-document>
+                                <custom-document max-width={360} current={current.value} node={node.value}></custom-document>
                             ) : (
                                 <custom-texter max-width={540} node={node.value}></custom-texter>
                             )}
@@ -43,7 +43,7 @@ export default defineComponent({
                             ) : node.value.source === env.EnumMessagerSource.image ? (
                                 <custom-image node={node.value}></custom-image>
                             ) : node.value.source === env.EnumMessagerSource.document ? (
-                                <custom-document max-width={360} node={node.value}></custom-document>
+                                <custom-document current={current.value} max-width={360} node={node.value}></custom-document>
                             ) : (
                                 <custom-texter max-width={540} node={node.value}></custom-texter>
                             )}

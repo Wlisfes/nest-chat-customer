@@ -17,6 +17,8 @@ export interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
     '--chat-context-color': string
     '--custom-element-current-color': string
     '--custom-element-other-color': string
+    '--custom-document-current-color': string
+    '--custom-document-other-color': string
 
     '--chat-layout-color': string
     '--chat-layout-context': string
@@ -56,8 +58,10 @@ export function useProvider() {
             '--chat-comment-color': '#f0f2f5',
             '--chat-messenger-color': '#efeae2',
             '--chat-context-color': '#f0f2f5',
-            '--custom-element-current-color': '#d1ffe7',
-            '--custom-element-other-color': '#ffffff'
+            '--custom-element-current-color': '#d9fdd3',
+            '--custom-element-other-color': '#ffffff',
+            '--custom-document-current-color': '#d1f4cc',
+            '--custom-document-other-color': '#f5f6f6'
 
             // '--chat-layout-color': '#e6e3dd',
             // '--chat-layout-context': '#f0f2f5',
@@ -84,8 +88,10 @@ export function useProvider() {
             '--chat-comment-color': '#202c33',
             '--chat-messenger-color': '#0b141a',
             '--chat-context-color': '#0b141a',
-            '--custom-element-current-color': '#006955',
-            '--custom-element-other-color': '#202c33'
+            '--custom-element-current-color': '#005c4b',
+            '--custom-element-other-color': '#202c33',
+            '--custom-document-current-color': '#025144',
+            '--custom-document-other-color': '#1d282f'
 
             // '--chat-layout-color': '#0d1317',
             // '--chat-layout-context': '#232e35',
