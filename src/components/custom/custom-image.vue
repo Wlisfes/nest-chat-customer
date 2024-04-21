@@ -1,6 +1,5 @@
 <script lang="tsx">
 import { defineComponent, computed, PropType } from 'vue'
-import { divineWherer } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -12,18 +11,23 @@ export default defineComponent({
     },
     setup(props) {
         const media = computed(() => (props.node.medias.length > 0 ? props.node.medias[0] : null))
-        const maxWidth = computed(() => {
-            if (media.value && media.value.width > media.value.height) {
-                return props.largeWidth
+        const scale = computed(() => media.value && media.value.width > media.value.height)
+        const width = computed(() => (scale.value ? props.largeWidth : props.smallWidth))
+        const height = computed(() => {
+            if (scale.value && media.value) {
+                return (width.value / media.value.width) * media.value.height
+            } else if (media.value) {
+                const h = (width.value / media.value.width) * media.value.height
+                return h > props.largeWidth ? props.largeWidth : h
             }
-            return props.smallWidth
+            return 0
         })
 
         return () => (
-            <div class="custom-image n-chunk n-center n-middle n-disover" style={{ '--custom-max-width': maxWidth.value + 'px' }}>
+            <div class="custom-image n-chunk n-center n-middle n-disover">
                 {media.value && (
-                    <div class="custom-scale">
-                        <n-image show-toolbar={false} src={media.value.fileURL} />
+                    <div class="custom-scale n-chunk n-disover" style={{ width: width.value + 'px', height: height.value + 'px' }}>
+                        <n-image object-fit="cover" show-toolbar={false} src={media.value.fileURL} />
                     </div>
                 )}
             </div>
@@ -35,10 +39,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .custom-image {
     user-select: none;
-    max-width: var(--custom-max-width);
     border-radius: 3px;
-    max-height: 420px;
-    :deep(.n-image),
+    .n-image,
     :deep(img) {
         width: 100%;
         display: block;
