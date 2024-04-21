@@ -52,7 +52,7 @@ export default defineComponent({
 .document-depater {
     column-gap: 10px;
     padding: 10px;
-    border-radius: 0 0 6px 6px;
+    border-radius: 0 0 3px 3px;
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     &.current-depater {
         background-color: var(--custom-document-current-color);
@@ -65,7 +65,7 @@ export default defineComponent({
 .document-cover {
     position: relative;
     padding-bottom: 50%;
-    border-radius: 6px 6px 0 0;
+    border-radius: 3px 3px 0 0;
     overflow: hidden;
     &__container {
         position: absolute;

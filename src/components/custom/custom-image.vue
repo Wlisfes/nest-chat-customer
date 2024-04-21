@@ -36,7 +36,7 @@ export default defineComponent({
 .custom-image {
     user-select: none;
     max-width: var(--custom-max-width);
-    border-radius: 6px;
+    border-radius: 3px;
     max-height: 420px;
     :deep(.n-image),
     :deep(img) {

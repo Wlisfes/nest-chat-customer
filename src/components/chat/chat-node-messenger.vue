@@ -23,7 +23,11 @@ export default defineComponent({
                     <div class="chunk-messenger n-chunk n-end n-disover" style={{ columnGap: '10px' }}>
                         <custom-element v-model:node={node.value} current={current.value}>
                             {node.value.source === env.EnumMessagerSource.text ? (
-                                <custom-texter max-width={540} content={node.value.text}></custom-texter>
+                                <custom-texter
+                                    max-width={540}
+                                    content={node.value.text}
+                                    custom-style={{ padding: '7px 12px' }}
+                                ></custom-texter>
                             ) : node.value.source === env.EnumMessagerSource.image ? (
                                 <custom-image node={node.value}></custom-image>
                             ) : node.value.source === env.EnumMessagerSource.document ? (
@@ -39,7 +43,11 @@ export default defineComponent({
                         <custom-avatar src={node.value.user.avatar}></custom-avatar>
                         <custom-element v-model:node={node.value} current={current.value}>
                             {node.value.source === env.EnumMessagerSource.text ? (
-                                <custom-texter max-width={540} content={node.value.text}></custom-texter>
+                                <custom-texter
+                                    max-width={540}
+                                    content={node.value.text}
+                                    custom-style={{ padding: '7px 12px' }}
+                                ></custom-texter>
                             ) : node.value.source === env.EnumMessagerSource.image ? (
                                 <custom-image node={node.value}></custom-image>
                             ) : node.value.source === env.EnumMessagerSource.document ? (

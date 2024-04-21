@@ -1,15 +1,16 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, CSSProperties, PropType } from 'vue'
 
 export default defineComponent({
     name: 'CustomTexter',
     props: {
         maxWidth: { type: Number, required: true },
-        content: { type: String }
+        content: { type: String },
+        customStyle: { type: Object as PropType<CSSProperties>, default: () => ({}) }
     },
     setup(props) {
         return () => (
-            <div class="custom-texter" style={{ '--custom-max-width': props.maxWidth + 'px' }}>
+            <div class="custom-texter" style={{ '--custom-max-width': props.maxWidth + 'px', ...props.customStyle }}>
                 <n-text>{props.content}</n-text>
             </div>
         )

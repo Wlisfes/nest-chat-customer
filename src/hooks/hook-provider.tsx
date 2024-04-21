@@ -89,7 +89,7 @@ export function useProvider() {
             '--chat-messenger-color': '#0b141a',
             '--chat-context-color': '#0b141a',
             '--custom-element-current-color': '#005c4b',
-            '--custom-element-other-color': '#202c33',
+            '--custom-element-other-color': '#3b4043',
             '--custom-document-current-color': '#025144',
             '--custom-document-other-color': '#1d282f'
 
