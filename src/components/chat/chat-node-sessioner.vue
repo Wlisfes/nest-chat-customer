@@ -4,7 +4,7 @@ import { useUser, useMessenger } from '@/store'
 import { instance } from '@/store/messenger'
 import { useProvider } from '@/hooks/hook-provider'
 import { useMoment } from '@/hooks/hook-common'
-import { divineWherer, divineHandler, divineDelay } from '@/utils/utils-common'
+import { divineWherer, divineHandler } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({

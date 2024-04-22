@@ -12,7 +12,7 @@ export default defineComponent({
     },
     setup(props) {
         return () => (
-            <custom-element current={props.current} max-width={props.maxWidth} read node={props.node}>
+            <custom-element width="auto" current={props.current} max-width={props.maxWidth} read node={props.node}>
                 <div class="custom-texter" style={props.customStyle}>
                     <n-text>{props.node.text}</n-text>
                 </div>
@@ -26,7 +26,7 @@ export default defineComponent({
 .custom-texter {
     font-size: 14px;
     line-height: 20px;
-    padding: 7px 12px;
+    padding: 5px 10px;
     overflow: hidden;
     box-sizing: border-box;
     border-radius: 3px;

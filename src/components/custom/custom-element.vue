@@ -7,12 +7,13 @@ export default defineComponent({
     props: {
         current: { type: Boolean, default: false },
         maxWidth: { type: Number, required: true },
+        width: { type: String, default: '100%' },
         read: { type: Boolean, default: false },
         node: { type: Object as PropType<Omix<env.SchemaMessager>>, required: true }
     },
     setup(props, { slots }) {
         return () => (
-            <div class="custom-element n-chunk n-column" style={{ width: '100%', maxWidth: props.maxWidth + 'px' }}>
+            <div class="custom-element n-chunk n-column" style={{ width: props.width, maxWidth: props.maxWidth + 'px' }}>
                 <div class={{ 'custom-component': true, 'chunk-current': props.current, 'chunk-other': !props.current }}>
                     {slots.default && slots.default()}
                 </div>
@@ -54,6 +55,7 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     justify-content: center;
+    min-height: 34px;
     padding: 3px;
     border-radius: 6px;
     box-sizing: content-box;

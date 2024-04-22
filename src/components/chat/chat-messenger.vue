@@ -1,33 +1,13 @@
 <script lang="tsx">
-import { defineComponent, computed, onMounted, nextTick } from 'vue'
+import { defineComponent, nextTick } from 'vue'
 import { useMessenger } from '@/store'
 import { instance, element } from '@/store/messenger'
-import { useProvider } from '@/hooks/hook-provider'
-import { divineWherer, divineDelay } from '@/utils/utils-common'
+import { divineDelay } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'ChatSider',
     setup(props) {
         const message = useMessenger()
-        const { inverted } = useProvider()
-        const chunk = computed(() => ({
-            '--chat-messenger-opacity': divineWherer(inverted.value, 0.1, 0.6)
-        }))
-
-        // onMounted(() => {
-        //     messenger.observer.on(
-        //         'scrollBottom',
-        //         async (scope: MixType<{ behavior: 'auto' | 'instant' | 'smooth' }> = { behavior: 'smooth' }) => {
-        //             const target = await divineElementMomente()
-        //             if (scrollbar.value && target) {
-        //                 scrollbar.value.scrollTo({
-        //                     top: target.scrollHeight,
-        //                     behavior: scope.behavior ?? 'smooth'
-        //                 })
-        //             }
-        //         }
-        //     )
-        // })
 
         /**获取滚动容器节点**/
         async function divineElementMomente(): Promise<HTMLElement> {
@@ -57,7 +37,7 @@ export default defineComponent({
         }
 
         return () => (
-            <div ref={element} class="chat-messenger n-chunk n-column n-auto n-disover" style={chunk.value}>
+            <div ref={element} class="chat-messenger n-chunk n-column n-auto n-disover">
                 <n-scrollbar ref={instance} class="is-customize" trigger="none" size={60} on-scroll={onScroller}>
                     {((message.loading && message.total === 0) || message.next) && (
                         <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>

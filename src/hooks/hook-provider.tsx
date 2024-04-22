@@ -14,6 +14,7 @@ export interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
     '--chat-connect-color': string
     '--chat-comment-color': string
     '--chat-messenger-color': string
+    '--chat-messenger-opacity': number
     '--chat-context-color': string
     '--custom-element-current-color': string
     '--custom-element-other-color': string
@@ -57,6 +58,7 @@ export function useProvider() {
             '--chat-connect-color': '#f0f2f5',
             '--chat-comment-color': '#f0f2f5',
             '--chat-messenger-color': '#efeae2',
+            '--chat-messenger-opacity': 0.6,
             '--chat-context-color': '#f0f2f5',
             '--custom-element-current-color': '#d9fdd3',
             '--custom-element-other-color': '#ffffff',
@@ -87,6 +89,7 @@ export function useProvider() {
             '--chat-connect-color': '#202c33',
             '--chat-comment-color': '#202c33',
             '--chat-messenger-color': '#0b141a',
+            '--chat-messenger-opacity': 0.1,
             '--chat-context-color': '#0b141a',
             '--custom-element-current-color': '#005c4b',
             '--custom-element-other-color': '#212c33',
