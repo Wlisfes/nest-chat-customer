@@ -60,7 +60,8 @@ export default defineComponent({
                 text: comment.message,
                 medias: []
             }).then(async compose => {
-                return await messenge.fetchSessionPushMessager(compose as never)
+                await messenge.fetchSessionPushMessager(compose as never)
+                return await session.fetchSessionPushUpdate(env.EnumMessagerStatus.initialize, compose as never)
             })
             await divineHandler(Boolean(instance.value), () => {
                 return instance.value.scrollTo({ top: 999999, behavior: 'smooth' })

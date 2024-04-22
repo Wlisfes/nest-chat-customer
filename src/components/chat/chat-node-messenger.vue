@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, computed, onMounted, Fragment, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
-import { useUser, useMessenger } from '@/store'
+import { useUser, useSession } from '@/store'
 import { useProvider } from '@/hooks/hook-provider'
 import { useMoment } from '@/hooks/hook-common'
 import { divineWherer, divineHandler } from '@/utils/utils-common'
@@ -17,6 +17,7 @@ export default defineComponent({
     setup(props, { emit }) {
         const { node } = useVModels(props, emit)
         const user = useUser()
+        const session = useSession()
         const current = computed(() => user.uid === node.value.userId)
         const className = computed(() => ({
             'chunk-messenger n-chunk n-auto n-disover': true,
@@ -38,6 +39,10 @@ export default defineComponent({
                 text: scope.text
             })
             node.value.sid = sid
+            return await session.fetchSessionPushUpdate(env.EnumMessagerStatus.sending, {
+                sid: sid,
+                sessionId: scope.sessionId
+            } as never)
         }
 
         return () => (

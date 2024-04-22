@@ -2,6 +2,7 @@ import { toRefs, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useState } from '@/hooks/hook-state'
 import { APP_STORE } from '@/utils/utils-storage'
+import { divineHandler } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 import * as api from '@/api/instance.service'
 
@@ -53,6 +54,26 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
         })
     }
 
+    /**主动发送消息更新绑定会话**/
+    async function fetchSessionPushUpdate(type: env.EnumMessagerStatus, scope: Omix<env.SchemaMessager>) {
+        const node = state.dataSource.find(item => item.sid === scope.sessionId) as env.SchemaSession
+        if (type === env.EnumMessagerStatus.initialize) {
+            return await divineHandler(Boolean(node), () => {
+                node.message.createTime = scope.createTime
+                node.message.source = scope.source
+                node.message.status = scope.status
+                node.message.text = scope.text
+                node.message.userId = scope.userId
+                return node
+            })
+        } else if (type === env.EnumMessagerStatus.sending) {
+            return await divineHandler(Boolean(node), () => {
+                node.message.sid = scope.sid
+                return node
+            })
+        }
+    }
+
     /**socket消息推送会话处理**/
     async function fetchSessionServerMessager(scope: Omix<env.SchemaMessager>) {
         const node = state.dataSource.find(item => item.sid === scope.sessionId) as env.SchemaSession
@@ -80,5 +101,15 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
         }
     }
 
-    return { state, next, schema, ...toRefs(state), setState, fetchSessionInitColumn, fetchSessionNextColumn, fetchSessionServerMessager }
+    return {
+        state,
+        next,
+        schema,
+        ...toRefs(state),
+        setState,
+        fetchSessionInitColumn,
+        fetchSessionNextColumn,
+        fetchSessionServerMessager,
+        fetchSessionPushUpdate
+    }
 })
