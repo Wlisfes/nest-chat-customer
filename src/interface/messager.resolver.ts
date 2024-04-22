@@ -53,6 +53,9 @@ export interface QuerySessionColumnMessager extends Pick<SchemaMessager, 'sessio
     limit: number
 }
 
+/**获取消息详情**/
+export interface QuerySessionOneMessager extends Pick<SchemaMessager, 'sid'> {}
+
 /**Socket发送自定义消息**/
 export interface BodyComposeMessager {
     source: EnumMessagerSource

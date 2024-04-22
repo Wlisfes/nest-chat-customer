@@ -8,3 +8,12 @@ export function httpSessionColumn() {
         method: 'GET'
     })
 }
+
+/**会话详情**/
+export function httpSessionOneResolver(params: Omix<{ sid: string }>) {
+    return request<env.SchemaMessager>({
+        url: `/session/resolver`,
+        method: 'GET',
+        params
+    })
+}

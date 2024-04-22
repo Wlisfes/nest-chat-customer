@@ -2,7 +2,6 @@ import { toRefs, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useState } from '@/hooks/hook-state'
 import { APP_STORE } from '@/utils/utils-storage'
-import { divineHandler } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 import * as api from '@/api/instance.service'
 
@@ -57,8 +56,8 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
     /**socket消息推送会话处理**/
     async function fetchSessionServerMessager(scope: Omix<env.SchemaMessager>) {
         const node = state.dataSource.find(item => item.sid === scope.sessionId) as env.SchemaSession
-        /**会话存在**/
-        await divineHandler(Boolean(node), async () => {
+        if (Boolean(node)) {
+            /**会话存在**/
             node.message.createTime = scope.createTime
             node.message.sid = scope.sid
             node.message.source = scope.source
@@ -68,9 +67,17 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
             node.unread = node.unread.concat([
                 { sessionId: scope.sessionId, sid: scope.sid, source: scope.source, status: scope.status, userId: scope.userId }
             ] as never)
-        })
-        /**会话不存在**/
-        await divineHandler(!Boolean(node), async () => {})
+            return await setState({
+                dataSource: [node, ...state.dataSource.filter(item => item.sid !== scope.sessionId)]
+            })
+        } else {
+            /**会话不存在**/
+            return await api.httpSessionOneResolver({ sid: scope.sessionId }).then(async ({ data }) => {
+                setState({
+                    dataSource: [data as never, ...state.dataSource.filter(item => item.sid !== scope.sessionId)]
+                })
+            })
+        }
     }
 
     return { state, next, schema, ...toRefs(state), setState, fetchSessionInitColumn, fetchSessionNextColumn, fetchSessionServerMessager }

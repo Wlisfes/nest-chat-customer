@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, computed, Fragment, PropType } from 'vue'
-import { useUser, useMessenger, useSession } from '@/store'
+import { useUser, useMessenger, useSession, useComment } from '@/store'
 import { instance } from '@/store/messenger'
 import { useProvider } from '@/hooks/hook-provider'
 import { useMoment } from '@/hooks/hook-common'
@@ -16,6 +16,7 @@ export default defineComponent({
         const user = useUser()
         const session = useSession()
         const message = useMessenger()
+        const comment = useComment()
         const { inverted } = useProvider()
         const { divineDateMomentTransfor } = useMoment()
         const chunk = computed(() => ({
@@ -27,6 +28,7 @@ export default defineComponent({
         async function onSessionSelector(node: Omix<env.SchemaSession>, evt: Event) {
             return await divineHandler(message.sid !== node.sid, async () => {
                 await session.setState({ sid: node.sid })
+                await comment.setState({ message: '' })
                 await message.fetchSessionColumnInitMessager(node.sid)
                 await divineHandler(Boolean(instance.value), () => {
                     return instance.value.scrollTo({

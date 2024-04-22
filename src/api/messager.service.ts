@@ -9,3 +9,12 @@ export function httpSessionColumnMessager(params: env.QuerySessionColumnMessager
         params
     })
 }
+
+/**获取记录详情**/
+export function httpSessionOneMessager(params: env.QuerySessionOneMessager) {
+    return request<env.SchemaMessager>({
+        url: `/messager/session/resolver`,
+        method: 'GET',
+        params
+    })
+}
