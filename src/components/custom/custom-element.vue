@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, computed, PropType } from 'vue'
+import { defineComponent, CSSProperties, PropType } from 'vue'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -9,12 +9,16 @@ export default defineComponent({
         maxWidth: { type: Number, required: true },
         width: { type: String, default: '100%' },
         read: { type: Boolean, default: false },
+        customComponent: { type: Object as PropType<CSSProperties>, default: () => ({}) },
         node: { type: Object as PropType<Omix<env.SchemaMessager>>, required: true }
     },
     setup(props, { slots }) {
         return () => (
             <div class="custom-element n-chunk n-column" style={{ width: props.width, maxWidth: props.maxWidth + 'px' }}>
-                <div class={{ 'custom-component': true, 'chunk-current': props.current, 'chunk-other': !props.current }}>
+                <div
+                    class={{ 'custom-component': true, 'chunk-current': props.current, 'chunk-other': !props.current }}
+                    style={props.customComponent}
+                >
                     {slots.default && slots.default()}
                 </div>
                 <div class="element-date n-chunk n-center n-end">

@@ -12,7 +12,14 @@ export default defineComponent({
     },
     setup(props) {
         return () => (
-            <custom-element width="auto" current={props.current} max-width={props.maxWidth} read node={props.node}>
+            <custom-element
+                width="auto"
+                current={props.current}
+                max-width={props.maxWidth}
+                read
+                node={props.node}
+                custom-component={{ marginLeft: 'auto' }}
+            >
                 <div class="custom-texter" style={props.customStyle}>
                     <n-text>{props.node.text}</n-text>
                 </div>

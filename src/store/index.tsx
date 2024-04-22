@@ -7,6 +7,7 @@ export { useSession } from '@/store/session'
 export { useCommunit } from '@/store/communit'
 export { useMessenger } from '@/store/messenger'
 export { useChat } from '@/store/chat'
+export { useComment } from '@/store/comment'
 
 const store = createPinia().use(piniaPluginPersistedstate)
 

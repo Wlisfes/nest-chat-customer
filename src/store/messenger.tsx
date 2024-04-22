@@ -59,5 +59,20 @@ export const useMessenger = defineStore(APP_STORE.STORE_MESSANGER, () => {
         })
     }
 
-    return { state, next, ...toRefs(state), setState, fetchSessionColumnInitMessager, fetchSessionColumnNextMessager }
+    /**推入发送数据**/
+    async function fetchSessionPushMessager(compose: Partial<env.SchemaMessager>) {
+        return await setState({
+            dataSource: [compose].concat(state.dataSource) as Array<env.SchemaMessager>
+        })
+    }
+
+    return {
+        state,
+        next,
+        ...toRefs(state),
+        setState,
+        fetchSessionColumnInitMessager,
+        fetchSessionColumnNextMessager,
+        fetchSessionPushMessager
+    }
 })

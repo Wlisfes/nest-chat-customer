@@ -1,22 +1,72 @@
 <script lang="tsx">
 import { defineComponent, computed } from 'vue'
-import { faker } from '@/hooks/hook-common'
-import { useMessenger } from '@/store'
+import { moment } from '@/hooks/hook-common'
+import { v4 } from 'uuid'
+import { cloneDeep } from 'lodash'
+import { instance } from '@/store/messenger'
+import { useUser, useSession, useMessenger, useComment } from '@/store'
 import { socket, divineSocketCustomizeMessager } from '@/utils/utils-websocket'
+import { divineWherer, divineHandler } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
     name: 'ChatComment',
     setup(props) {
-        const message = useMessenger()
+        const user = useUser()
+        const session = useSession()
+        const messenge = useMessenger()
+        const comment = useComment()
 
-        function onSender() {
-            divineSocketCustomizeMessager(socket.value, {
-                sessionId: message.sid,
+        // function onSender() {
+        //     divineSocketCustomizeMessager(socket.value, {
+        //         sessionId: message.sid,
+        //         source: env.EnumMessagerSource.text,
+        //         text: faker.lorem.text()
+        //     }).then(response => {
+        //         console.log(response)
+        //     })
+        // }
+
+        /**组合发送数据**/
+        async function fetchComposeMessager(scope: env.BodyComposeMessager) {
+            return {
+                source: scope.source,
+                medias: scope.medias,
+                text: scope.text,
+                referrer: env.EnumMessagerReferrer.socket,
+                status: env.EnumMessagerStatus.sending,
+                keyId: Date.now(),
+                uuid: v4(),
+                sid: '',
+                reason: '',
+                createTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+                updateTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+                reads: [{ sid: session.sid, userId: user.uid }],
+                userId: user.uid,
+                user: { avatar: user.avatar, nickname: user.nickname, status: user.status, uid: user.uid },
+                sessionId: session.sid,
+                contactId: session.schema.contactId,
+                contact: cloneDeep(session.schema.contact ?? null),
+                communitId: session.schema.communitId,
+                communit: cloneDeep(session.schema.communit ?? null)
+            }
+        }
+
+        /**发送自定义消息**/
+        async function fetchSocketCustomizeMessager(done: Function) {
+            await done({ loading: true })
+            await fetchComposeMessager({
                 source: env.EnumMessagerSource.text,
-                text: faker.lorem.text()
-            }).then(response => {
-                console.log(response)
+                text: comment.message,
+                medias: []
+            }).then(async compose => {
+                return await messenge.fetchSessionPushMessager(compose as never)
+            })
+            await divineHandler(Boolean(instance.value), () => {
+                return instance.value.scrollTo({ top: 999999, behavior: 'smooth' })
+            })
+            return comment.setState({ message: '' }).then(async () => {
+                return await done({ loading: false })
             })
         }
 
@@ -44,17 +94,26 @@ export default defineComponent({
                     class="chat-comment__input"
                     placeholder="输入消息"
                     type="textarea"
-                    v-model:value={message.comment}
+                    v-model:value={comment.message}
                     autosize={{ minRows: 3, maxRows: 5 }}
                 />
                 <div class="chat-comment__footer n-chunk n-center n-end">
                     <n-text depth={3}>Ctrl + Enter 发送，Enter 换行</n-text>
-                    <n-button type="info" size="small">
-                        <div class="n-chunk n-center" style={{ columnGap: '5px' }}>
-                            <n-icon size={16} component={<Iv-BsSender />}></n-icon>
-                            <span>发送</span>
-                        </div>
-                    </n-button>
+                    <common-state
+                        data-render={(scope: Omix<{ loading: boolean }>, done: Function) => (
+                            <n-button
+                                type="info"
+                                size="small"
+                                disabled={scope.loading || !comment.message}
+                                onClick={(evt: Event) => fetchSocketCustomizeMessager(done)}
+                            >
+                                <div class="n-chunk n-center" style={{ columnGap: '5px' }}>
+                                    <n-icon size={16} component={<Iv-BsSender />}></n-icon>
+                                    <span>发送</span>
+                                </div>
+                            </n-button>
+                        )}
+                    ></common-state>
                 </div>
             </div>
         )

@@ -17,8 +17,15 @@ export enum EnumMessagerStatus {
     deleted = 'deleted' //删除
 }
 
+/**消息表: 消息来源**/
+export enum EnumMessagerReferrer {
+    socket = 'socket',
+    http = 'http'
+}
+
 /**消息表**/
 export interface SchemaMessager extends env.CommonSchema {
+    uuid: string
     sid: string
     sessionId: string
     userId: string
@@ -43,4 +50,11 @@ export interface BodyCustomizeMessager extends Pick<SchemaMessager, 'sessionId' 
 export interface QuerySessionColumnMessager extends Pick<SchemaMessager, 'sessionId'> {
     offset: number
     limit: number
+}
+
+/**Socket发送自定义消息**/
+export interface BodyComposeMessager {
+    source: EnumMessagerSource
+    text: string
+    medias: Array<Omix<Partial<env.SchemaMedia>>>
 }
