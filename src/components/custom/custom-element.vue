@@ -5,6 +5,7 @@ export default defineComponent({
     name: 'CustomElement',
     props: {
         current: { type: Boolean, default: false },
+        //maxWidth: { type: Number, required: true },
         customStyle: { type: Object as PropType<CSSProperties>, default: () => ({}) }
     },
     setup(props, { slots }) {

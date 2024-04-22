@@ -44,13 +44,17 @@ export default defineComponent({
                         </custom-element> */}
                         <div class={className.value}>
                             {node.value.source === env.EnumMessagerSource.text ? (
-                                <custom-texter current={current.value} max-width={540} content={node.value.text}></custom-texter>
+                                <custom-texter current={current.value} max-width={540}>
+                                    <n-text>{node.value.text}</n-text>
+                                </custom-texter>
                             ) : node.value.source === env.EnumMessagerSource.image ? (
                                 <custom-image current={current.value} node={node.value}></custom-image>
                             ) : node.value.source === env.EnumMessagerSource.document ? (
                                 <custom-document max-width={360} current={current.value} node={node.value}></custom-document>
                             ) : (
-                                <custom-texter current={current.value} max-width={540} content={node.value.text}></custom-texter>
+                                <custom-texter current={current.value} max-width={540}>
+                                    <n-text>{node.value.text}</n-text>
+                                </custom-texter>
                             )}
                         </div>
                         <custom-avatar src={node.value.user.avatar}></custom-avatar>
@@ -91,7 +95,7 @@ export default defineComponent({
             content: '';
             position: absolute;
             right: 0;
-            top: 16px;
+            top: 13px;
             width: 0;
             height: 0;
             border-top: 7px solid transparent;
@@ -106,7 +110,7 @@ export default defineComponent({
             content: '';
             position: absolute;
             left: 0;
-            top: 16px;
+            top: 13px;
             width: 0;
             height: 0;
             border-top: 7px solid transparent;

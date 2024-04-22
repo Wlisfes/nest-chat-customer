@@ -11,9 +11,9 @@ export default defineComponent({
     },
     setup(props, { slots }) {
         return () => (
-            <custom-element current={props.current}>
+            <custom-element current={props.current} max-width={props.maxWidth}>
                 <div class="custom-texter" style={{ maxWidth: props.maxWidth + 'px', ...props.customStyle }}>
-                    <n-text>{props.content}</n-text>
+                    {slots.default ? slots.default() : <n-text>{props.content}</n-text>}
                 </div>
             </custom-element>
         )
