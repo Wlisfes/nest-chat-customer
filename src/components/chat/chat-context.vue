@@ -9,7 +9,7 @@ export default defineComponent({
 
         return () => (
             <n-element class="chat-context n-chunk n-column n-auto n-disover">
-                {message.sessionId ? (
+                {message.sid ? (
                     <div class="n-chunk n-column n-auto n-disover">
                         <chat-connect></chat-connect>
                         <div class="n-chunk n-column n-auto n-disover">

@@ -10,7 +10,8 @@ export const instance = ref<ScrollbarInst>() as Ref<ScrollbarInst>
 
 export const useMessenger = defineStore(APP_STORE.STORE_MESSANGER, () => {
     const { state, setState } = useState({
-        sessionId: '',
+        sid: '',
+        comment: '',
         limit: 20,
         dataSource: [] as Array<env.SchemaMessager>,
         total: 0,
@@ -24,7 +25,7 @@ export const useMessenger = defineStore(APP_STORE.STORE_MESSANGER, () => {
     async function fetchSessionColumnMessager() {
         try {
             const { data } = await api.httpSessionColumnMessager({
-                sessionId: state.sessionId,
+                sessionId: state.sid,
                 offset: state.dataSource.length,
                 limit: state.limit
             })
@@ -36,7 +37,7 @@ export const useMessenger = defineStore(APP_STORE.STORE_MESSANGER, () => {
 
     /**初始化页面数据**/
     async function fetchSessionColumnInitMessager(sid: string) {
-        await setState({ loading: true, sessionId: sid, dataSource: [], total: 0 })
+        await setState({ loading: true, sid: sid, dataSource: [], total: 0 })
         return await fetchSessionColumnMessager().then(async ({ total, list }) => {
             return await setState({
                 dataSource: list,

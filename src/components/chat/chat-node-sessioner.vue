@@ -20,12 +20,12 @@ export default defineComponent({
         const { divineDateMomentTransfor } = useMoment()
         const chunk = computed(() => ({
             '--chat-hover-node-sessioner': divineWherer(inverted.value, '#202c33', '#f0f2f5'),
-            '--chat-active-node-sessioner': divineWherer(message.sessionId === props.node.sid, 'var(--chat-hover-node-sessioner)', '#0000')
+            '--chat-active-node-sessioner': divineWherer(message.sid === props.node.sid, 'var(--chat-hover-node-sessioner)', '#0000')
         }))
 
         /**选择、切换会话**/
         async function onSessionSelector(node: Omix<env.SchemaSession>, evt: Event) {
-            return await divineHandler(message.sessionId !== node.sid, async () => {
+            return await divineHandler(message.sid !== node.sid, async () => {
                 await session.setState({ sid: node.sid })
                 await message.fetchSessionColumnInitMessager(node.sid)
                 await divineHandler(Boolean(instance.value), () => {
