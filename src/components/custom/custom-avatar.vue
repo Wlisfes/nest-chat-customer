@@ -5,7 +5,7 @@ export default defineComponent({
     name: 'CustomAvatar',
     props: {
         src: { type: String },
-        size: { type: Number, default: 42 }
+        size: { type: Number, default: 40 }
     },
     setup(props) {
         return () => (

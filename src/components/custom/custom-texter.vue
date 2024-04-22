@@ -4,15 +4,18 @@ import { defineComponent, CSSProperties, PropType } from 'vue'
 export default defineComponent({
     name: 'CustomTexter',
     props: {
+        current: { type: Boolean, default: false },
         maxWidth: { type: Number, required: true },
         content: { type: String },
         customStyle: { type: Object as PropType<CSSProperties>, default: () => ({}) }
     },
-    setup(props) {
+    setup(props, { slots }) {
         return () => (
-            <div class="custom-texter" style={{ '--custom-max-width': props.maxWidth + 'px', ...props.customStyle }}>
-                <n-text>{props.content}</n-text>
-            </div>
+            <custom-element current={props.current}>
+                <div class="custom-texter" style={{ maxWidth: props.maxWidth + 'px', ...props.customStyle }}>
+                    <n-text>{props.content}</n-text>
+                </div>
+            </custom-element>
         )
     }
 })
@@ -20,8 +23,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .custom-texter {
-    max-width: var(--custom-max-width);
     font-size: 14px;
-    line-height: 22px;
+    line-height: 20px;
+    padding: 7px 12px;
+    overflow: hidden;
+    border-radius: 3px;
 }
 </style>
