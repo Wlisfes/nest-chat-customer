@@ -1,10 +1,11 @@
 <script lang="tsx">
-import { defineComponent, computed, Fragment, PropType } from 'vue'
+import { defineComponent, computed, onMounted, Fragment, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
 import { useUser, useMessenger } from '@/store'
 import { useProvider } from '@/hooks/hook-provider'
 import { useMoment } from '@/hooks/hook-common'
 import { divineWherer, divineHandler } from '@/utils/utils-common'
+import { socket, divineSocketCustomizeMessager } from '@/utils/utils-websocket'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -22,6 +23,23 @@ export default defineComponent({
             'chunk-current n-end': current.value,
             'chunk-other': !current.value
         }))
+
+        onMounted(() => {
+            if (props.node.status === env.EnumMessagerStatus.initialize) {
+                fetchSocketInitialize(props.node)
+            }
+        })
+
+        /**初始化状态、socket发送消息**/
+        async function fetchSocketInitialize(scope: Omix<env.SchemaMessager>) {
+            console.log(scope)
+            const { sid } = await divineSocketCustomizeMessager<{ sid: string }>(socket.value, {
+                sessionId: scope.sessionId,
+                source: scope.source,
+                text: scope.text
+            })
+            node.value.sid = sid
+        }
 
         return () => (
             <div class="chat-node-messenger" style={{ order: props.order }}>

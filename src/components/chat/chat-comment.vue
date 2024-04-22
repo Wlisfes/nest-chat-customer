@@ -34,7 +34,7 @@ export default defineComponent({
                 medias: scope.medias,
                 text: scope.text,
                 referrer: env.EnumMessagerReferrer.socket,
-                status: env.EnumMessagerStatus.sending,
+                status: env.EnumMessagerStatus.initialize,
                 keyId: Date.now(),
                 uuid: v4(),
                 sid: '',

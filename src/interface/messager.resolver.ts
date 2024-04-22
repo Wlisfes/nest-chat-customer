@@ -11,6 +11,7 @@ export enum EnumMessagerSource {
 
 /**消息表: 消息状态**/
 export enum EnumMessagerStatus {
+    initialize = 'initialize', //初始化
     sending = 'sending', //发送中
     delivered = 'delivered', //发送成功
     failed = 'failed', //发送失败

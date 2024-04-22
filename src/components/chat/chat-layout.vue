@@ -1,11 +1,12 @@
 <script lang="tsx">
 import { defineComponent, ref, computed, onMounted, Transition, CSSProperties } from 'vue'
 import { useCurrentElement, useElementSize, provideLocal } from '@vueuse/core'
-import { useConfiger, useUser, useChat, useSession } from '@/store'
+import { useConfiger, useUser, useMessenger, useSession } from '@/store'
 import { useState } from '@/hooks/hook-state'
 import { divineWherer, divineHandler, divineDelay } from '@/utils/utils-common'
 import { connectClient } from '@/utils/utils-websocket'
 import * as vide from '@/utils/utils-provide'
+import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
     name: 'ChatLayout',
@@ -15,6 +16,7 @@ export default defineComponent({
         const configer = useConfiger()
         const user = useUser()
         const session = useSession()
+        const messenge = useMessenger()
         const { state, setState } = useState({ loading: true, failure: false })
         const { width } = useElementSize(layout)
         const compute = computed<CSSProperties>(() => ({
@@ -50,6 +52,14 @@ export default defineComponent({
                 client.on('connect_error', async err => {
                     console.log(`connect_error:`, err)
                     return await setState({ loading: false, failure: true })
+                })
+                /**监听消息推送**/
+                client.on('server-customize-messager', async (data: Omix<env.SchemaMessager>) => {
+                    console.log(data)
+                    if (data.sessionId === session.sid) {
+                        /**是选中会话消息、推入消息列表**/
+                        await messenge.fetchSessionPushMessager(data)
+                    }
                 })
             })
         }
