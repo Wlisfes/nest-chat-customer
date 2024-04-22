@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, ref, computed, onMounted } from 'vue'
+import { defineComponent, computed, onMounted, nextTick } from 'vue'
 import { useMessenger } from '@/store'
 import { instance, element } from '@/store/messenger'
 import { useProvider } from '@/hooks/hook-provider'
@@ -39,33 +39,21 @@ export default defineComponent({
             return element.value.querySelector('.n-scrollbar-container') as HTMLElement
         }
 
+        /**上拉分页加载数据**/
         async function onScroller(evt: { target: HTMLElement }) {
-            // const { scrollTop, clientHeight, scrollHeight } = evt.target
-            // if (scrollTop + clientHeight * 2 >= scrollHeight && !state.loading) {
-            //     const data = await fetchColumn()
-            //     return await setState({
-            //         dataSource: state.dataSource.concat(data as any) as any,
-            //         loading: false
-            //     })
-            // }
-            // scrollTop.value = evt.target.scrollTop
-            // const scrollHeight = evt.target.scrollHeight
-            // if (evt.target.scrollTop <= evt.target.clientHeight * 2 && !messenger.messager.loading && messenger.messager.isMore) {
-            //     await messenger.setMessagerLoadiner(true)
-            //     await messenger.fetchChannelColumnMessenger({
-            //         type: 'loadiner',
-            //         page: messenger.messager.page + 1,
-            //         closure: false
-            //     })
-            //     const target = await divineElementMomente()
-            //     nextTick(async () => {
-            //         await scrollbar.value.scrollTo({
-            //             top: target.scrollHeight - scrollHeight + scrollTop.value,
-            //             behavior: 'auto'
-            //         })
-            //         await messenger.setMessagerLoadiner(false)
-            //     })
-            // }
+            await message.setState({ distance: evt.target.scrollTop })
+            const scrollHeight = evt.target.scrollHeight
+            if (evt.target.scrollTop <= evt.target.clientHeight * 2 && !message.loading && message.next) {
+                await message.fetchSessionColumnNextMessager(true)
+                const target = await divineElementMomente()
+                nextTick(async () => {
+                    await instance.value.scrollTo({
+                        top: target.scrollHeight - scrollHeight + message.distance,
+                        behavior: 'auto'
+                    })
+                    await message.setState({ loading: false })
+                })
+            }
         }
 
         return () => (
@@ -76,17 +64,22 @@ export default defineComponent({
                             <common-loadiner size={32} size-border={4}></common-loadiner>
                         </div>
                     )}
-                    {!message.loading && message.total === 0 ? (
+                    {!message.loading && message.total === 0 && (
                         <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
                             <n-empty description="无数据"></n-empty>
                         </div>
-                    ) : !message.loading && message.total > 0 ? (
+                    )}
+                    {message.total > 0 && (
                         <n-element class="ctx-messenger n-chunk n-column n-auto">
                             {message.dataSource.map((item, index) => (
-                                <chat-node-messenger node={item} order={message.dataSource.length - index}></chat-node-messenger>
+                                <chat-node-messenger
+                                    key={item.sid}
+                                    node={item}
+                                    order={message.dataSource.length - index}
+                                ></chat-node-messenger>
                             ))}
                         </n-element>
-                    ) : null}
+                    )}
                 </n-scrollbar>
             </div>
         )

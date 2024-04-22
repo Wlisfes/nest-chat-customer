@@ -25,8 +25,7 @@ export default defineComponent({
         /**选择、切换会话**/
         async function onSessionSelector(node: Omix<env.SchemaSession>, evt: Event) {
             return await divineHandler(message.sessionId !== node.sid, async () => {
-                await message.setState({ loading: true, sessionId: node.sid, dataSource: [], total: 0 })
-                await message.fetchSessionColumnMessager()
+                await message.fetchSessionColumnInitMessager(node.sid)
                 await divineHandler(Boolean(instance.value), () => {
                     return instance.value.scrollTo({
                         top: 999999,

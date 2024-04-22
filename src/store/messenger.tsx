@@ -1,4 +1,4 @@
-import { toRefs, ref, Ref, VNodeRef } from 'vue'
+import { toRefs, ref, Ref, computed, VNodeRef } from 'vue'
 import { defineStore } from 'pinia'
 import { ScrollbarInst } from 'naive-ui'
 import { useState } from '@/hooks/hook-state'
@@ -14,34 +14,49 @@ export const useMessenger = defineStore(APP_STORE.STORE_MESSANGER, () => {
         limit: 20,
         dataSource: [] as Array<env.SchemaMessager>,
         total: 0,
-        next: false,
-        loading: true
+        loading: true,
+        distance: 0
     })
+    /**是否存在更多数据**/
+    const next = computed(() => state.total > state.dataSource.length)
 
     /**会话消息列表**/
     async function fetchSessionColumnMessager() {
-        return await setState({ loading: true }).then(async () => {
-            try {
-                const sessionId = state.sessionId
-                const { data } = await api.httpSessionColumnMessager({
-                    sessionId: sessionId,
-                    offset: state.dataSource.length,
-                    limit: state.limit
-                })
-                if (sessionId === state.sessionId) {
-                    return await setState({
-                        loading: false,
-                        next: data.total > data.list.length,
-                        dataSource: data.list,
-                        total: data.total
-                    })
-                }
-                return state
-            } catch (e) {
-                return await setState({ loading: false, dataSource: [], total: 0, next: false })
-            }
+        try {
+            const { data } = await api.httpSessionColumnMessager({
+                sessionId: state.sessionId,
+                offset: state.dataSource.length,
+                limit: state.limit
+            })
+            return { total: data.total ?? 0, list: data.list ?? [] }
+        } catch (e) {
+            return { total: 0, list: [] }
+        }
+    }
+
+    /**初始化页面数据**/
+    async function fetchSessionColumnInitMessager(sid: string) {
+        await setState({ loading: true, sessionId: sid, dataSource: [], total: 0 })
+        return await fetchSessionColumnMessager().then(async ({ total, list }) => {
+            return await setState({
+                dataSource: list,
+                total: total,
+                loading: false
+            })
         })
     }
 
-    return { state, ...toRefs(state), setState, fetchSessionColumnMessager }
+    /**分页加载**/
+    async function fetchSessionColumnNextMessager(closure: boolean = false) {
+        await setState({ loading: true })
+        return await fetchSessionColumnMessager().then(async ({ total, list }) => {
+            return await setState({
+                dataSource: state.dataSource.concat(list),
+                total: total,
+                loading: closure
+            })
+        })
+    }
+
+    return { state, next, ...toRefs(state), setState, fetchSessionColumnInitMessager, fetchSessionColumnNextMessager }
 })
