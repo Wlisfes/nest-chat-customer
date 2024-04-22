@@ -30,7 +30,7 @@ export default defineComponent({
 
         onMounted(async () => {
             await user.fetchUserResolver()
-            await session.fetchSessionColumn()
+            await session.fetchSessionInitColumn()
             await divineConnectSocketClient()
         })
 

@@ -1,5 +1,6 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
+import { useConfiger } from '@/store'
 
 export default defineComponent({
     name: 'ChatCompose',
@@ -7,9 +8,14 @@ export default defineComponent({
         title: { type: String }
     },
     setup(props) {
+        const configer = useConfiger()
+
         return () => (
             <div class="chat-compose n-chunk n-center n-space">
                 <n-h1>{props.title}</n-h1>
+                <n-button type="primary" onClick={(scope: Omix) => configer.setTheme(configer.theme === 'light' ? 'dark' : 'light')}>
+                    {configer.theme}
+                </n-button>
             </div>
         )
     }

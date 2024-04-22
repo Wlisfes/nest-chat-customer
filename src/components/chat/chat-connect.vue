@@ -1,21 +1,45 @@
 <script lang="tsx">
-import { defineComponent, computed } from 'vue'
-import { useUser, useConfiger } from '@/store'
-import { useProvider } from '@/hooks/hook-provider'
-import { divineWherer } from '@/utils/utils-common'
+import { defineComponent, Fragment } from 'vue'
+import { useUser, useSession } from '@/store'
+import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
     name: 'ChatComment',
     setup(props) {
-        const configer = useConfiger()
         const user = useUser()
-        const { inverted } = useProvider()
+        const session = useSession()
 
         return () => (
-            <div class="chat-connect n-chunk n-column n-center n-middle">
-                <n-button type="primary" onClick={(scope: Omix) => configer.setTheme(configer.theme === 'light' ? 'dark' : 'light')}>
-                    {configer.theme}
-                </n-button>
+            <div class="chat-connect n-chunk n-center">
+                {session.schema && (
+                    <n-space align="center" wrap-item={false}>
+                        {session.schema.source === env.EnumSessionSource.contact ? (
+                            <Fragment>
+                                {session.schema.contact.userId === user.uid ? (
+                                    <custom-avatar size={34} src={session.schema.contact.nive.avatar}></custom-avatar>
+                                ) : (
+                                    <custom-avatar size={34} src={session.schema.contact.user.avatar}></custom-avatar>
+                                )}
+                                {session.schema.contact.userId === user.uid ? (
+                                    <n-text depth={1} style={{ fontSize: '16px' }}>
+                                        {session.schema.contact.nive.nickname}
+                                    </n-text>
+                                ) : (
+                                    <n-text depth={1} style={{ fontSize: '16px' }}>
+                                        {session.schema.contact.user.nickname}
+                                    </n-text>
+                                )}
+                            </Fragment>
+                        ) : session.schema.source === env.EnumSessionSource.communit ? (
+                            <Fragment>
+                                <custom-avatar size={34} src={session.schema.communit.poster.fileURL}></custom-avatar>
+                                <n-text depth={1} style={{ fontSize: '16px' }}>
+                                    {session.schema.communit.name}
+                                </n-text>
+                            </Fragment>
+                        ) : null}
+                    </n-space>
+                )}
             </div>
         )
     }
@@ -26,6 +50,7 @@ export default defineComponent({
 .chat-connect {
     overflow: hidden;
     height: 60px;
+    padding: 0 16px;
     background-color: var(--chat-connect-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
 }

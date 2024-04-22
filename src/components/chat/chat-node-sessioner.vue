@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, computed, Fragment, PropType } from 'vue'
-import { useUser, useMessenger } from '@/store'
+import { useUser, useMessenger, useSession } from '@/store'
 import { instance } from '@/store/messenger'
 import { useProvider } from '@/hooks/hook-provider'
 import { useMoment } from '@/hooks/hook-common'
@@ -14,6 +14,7 @@ export default defineComponent({
     },
     setup(props) {
         const user = useUser()
+        const session = useSession()
         const message = useMessenger()
         const { inverted } = useProvider()
         const { divineDateMomentTransfor } = useMoment()
@@ -25,6 +26,7 @@ export default defineComponent({
         /**选择、切换会话**/
         async function onSessionSelector(node: Omix<env.SchemaSession>, evt: Event) {
             return await divineHandler(message.sessionId !== node.sid, async () => {
+                await session.setState({ sid: node.sid })
                 await message.fetchSessionColumnInitMessager(node.sid)
                 await divineHandler(Boolean(instance.value), () => {
                     return instance.value.scrollTo({
@@ -41,19 +43,17 @@ export default defineComponent({
                 style={chunk.value}
                 onClick={(evt: Event) => onSessionSelector(props.node, evt)}
             >
-                <div class="chat-avatar">
-                    {props.node.source === 'communit' ? (
-                        <n-image preview-disabled src={props.node.communit.poster.fileURL} />
-                    ) : (
-                        <Fragment>
-                            {props.node.contact.userId === user.uid ? (
-                                <n-image preview-disabled src={props.node.contact.nive.avatar} />
-                            ) : (
-                                <n-image preview-disabled src={props.node.contact.user.avatar} />
-                            )}
-                        </Fragment>
-                    )}
-                </div>
+                {props.node.source === 'communit' ? (
+                    <custom-avatar size={46} src={props.node.communit.poster.fileURL}></custom-avatar>
+                ) : (
+                    <Fragment>
+                        {props.node.contact.userId === user.uid ? (
+                            <custom-avatar size={46} src={props.node.contact.nive.avatar}></custom-avatar>
+                        ) : (
+                            <custom-avatar size={46} src={props.node.contact.user.avatar}></custom-avatar>
+                        )}
+                    </Fragment>
+                )}
                 <div class="chat-context n-chunk n-column n-auto" style={{ overflow: 'hidden', rowGap: '4px' }}>
                     <div class="chat-source n-chunk n-center" style={{ columnGap: '10px' }}>
                         <div style={{ flex: 1, overflow: 'hidden' }}>
@@ -126,19 +126,6 @@ export default defineComponent({
     }
     &:last-child {
         --chat-border-color: transparent;
-    }
-    .chat-avatar {
-        width: 46px;
-        height: 46px;
-        border-radius: 4px;
-        position: relative;
-        overflow: hidden;
-        :deep(.n-image),
-        :deep(img) {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
     }
     .chat-badge {
         min-width: 16px;
