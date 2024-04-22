@@ -2,6 +2,7 @@ import { toRefs, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useState } from '@/hooks/hook-state'
 import { APP_STORE } from '@/utils/utils-storage'
+import { divineHandler } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 import * as api from '@/api/instance.service'
 
@@ -53,5 +54,24 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
         })
     }
 
-    return { state, next, schema, ...toRefs(state), setState, fetchSessionInitColumn, fetchSessionNextColumn }
+    /**socket消息推送会话处理**/
+    async function fetchSessionServerMessager(scope: Omix<env.SchemaMessager>) {
+        const node = state.dataSource.find(item => item.sid === scope.sessionId) as env.SchemaSession
+        /**会话存在**/
+        await divineHandler(Boolean(node), async () => {
+            node.message.createTime = scope.createTime
+            node.message.sid = scope.sid
+            node.message.source = scope.source
+            node.message.status = scope.status
+            node.message.text = scope.text
+            node.message.userId = scope.userId
+            node.unread = node.unread.concat([
+                { sessionId: scope.sessionId, sid: scope.sid, source: scope.source, status: scope.status, userId: scope.userId }
+            ] as never)
+        })
+        /**会话不存在**/
+        await divineHandler(!Boolean(node), async () => {})
+    }
+
+    return { state, next, schema, ...toRefs(state), setState, fetchSessionInitColumn, fetchSessionNextColumn, fetchSessionServerMessager }
 })

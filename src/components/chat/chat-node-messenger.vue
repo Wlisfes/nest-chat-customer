@@ -32,7 +32,6 @@ export default defineComponent({
 
         /**初始化状态、socket发送消息**/
         async function fetchSocketInitialize(scope: Omix<env.SchemaMessager>) {
-            console.log(scope)
             const { sid } = await divineSocketCustomizeMessager<{ sid: string }>(socket.value, {
                 sessionId: scope.sessionId,
                 source: scope.source,

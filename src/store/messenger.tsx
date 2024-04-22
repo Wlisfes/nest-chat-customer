@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import { ScrollbarInst } from 'naive-ui'
 import { useState } from '@/hooks/hook-state'
 import { APP_STORE, APP_COMMON, getStore, setStore } from '@/utils/utils-storage'
+import { divineHandler } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 import * as api from '@/api/instance.service'
 export const element = ref<HTMLElement>() as Ref<HTMLElement>
@@ -66,6 +67,13 @@ export const useMessenger = defineStore(APP_STORE.STORE_MESSANGER, () => {
         })
     }
 
+    /**socket消息推送会话处理**/
+    async function fetchSessionServerMessager(sid: string, scope: Omix<env.SchemaMessager>) {
+        return await divineHandler(scope.sessionId === sid, async () => {
+            return await fetchSessionPushMessager(scope)
+        })
+    }
+
     return {
         state,
         next,
@@ -73,6 +81,7 @@ export const useMessenger = defineStore(APP_STORE.STORE_MESSANGER, () => {
         setState,
         fetchSessionColumnInitMessager,
         fetchSessionColumnNextMessager,
-        fetchSessionPushMessager
+        fetchSessionPushMessager,
+        fetchSessionServerMessager
     }
 })

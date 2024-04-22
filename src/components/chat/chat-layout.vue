@@ -56,10 +56,10 @@ export default defineComponent({
                 /**监听消息推送**/
                 client.on('server-customize-messager', async (data: Omix<env.SchemaMessager>) => {
                     console.log(data)
-                    if (data.sessionId === session.sid) {
-                        /**是选中会话消息、推入消息列表**/
-                        await messenge.fetchSessionPushMessager(data)
-                    }
+                    /**消息列表处理**/
+                    await messenge.fetchSessionServerMessager(session.sid, data)
+                    /**会话列表**/
+                    await session.fetchSessionServerMessager(data)
                 })
             })
         }
