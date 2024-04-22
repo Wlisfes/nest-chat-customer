@@ -2,7 +2,7 @@ import { toRefs, ref, Ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { ScrollbarInst } from 'naive-ui'
 import { useState } from '@/hooks/hook-state'
-import { APP_STORE, APP_COMMON, getStore, setStore } from '@/utils/utils-storage'
+import { APP_STORE } from '@/utils/utils-storage'
 import { divineHandler } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 import * as api from '@/api/instance.service'
@@ -13,7 +13,7 @@ export const useMessenger = defineStore(APP_STORE.STORE_MESSANGER, () => {
     const { state, setState } = useState({
         sid: '',
         comment: '',
-        limit: 20,
+        limit: 30,
         dataSource: [] as Array<env.SchemaMessager>,
         total: 0,
         loading: true,
