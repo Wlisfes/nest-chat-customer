@@ -8,62 +8,67 @@ export default defineComponent({
     name: 'CustomTexter',
     props: {
         current: { type: Boolean, default: false },
-        maxWidth: { type: Number, required: true },
+        maxWidth: { type: Number, default: 360 },
         node: { type: Object as PropType<Omix<env.SchemaMessager>>, required: true }
     },
     setup(props) {
         const media = computed(() => (props.node.medias.length > 0 ? props.node.medias[0] : null))
         const suffix = computed(() => media.value?.fileName.split('.').pop()?.toUpperCase())
+        const depater = computed(() => ({
+            'document-depater n-chunk': true,
+            'current-depater': props.current,
+            'other-depater': !props.current
+        }))
 
         return () => (
-            <div class={{ 'custom-document n-chunk n-column n-disover': true }} style={{ width: props.maxWidth + 'px' }}>
-                {media.value && (
-                    <Fragment>
-                        {suffix.value === 'PDF' && (
-                            <div class="document-cover">
-                                <div class="document-cover__container">
-                                    <n-image preview-disabled src={media.value.depater.fileURL} />
+            <custom-element current={props.current} max-width={props.maxWidth} read node={props.node}>
+                <div class="custom-document n-chunk n-column n-disover">
+                    {media.value && (
+                        <Fragment>
+                            {suffix.value === 'PDF' && (
+                                <div class="document-cover">
+                                    <div class="document-cover__container">
+                                        <n-image preview-disabled src={media.value.depater.fileURL} />
+                                    </div>
+                                </div>
+                            )}
+                            <div class={depater.value}>
+                                <div class="document-depater__icon n-chunk n-column n-center n-middle">
+                                    <n-image preview-disabled src={pdf} width={30} />
+                                </div>
+                                <div class="n-chunk n-column n-auto">
+                                    <div style={{ fontSize: '14px', lineHeight: '22px' }}>
+                                        <n-text depth={1}>
+                                            <n-ellipsis tooltip={false}>{media.value?.fileName}</n-ellipsis>
+                                        </n-text>
+                                    </div>
+                                    <div class="n-chunk n-center" style={{ fontSize: '12px', lineHeight: '20px' }}>
+                                        {suffix.value && (
+                                            <Fragment>
+                                                <n-text depth={3}>{suffix.value}</n-text>
+                                                <n-text depth={3} style={{ padding: '0 5px' }}>
+                                                    •
+                                                </n-text>
+                                            </Fragment>
+                                        )}
+                                        <n-text depth={3}>{divineBytefor(media.value?.fileSize ?? 0)}</n-text>
+                                    </div>
+                                </div>
+                                <div class="n-chunk n-center n-middle" style={{ width: '42px' }}>
+                                    <common-icon
+                                        circle
+                                        size={42}
+                                        icon-size={24}
+                                        spin={<common-loadiner size={24}></common-loadiner>}
+                                        component={<Iv-BsDownload />}
+                                        onClick={(scope: Omix<{ done: Function }>) => scope.done({ loading: true })}
+                                    ></common-icon>
                                 </div>
                             </div>
-                        )}
-                        <div
-                            class={{ 'document-depater n-chunk': true, 'current-depater': props.current, 'other-depater': !props.current }}
-                        >
-                            <div class="document-depater__icon n-chunk n-column n-center n-middle">
-                                <n-image preview-disabled src={pdf} width={30} />
-                            </div>
-                            <div class="n-chunk n-column n-auto">
-                                <div style={{ fontSize: '14px', lineHeight: '22px' }}>
-                                    <n-text depth={1}>
-                                        <n-ellipsis tooltip={false}>{media.value?.fileName}</n-ellipsis>
-                                    </n-text>
-                                </div>
-                                <div class="n-chunk n-center" style={{ fontSize: '12px', lineHeight: '20px' }}>
-                                    {suffix.value && (
-                                        <Fragment>
-                                            <n-text depth={3}>{suffix.value}</n-text>
-                                            <n-text depth={3} style={{ padding: '0 5px' }}>
-                                                •
-                                            </n-text>
-                                        </Fragment>
-                                    )}
-                                    <n-text depth={3}>{divineBytefor(media.value?.fileSize ?? 0)}</n-text>
-                                </div>
-                            </div>
-                            <div class="n-chunk n-center n-middle" style={{ width: '42px' }}>
-                                <common-icon
-                                    circle
-                                    size={42}
-                                    icon-size={24}
-                                    spin={<common-loadiner size={24}></common-loadiner>}
-                                    component={<Iv-BsDownload />}
-                                    onClick={(scope: Omix<{ done: Function }>) => scope.done({ loading: true })}
-                                ></common-icon>
-                            </div>
-                        </div>
-                    </Fragment>
-                )}
-            </div>
+                        </Fragment>
+                    )}
+                </div>
+            </custom-element>
         )
     }
 })

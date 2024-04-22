@@ -13,23 +13,23 @@ export default defineComponent({
         const { state } = useState({ large: 420, small: 260 })
         const media = computed(() => (props.node.medias.length > 0 ? props.node.medias[0] : null))
         const scale = computed(() => media.value && media.value.width > media.value.height)
-        const width = computed(() => (scale.value ? state.large : state.small))
-        const height = computed(() => {
+        const maxWidth = computed(() => (scale.value ? state.large : state.small))
+        const maxHeight = computed(() => {
             if (scale.value && media.value) {
-                return (width.value / media.value.width) * media.value.height
+                return (maxWidth.value / media.value.width) * media.value.height
             } else if (media.value) {
-                const h = (width.value / media.value.width) * media.value.height
+                const h = (maxWidth.value / media.value.width) * media.value.height
                 return h > state.large ? state.large : h
             }
             return 0
         })
         const element = computed<CSSProperties>(() => ({
             width: '100%',
-            paddingBottom: (height.value / width.value) * 100 + '%'
+            paddingBottom: (maxHeight.value / maxWidth.value) * 100 + '%'
         }))
 
         return () => (
-            <custom-element current={props.current} custom-style={{ width: '100%', maxWidth: width.value + 'px' }}>
+            <custom-element current={props.current} max-width={maxWidth.value} node={props.node}>
                 {media.value && (
                     <div class="custom-scale" style={element.value}>
                         <div class="custom-scale__component n-chunk n-disover">

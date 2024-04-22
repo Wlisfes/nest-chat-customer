@@ -1,19 +1,20 @@
 <script lang="tsx">
 import { defineComponent, CSSProperties, PropType } from 'vue'
+import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
     name: 'CustomTexter',
     props: {
         current: { type: Boolean, default: false },
-        maxWidth: { type: Number, required: true },
-        content: { type: String },
+        maxWidth: { type: Number, default: 540 },
+        node: { type: Object as PropType<Omix<env.SchemaMessager>>, required: true },
         customStyle: { type: Object as PropType<CSSProperties>, default: () => ({}) }
     },
-    setup(props, { slots }) {
+    setup(props) {
         return () => (
-            <custom-element current={props.current} max-width={props.maxWidth}>
-                <div class="custom-texter" style={{ maxWidth: props.maxWidth + 'px', ...props.customStyle }}>
-                    {slots.default ? slots.default() : <n-text>{props.content}</n-text>}
+            <custom-element current={props.current} max-width={props.maxWidth} read node={props.node}>
+                <div class="custom-texter" style={props.customStyle}>
+                    <n-text>{props.node.text}</n-text>
                 </div>
             </custom-element>
         )
@@ -27,6 +28,7 @@ export default defineComponent({
     line-height: 20px;
     padding: 7px 12px;
     overflow: hidden;
+    box-sizing: border-box;
     border-radius: 3px;
 }
 </style>

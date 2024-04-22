@@ -1,23 +1,37 @@
 <script lang="tsx">
-import { defineComponent, computed, PropType, CSSProperties } from 'vue'
+import { defineComponent, computed, PropType } from 'vue'
+import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
     name: 'CustomElement',
     props: {
         current: { type: Boolean, default: false },
-        //maxWidth: { type: Number, required: true },
-        customStyle: { type: Object as PropType<CSSProperties>, default: () => ({}) }
+        maxWidth: { type: Number, required: true },
+        read: { type: Boolean, default: false },
+        node: { type: Object as PropType<Omix<env.SchemaMessager>>, required: true }
     },
     setup(props, { slots }) {
-        const className = computed(() => ({
-            'custom-element n-chunk n-column n-middle': true,
-            'chunk-current': props.current,
-            'chunk-other': !props.current
-        }))
-
         return () => (
-            <div class={className.value} style={props.customStyle}>
-                {slots.default && slots.default()}
+            <div class="custom-element n-chunk n-column" style={{ width: '100%', maxWidth: props.maxWidth + 'px' }}>
+                <div class={{ 'custom-component': true, 'chunk-current': props.current, 'chunk-other': !props.current }}>
+                    {slots.default && slots.default()}
+                </div>
+                <div class="element-date n-chunk n-center n-end">
+                    <n-text depth={3} style={{ paddingTop: '2px' }}>
+                        {props.node.createTime}
+                    </n-text>
+                    {props.current && (
+                        <div class="n-chunk n-center" style={{ paddingLeft: '4px' }}>
+                            {props.read ? (
+                                <n-icon size={14} color="#25d366" component={<Iv-BsReadr />}></n-icon>
+                            ) : props.node.status === env.EnumMessagerStatus.sending ? (
+                                <n-icon size={14} color="var(--text-color-3)" component={<Iv-BsCheck />}></n-icon>
+                            ) : props.node.status === env.EnumMessagerStatus.delivered ? (
+                                <n-icon size={14} color="var(--text-color-3)" component={<Iv-BsReadr />}></n-icon>
+                            ) : null}
+                        </div>
+                    )}
+                </div>
             </div>
         )
     }
@@ -25,16 +39,21 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-// .element-date {
-//     height: 24px;
-//     padding: 0 2px;
-//     box-sizing: border-box;
-//     font-size: 12px;
-//     line-height: 1;
-//     user-select: none;
-// }
+.element-date {
+    padding: 4px 5px 0;
+    box-sizing: border-box;
+    font-size: 12px;
+    line-height: 1;
+    user-select: none;
+    :deep(.n-icon) {
+        transition: color 0.3s var(--cubic-bezier-ease-in-out);
+    }
+}
 
-.custom-element {
+.custom-component {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     padding: 3px;
     border-radius: 6px;
     box-sizing: content-box;

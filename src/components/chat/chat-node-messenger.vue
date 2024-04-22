@@ -27,34 +27,15 @@ export default defineComponent({
             <div class="chat-node-messenger" style={{ order: props.order }}>
                 {current.value ? (
                     <div class="n-chunk n-end n-disover" style={{ columnGap: '10px' }}>
-                        {/* <custom-element v-model:node={node.value} current={current.value}>
-                            {node.value.source === env.EnumMessagerSource.text ? (
-                                <custom-texter
-                                    max-width={540}
-                                    content={node.value.text}
-                                    custom-style={{ padding: '7px 12px' }}
-                                ></custom-texter>
-                            ) : node.value.source === env.EnumMessagerSource.image ? (
-                                <custom-image node={node.value}></custom-image>
-                            ) : node.value.source === env.EnumMessagerSource.document ? (
-                                <custom-document max-width={360} current={current.value} node={node.value}></custom-document>
-                            ) : (
-                                <custom-texter max-width={540} node={node.value}></custom-texter>
-                            )}
-                        </custom-element> */}
                         <div class={className.value}>
                             {node.value.source === env.EnumMessagerSource.text ? (
-                                <custom-texter current={current.value} max-width={540}>
-                                    <n-text>{node.value.text}</n-text>
-                                </custom-texter>
+                                <custom-texter current={current.value} node={node.value}></custom-texter>
                             ) : node.value.source === env.EnumMessagerSource.image ? (
                                 <custom-image current={current.value} node={node.value}></custom-image>
                             ) : node.value.source === env.EnumMessagerSource.document ? (
                                 <custom-document max-width={360} current={current.value} node={node.value}></custom-document>
                             ) : (
-                                <custom-texter current={current.value} max-width={540}>
-                                    <n-text>{node.value.text}</n-text>
-                                </custom-texter>
+                                <custom-texter current={current.value} node={node.value}></custom-texter>
                             )}
                         </div>
                         <custom-avatar src={node.value.user.avatar}></custom-avatar>
@@ -62,21 +43,17 @@ export default defineComponent({
                 ) : (
                     <div class="n-chunk n-disover" style={{ columnGap: '10px' }}>
                         <custom-avatar src={node.value.user.avatar}></custom-avatar>
-                        <custom-element v-model:node={node.value} current={current.value}>
+                        <div class={className.value}>
                             {node.value.source === env.EnumMessagerSource.text ? (
-                                <custom-texter
-                                    max-width={540}
-                                    content={node.value.text}
-                                    custom-style={{ padding: '7px 12px' }}
-                                ></custom-texter>
+                                <custom-texter current={current.value} node={node.value}></custom-texter>
                             ) : node.value.source === env.EnumMessagerSource.image ? (
-                                <custom-image node={node.value}></custom-image>
+                                <custom-image current={current.value} node={node.value}></custom-image>
                             ) : node.value.source === env.EnumMessagerSource.document ? (
-                                <custom-document current={current.value} max-width={360} node={node.value}></custom-document>
+                                <custom-document max-width={360} current={current.value} node={node.value}></custom-document>
                             ) : (
-                                <custom-texter max-width={540} node={node.value}></custom-texter>
+                                <custom-texter current={current.value} node={node.value}></custom-texter>
                             )}
-                        </custom-element>
+                        </div>
                     </div>
                 )}
             </div>

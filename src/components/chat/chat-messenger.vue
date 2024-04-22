@@ -115,7 +115,7 @@ export default defineComponent({
     position: relative;
     padding: 40px 20px 60px;
     :deep(.chat-node-messenger) {
-        margin-bottom: 20px;
+        margin-bottom: 24px;
         &:first-child {
             margin-bottom: 0px;
         }
