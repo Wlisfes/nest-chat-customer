@@ -36,3 +36,23 @@ export function divineSocketCustomizeMessager<T>(
         }
     })
 }
+
+/**发送消息已读操作**/
+export function divineSocketChangeMessager<T>(
+    client: SocketClient,
+    scope: env.BodySocketChangeMessager,
+    callback?: Function
+): Promise<Omix<T>> {
+    return new Promise((resolve, reject) => {
+        try {
+            return client.emit('socket-change-messager', scope, (response: Omix<T>) => {
+                if (typeof callback === 'function') {
+                    callback(response)
+                }
+                return resolve(response)
+            })
+        } catch (e) {
+            return reject(e)
+        }
+    })
+}

@@ -47,6 +47,13 @@ export interface BodyCustomizeMessager extends Pick<SchemaMessager, 'sessionId' 
     fileId?: string
 }
 
+/**发送消息已读操作**/
+export interface BodySocketChangeMessager {
+    sid: string
+    userId: string
+    sessionId: string
+}
+
 /**会话消息列表**/
 export interface QuerySessionColumnMessager extends Pick<SchemaMessager, 'sessionId'> {
     offset: number

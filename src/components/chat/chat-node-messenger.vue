@@ -2,7 +2,7 @@
 import { defineComponent, computed, onMounted, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
 import { useUser, useSession } from '@/store'
-import { socket, divineSocketCustomizeMessager } from '@/utils/utils-websocket'
+import { socket, divineSocketCustomizeMessager, divineSocketChangeMessager } from '@/utils/utils-websocket'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -22,31 +22,60 @@ export default defineComponent({
             'chunk-other': !current.value
         }))
 
-        onMounted(() => {
+        onMounted(async () => {
             if (props.node.status === env.EnumMessagerStatus.initialize) {
                 /**消息初始化状态**/
-                fetchSocketInitialize(props.node)
+                await fetchSocketInitialize(props.node)
             } else {
+                await fetchSocketMonitor(props.node.sid)
+                const read = props.node.reads.some(item => item.userId === user.uid)
+                if (!read) {
+                    /**消息未读状态**/
+                    await fetcnSocketChangeMessager()
+                }
             }
         })
 
         /**更新消息SID**/
         async function setNodeSid(sid: string) {
-            return (node.value.sid = sid)
+            node.value.sid = sid
+        }
+
+        /**更新消息状态**/
+        async function setNodeStatus(status: env.EnumMessagerStatus, reason: string = '') {
+            node.value.status = status
+            node.value.reason = reason
+        }
+
+        /**消息已读操作**/
+        async function fetcnSocketChangeMessager() {
+            return await divineSocketChangeMessager(socket.value, {
+                sid: node.value.sid,
+                userId: user.uid,
+                sessionId: node.value.sessionId
+            })
+        }
+
+        /**Socket事件监听**/
+        async function fetchSocketMonitor(sid: string) {
+            return socket.value.on(sid, async data => {
+                console.log(data)
+            })
         }
 
         /**初始化状态、socket发送消息**/
         async function fetchSocketInitialize(scope: Omix<env.SchemaMessager>) {
             try {
-                const result = await divineSocketCustomizeMessager<{ sid: string }>(socket.value, {
+                const { sid } = await divineSocketCustomizeMessager(socket.value, {
                     sessionId: scope.sessionId,
                     source: scope.source,
                     text: scope.text
                 })
-                await setNodeSid(result.sid)
-                return await session.fetchSessionPushSidUpdate({ sid: result.sid, sessionId: scope.sessionId })
-            } catch (e) {
-                console.error(e)
+                await setNodeSid(sid)
+                await fetchSocketMonitor(sid)
+                return await session.fetchSessionPushSidUpdate({ sid: sid, sessionId: scope.sessionId })
+            } catch (e: any) {
+                return await setNodeStatus(env.EnumMessagerStatus.failed, e.message)
             }
         }
 
