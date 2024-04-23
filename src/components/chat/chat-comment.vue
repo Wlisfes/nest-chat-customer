@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, nextTick } from 'vue'
 import { moment } from '@/hooks/hook-common'
 import { v4 } from 'uuid'
 import { cloneDeep } from 'lodash'
@@ -53,8 +53,8 @@ export default defineComponent({
         }
 
         /**发送自定义消息**/
-        async function fetchSocketCustomizeMessager(done: Function) {
-            await done({ loading: true })
+        async function fetchSocketCustomizeMessager() {
+            await comment.setState({ loading: true })
             await fetchComposeMessager({
                 source: env.EnumMessagerSource.text,
                 text: comment.message,
@@ -66,9 +66,35 @@ export default defineComponent({
             await divineHandler(Boolean(instance.value), () => {
                 return instance.value.scrollTo({ top: 999999, behavior: 'smooth' })
             })
-            return comment.setState({ message: '' }).then(async () => {
-                return await done({ loading: false })
+            return await comment.setState({
+                message: '',
+                loading: false
             })
+        }
+
+        /**键盘回车事件处理**/
+        async function onKeydownSubmit(evt: KeyboardEvent) {
+            if (evt.key === 'Enter' && evt.ctrlKey) {
+                evt.preventDefault()
+                evt.stopPropagation()
+                const target = evt.target as HTMLInputElement
+                if ((target && target.selectionStart) || target.selectionStart === 0) {
+                    const start = target.selectionStart as number
+                    const end = target.selectionEnd as number
+                    const message = target.value.substring(0, start) + '\n' + target.value.substring(end, target.value.length)
+                    await comment.setState({ message })
+                    nextTick(() => {
+                        target.focus()
+                        target.setSelectionRange(end + '\n'.length, end + '\n'.length)
+                    })
+                } else {
+                    return await comment.setState({ message: target.value + '\n' })
+                }
+            } else if (evt.key === 'Enter') {
+                evt.preventDefault()
+                evt.stopPropagation()
+                return await divineHandler(Boolean(comment.message), fetchSocketCustomizeMessager)
+            }
         }
 
         return () => (
@@ -97,24 +123,21 @@ export default defineComponent({
                     type="textarea"
                     v-model:value={comment.message}
                     autosize={{ minRows: 3, maxRows: 5 }}
+                    onKeydown={onKeydownSubmit}
                 />
                 <div class="chat-comment__footer n-chunk n-center n-end">
-                    <n-text depth={3}>Ctrl + Enter 发送，Enter 换行</n-text>
-                    <common-state
-                        data-render={(scope: Omix<{ loading: boolean }>, done: Function) => (
-                            <n-button
-                                type="info"
-                                size="small"
-                                disabled={scope.loading || !comment.message}
-                                onClick={(evt: Event) => fetchSocketCustomizeMessager(done)}
-                            >
-                                <div class="n-chunk n-center" style={{ columnGap: '5px' }}>
-                                    <n-icon size={16} component={<Iv-BsSender />}></n-icon>
-                                    <span>发送</span>
-                                </div>
-                            </n-button>
-                        )}
-                    ></common-state>
+                    <n-text depth={3}>Enter 发送，Ctrl+Enter 换行</n-text>
+                    <n-button
+                        type="info"
+                        size="small"
+                        disabled={comment.loading || !comment.message}
+                        onClick={fetchSocketCustomizeMessager}
+                    >
+                        <div class="n-chunk n-center" style={{ columnGap: '5px' }}>
+                            <n-icon size={16} component={<Iv-BsSender />}></n-icon>
+                            <span>发送</span>
+                        </div>
+                    </n-button>
                 </div>
             </div>
         )
