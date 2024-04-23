@@ -103,6 +103,18 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
         }
     }
 
+    /**消息已读、递减未读数**/
+    async function fetchSessionReadUpdate(scope: Omix<env.BodySocketChangeMessager>) {
+        const node = state.dataSource.find(item => item.sid === scope.sessionId) as env.SchemaSession
+        return await divineHandler(Boolean(node), async () => {
+            const read = node.unread.some(item => item.sid === scope.sid)
+            if (read) {
+                node.unread = node.unread.filter(item => item.sid !== scope.sid)
+            }
+            return node
+        })
+    }
+
     return {
         state,
         next,
@@ -113,6 +125,7 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
         fetchSessionNextColumn,
         fetchSessionServerMessager,
         fetchSessionPushUpdate,
-        fetchSessionPushSidUpdate
+        fetchSessionPushSidUpdate,
+        fetchSessionReadUpdate
     }
 })

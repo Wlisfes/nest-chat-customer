@@ -36,7 +36,6 @@ export default defineComponent({
                 })
                 /**监听消息推送**/
                 client.on('server-customize-messager', async (data: Omix<env.SchemaMessager>) => {
-                    console.log(data)
                     /**消息列表处理**/
                     await messenge.fetchSessionServerMessager(session.sid, data)
                     /**会话列表**/

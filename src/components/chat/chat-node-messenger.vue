@@ -58,8 +58,8 @@ export default defineComponent({
 
         /**Socket事件监听**/
         async function fetchSocketMonitor(sid: string) {
-            return socket.value.on(sid, async data => {
-                console.log(data)
+            return socket.value.on(sid, async (data: Omix<env.BodySocketChangeMessager>) => {
+                await session.fetchSessionReadUpdate(data)
             })
         }
 
