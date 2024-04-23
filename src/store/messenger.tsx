@@ -23,12 +23,12 @@ export const useMessenger = defineStore(APP_STORE.STORE_MESSANGER, () => {
     const next = computed(() => state.total > state.dataSource.length)
 
     /**会话消息列表**/
-    async function fetchSessionColumnMessager() {
+    async function fetchSessionColumnMessager(limit?: number) {
         try {
             const { data } = await api.httpSessionColumnMessager({
                 sessionId: state.sid,
                 offset: state.dataSource.length,
-                limit: state.limit
+                limit: limit ?? state.limit
             })
             return { total: data.total ?? 0, list: data.list ?? [] }
         } catch (e) {
@@ -37,9 +37,9 @@ export const useMessenger = defineStore(APP_STORE.STORE_MESSANGER, () => {
     }
 
     /**初始化页面数据**/
-    async function fetchSessionColumnInitMessager(sid: string) {
+    async function fetchSessionColumnInitMessager(sid: string, limit?: number) {
         await setState({ loading: true, sid: sid, dataSource: [], total: 0 })
-        return await fetchSessionColumnMessager().then(async ({ total, list }) => {
+        return await fetchSessionColumnMessager(limit).then(async ({ total, list }) => {
             return await setState({
                 dataSource: list,
                 total: total,
