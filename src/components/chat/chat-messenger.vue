@@ -39,27 +39,29 @@ export default defineComponent({
         return () => (
             <div ref={element} class="chat-messenger n-chunk n-column n-auto n-disover">
                 <n-scrollbar ref={instance} class="is-customize" trigger="none" size={60} on-scroll={onScroller}>
-                    {((message.loading && message.total === 0) || message.next) && (
-                        <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
-                            <common-loadiner size={32} size-border={4}></common-loadiner>
-                        </div>
-                    )}
-                    {!message.loading && message.total === 0 && (
-                        <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
-                            <n-empty description="无数据"></n-empty>
-                        </div>
-                    )}
-                    {message.total > 0 && (
-                        <n-element class="ctx-messenger n-chunk n-column n-auto">
-                            {message.dataSource.map((item, index) => (
-                                <chat-node-messenger
-                                    key={item.uuid ?? item.sid}
-                                    node={item}
-                                    order={message.dataSource.length - index}
-                                ></chat-node-messenger>
-                            ))}
-                        </n-element>
-                    )}
+                    <div class="n-chunk n-column n-auto">
+                        {((message.loading && message.total === 0) || message.next) && (
+                            <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
+                                <common-loadiner size={32} size-border={4}></common-loadiner>
+                            </div>
+                        )}
+                        {!message.loading && message.total === 0 && (
+                            <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
+                                <n-empty description="无数据"></n-empty>
+                            </div>
+                        )}
+                        {message.total > 0 && (
+                            <n-element class="ctx-messenger n-chunk n-column n-auto">
+                                {message.dataSource.map((item, index) => (
+                                    <chat-node-messenger
+                                        key={item.uuid ?? item.sid}
+                                        node={item}
+                                        order={message.dataSource.length - index}
+                                    ></chat-node-messenger>
+                                ))}
+                            </n-element>
+                        )}
+                    </div>
                 </n-scrollbar>
             </div>
         )
@@ -68,22 +70,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.chat-messenger {
-    background-color: var(--chat-messenger-color);
-    transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
-    &::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        background-image: url('@/assets/images/chat-messager.png');
-        opacity: var(--chat-messenger-opacity);
-        transition: opacity 0.3s var(--cubic-bezier-ease-in-out);
-    }
-}
-
 .ctx-messenger {
     position: relative;
     padding: 40px 20px 60px;

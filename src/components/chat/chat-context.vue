@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
-import { useConfiger, useUser, useChat, useMessenger } from '@/store'
+import { useMessenger } from '@/store'
 
 export default defineComponent({
     name: 'ChatContext',
@@ -12,7 +12,7 @@ export default defineComponent({
                 {message.sid ? (
                     <div class="n-chunk n-column n-auto n-disover">
                         <chat-connect></chat-connect>
-                        <div class="n-chunk n-column n-auto n-disover">
+                        <div class="chat-context__messenger n-chunk n-column n-auto n-disover">
                             <chat-messenger></chat-messenger>
                         </div>
                         <chat-comment></chat-comment>
@@ -32,5 +32,20 @@ export default defineComponent({
 .chat-context {
     background-color: var(--chat-context-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
+    &__messenger {
+        background-color: var(--chat-messenger-color);
+        transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
+        &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background-image: url('@/assets/images/chat-messager.png');
+            opacity: var(--chat-messenger-opacity);
+            transition: opacity 0.3s var(--cubic-bezier-ease-in-out);
+        }
+    }
 }
 </style>
