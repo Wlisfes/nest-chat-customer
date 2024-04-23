@@ -1,12 +1,11 @@
 <script lang="tsx">
-import { defineComponent, computed, nextTick } from 'vue'
+import { defineComponent, nextTick } from 'vue'
 import { moment } from '@/hooks/hook-common'
 import { v4 } from 'uuid'
 import { cloneDeep } from 'lodash'
 import { instance } from '@/store/messenger'
 import { useUser, useSession, useMessenger, useComment } from '@/store'
-import { socket, divineSocketCustomizeMessager } from '@/utils/utils-websocket'
-import { divineWherer, divineHandler } from '@/utils/utils-common'
+import { divineHandler } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -16,16 +15,6 @@ export default defineComponent({
         const session = useSession()
         const messenge = useMessenger()
         const comment = useComment()
-
-        // function onSender() {
-        //     divineSocketCustomizeMessager(socket.value, {
-        //         sessionId: message.sid,
-        //         source: env.EnumMessagerSource.text,
-        //         text: faker.lorem.text()
-        //     }).then(response => {
-        //         console.log(response)
-        //     })
-        // }
 
         /**组合发送数据**/
         async function fetchComposeMessager(scope: env.BodyComposeMessager) {
@@ -59,17 +48,14 @@ export default defineComponent({
                 source: env.EnumMessagerSource.text,
                 text: comment.message,
                 medias: []
-            }).then(async compose => {
-                await messenge.fetchSessionPushMessager(compose as never)
-                return await session.fetchSessionPushUpdate(env.EnumMessagerStatus.initialize, compose as never)
+            }).then(async (compose: Omix<any>) => {
+                await messenge.fetchSessionPushMessager(compose)
+                return await session.fetchSessionPushUpdate(compose)
             })
             await divineHandler(Boolean(instance.value), () => {
                 return instance.value.scrollTo({ top: 999999, behavior: 'smooth' })
             })
-            return await comment.setState({
-                message: '',
-                loading: false
-            })
+            return await comment.setState({ message: '', loading: false })
         }
 
         /**键盘回车事件处理**/

@@ -55,23 +55,25 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
     }
 
     /**主动发送消息更新绑定会话**/
-    async function fetchSessionPushUpdate(type: env.EnumMessagerStatus, scope: Omix<env.SchemaMessager>) {
+    async function fetchSessionPushUpdate(scope: Omix<env.SchemaMessager>) {
         const node = state.dataSource.find(item => item.sid === scope.sessionId) as env.SchemaSession
-        if (type === env.EnumMessagerStatus.initialize) {
-            return await divineHandler(Boolean(node), () => {
-                node.message.createTime = scope.createTime
-                node.message.source = scope.source
-                node.message.status = scope.status
-                node.message.text = scope.text
-                node.message.userId = scope.userId
-                return node
-            })
-        } else if (type === env.EnumMessagerStatus.sending) {
-            return await divineHandler(Boolean(node), () => {
-                node.message.sid = scope.sid
-                return node
-            })
-        }
+        return await divineHandler(Boolean(node), () => {
+            node.message.createTime = scope.createTime
+            node.message.source = scope.source
+            node.message.status = scope.status
+            node.message.text = scope.text
+            node.message.userId = scope.userId
+            return node
+        })
+    }
+
+    /**主动发送消息更新绑定会话SID**/
+    async function fetchSessionPushSidUpdate(scope: Omix<{ sessionId: string; sid: string }>) {
+        const node = state.dataSource.find(item => item.sid === scope.sessionId) as env.SchemaSession
+        return await divineHandler(Boolean(node), () => {
+            node.message.sid = scope.sid
+            return node
+        })
     }
 
     /**socket消息推送会话处理**/
@@ -110,6 +112,7 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
         fetchSessionInitColumn,
         fetchSessionNextColumn,
         fetchSessionServerMessager,
-        fetchSessionPushUpdate
+        fetchSessionPushUpdate,
+        fetchSessionPushSidUpdate
     }
 })

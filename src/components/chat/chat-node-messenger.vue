@@ -1,10 +1,7 @@
 <script lang="tsx">
-import { defineComponent, computed, onMounted, Fragment, PropType } from 'vue'
+import { defineComponent, computed, onMounted, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
 import { useUser, useSession } from '@/store'
-import { useProvider } from '@/hooks/hook-provider'
-import { useMoment } from '@/hooks/hook-common'
-import { divineWherer, divineHandler } from '@/utils/utils-common'
 import { socket, divineSocketCustomizeMessager } from '@/utils/utils-websocket'
 import * as env from '@/interface/instance.resolver'
 
@@ -27,22 +24,30 @@ export default defineComponent({
 
         onMounted(() => {
             if (props.node.status === env.EnumMessagerStatus.initialize) {
+                /**消息初始化状态**/
                 fetchSocketInitialize(props.node)
+            } else {
             }
         })
 
+        /**更新消息SID**/
+        async function setNodeSid(sid: string) {
+            return (node.value.sid = sid)
+        }
+
         /**初始化状态、socket发送消息**/
         async function fetchSocketInitialize(scope: Omix<env.SchemaMessager>) {
-            const { sid } = await divineSocketCustomizeMessager<{ sid: string }>(socket.value, {
-                sessionId: scope.sessionId,
-                source: scope.source,
-                text: scope.text
-            })
-            node.value.sid = sid
-            return await session.fetchSessionPushUpdate(env.EnumMessagerStatus.sending, {
-                sid: sid,
-                sessionId: scope.sessionId
-            } as never)
+            try {
+                const result = await divineSocketCustomizeMessager<{ sid: string }>(socket.value, {
+                    sessionId: scope.sessionId,
+                    source: scope.source,
+                    text: scope.text
+                })
+                await setNodeSid(result.sid)
+                return await session.fetchSessionPushSidUpdate({ sid: result.sid, sessionId: scope.sessionId })
+            } catch (e) {
+                console.error(e)
+            }
         }
 
         return () => (
