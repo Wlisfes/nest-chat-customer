@@ -21,7 +21,6 @@ export default defineComponent({
                 width="auto"
                 current={props.current}
                 max-width={props.maxWidth}
-                read
                 node={props.node}
                 custom-component={customComponent.value}
             >

@@ -2,7 +2,7 @@
 import { defineComponent, computed, onMounted, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
 import { useUser, useSession } from '@/store'
-import { socket, divineSocketCustomizeMessager, divineSocketChangeMessager } from '@/utils/utils-websocket'
+import { socket, divineSocketCustomizeMessager } from '@/utils/utils-websocket'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -15,7 +15,7 @@ export default defineComponent({
         const { node } = useVModels(props, emit)
         const user = useUser()
         const session = useSession()
-        const current = computed(() => user.uid === node.value.userId)
+        const current = computed<boolean>(() => user.uid === node.value.userId)
         const className = computed(() => ({
             'chunk-messenger n-chunk n-auto n-disover': true,
             'chunk-current n-end': current.value,
@@ -27,12 +27,8 @@ export default defineComponent({
                 /**消息初始化状态**/
                 await fetchSocketInitialize(props.node)
             } else {
+                /**Socket事件监听已读状态推送**/
                 await fetchSocketMonitor(props.node.sid)
-                const read = props.node.reads.some(item => item.userId === user.uid)
-                if (!read) {
-                    /**消息未读状态**/
-                    await fetcnSocketChangeMessager()
-                }
             }
         })
 
@@ -45,15 +41,6 @@ export default defineComponent({
         async function setNodeStatus(status: env.EnumMessagerStatus, reason: string = '') {
             node.value.status = status
             node.value.reason = reason
-        }
-
-        /**消息已读操作**/
-        async function fetcnSocketChangeMessager() {
-            return await divineSocketChangeMessager(socket.value, {
-                sid: node.value.sid,
-                userId: user.uid,
-                sessionId: node.value.sessionId
-            })
         }
 
         /**Socket事件监听**/
@@ -89,7 +76,7 @@ export default defineComponent({
                             ) : node.value.source === env.EnumMessagerSource.image ? (
                                 <custom-image current={current.value} node={node.value}></custom-image>
                             ) : node.value.source === env.EnumMessagerSource.document ? (
-                                <custom-document max-width={360} current={current.value} node={node.value}></custom-document>
+                                <custom-document current={current.value} node={node.value}></custom-document>
                             ) : (
                                 <custom-texter current={current.value} node={node.value}></custom-texter>
                             )}

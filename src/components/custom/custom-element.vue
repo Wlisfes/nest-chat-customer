@@ -1,5 +1,7 @@
 <script lang="tsx">
-import { defineComponent, CSSProperties, PropType } from 'vue'
+import { defineComponent, onMounted, computed, Fragment, CSSProperties, PropType } from 'vue'
+import { useUser, useSession } from '@/store'
+import { socket, divineSocketChangeMessager } from '@/utils/utils-websocket'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -8,11 +10,35 @@ export default defineComponent({
         current: { type: Boolean, default: false },
         maxWidth: { type: Number, required: true },
         width: { type: String, default: '100%' },
-        read: { type: Boolean, default: false },
         customComponent: { type: Object as PropType<CSSProperties>, default: () => ({}) },
         node: { type: Object as PropType<Omix<env.SchemaMessager>>, required: true }
     },
     setup(props, { slots }) {
+        const user = useUser()
+        const session = useSession()
+        const read = computed(() => {
+            if (session.schema.source === env.EnumSessionSource.contact) {
+                /**私聊类型**/
+                return props.node.reads.some(item => item.userId === user.uid)
+            } else if (session.schema.source === env.EnumSessionSource.communit) {
+                /**群聊类型**/
+            }
+            return false
+        })
+
+        onMounted(() => {
+            console.log(session.schema)
+        })
+
+        /**消息已读操作**/
+        async function fetcnSocketChangeMessager(node: Omix<env.SchemaMessager>) {
+            return await divineSocketChangeMessager(socket.value, {
+                sid: node.sid,
+                userId: user.uid,
+                sessionId: node.value.sessionId
+            })
+        }
+
         return () => (
             <div class="custom-element n-chunk n-column" style={{ width: props.width, maxWidth: props.maxWidth + 'px' }}>
                 <div
@@ -27,13 +53,20 @@ export default defineComponent({
                     </n-text>
                     {props.current && (
                         <div class="n-chunk n-center" style={{ paddingLeft: '4px' }}>
-                            {props.read ? (
+                            {session.schema.source === env.EnumSessionSource.contact ? (
+                                <Fragment>
+                                    <n-icon size={14} color="#25d366" component={<Iv-BsReadr />}></n-icon>
+                                </Fragment>
+                            ) : (
+                                <Fragment>33</Fragment>
+                            )}
+                            {/* {props.read ? (
                                 <n-icon size={14} color="#25d366" component={<Iv-BsReadr />}></n-icon>
                             ) : props.node.status === env.EnumMessagerStatus.sending ? (
                                 <n-icon size={14} color="var(--text-color-3)" component={<Iv-BsCheck />}></n-icon>
                             ) : props.node.status === env.EnumMessagerStatus.delivered ? (
                                 <n-icon size={14} color="var(--text-color-3)" component={<Iv-BsReadr />}></n-icon>
-                            ) : null}
+                            ) : null} */}
                         </div>
                     )}
                 </div>

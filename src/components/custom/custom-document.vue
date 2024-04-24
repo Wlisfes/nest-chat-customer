@@ -21,7 +21,7 @@ export default defineComponent({
         }))
 
         return () => (
-            <custom-element current={props.current} max-width={props.maxWidth} read node={props.node}>
+            <custom-element current={props.current} max-width={props.maxWidth} node={props.node}>
                 <div class="custom-document n-chunk n-column n-disover">
                     {media.value && (
                         <Fragment>
