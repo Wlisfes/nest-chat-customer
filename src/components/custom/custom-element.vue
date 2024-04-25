@@ -26,8 +26,15 @@ export default defineComponent({
             return false
         })
 
+        /**私聊消息对方是否已读**/
+        const isReadContact = computed(() => {
+            const userId = session.schema.contact.userId === user.uid ? session.schema.contact.niveId : session.schema.contact.userId
+        })
+
         onMounted(() => {
-            console.log(session.schema)
+            if (props.current) {
+                console.log({ schema: session.schema, node: props.node })
+            }
         })
 
         /**消息已读操作**/
@@ -55,6 +62,7 @@ export default defineComponent({
                         <div class="n-chunk n-center" style={{ paddingLeft: '4px' }}>
                             {session.schema.source === env.EnumSessionSource.contact ? (
                                 <Fragment>
+                                    <n-icon size={14} color="#25d366" component={<Iv-BsReadr />}></n-icon>
                                     <n-icon size={14} color="#25d366" component={<Iv-BsReadr />}></n-icon>
                                 </Fragment>
                             ) : (
