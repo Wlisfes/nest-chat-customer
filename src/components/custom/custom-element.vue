@@ -19,7 +19,12 @@ export default defineComponent({
         const read = computed(() => {
             if (session.schema.source === env.EnumSessionSource.contact) {
                 /**私聊类型**/
-                return props.node.reads.some(item => item.userId === user.uid)
+                return props.node.reads.some(item => {
+                    if (session.schema.contact.userId === user.uid) {
+                        return item.userId === session.schema.contact.niveId
+                    }
+                    return item.userId === session.schema.contact.userId
+                })
             } else if (session.schema.source === env.EnumSessionSource.communit) {
                 /**群聊类型**/
             }
@@ -32,9 +37,7 @@ export default defineComponent({
         })
 
         onMounted(() => {
-            if (props.current) {
-                console.log({ schema: session.schema, node: props.node })
-            }
+            console.log(session.schema)
         })
 
         /**消息已读操作**/
@@ -62,8 +65,9 @@ export default defineComponent({
                         <div class="n-chunk n-center" style={{ paddingLeft: '4px' }}>
                             {session.schema.source === env.EnumSessionSource.contact ? (
                                 <Fragment>
-                                    <n-icon size={14} color="#25d366" component={<Iv-BsReadr />}></n-icon>
-                                    <n-icon size={14} color="#25d366" component={<Iv-BsReadr />}></n-icon>
+                                    <n-icon size={16} color="#25d366" component={<Iv-BsReadr />}></n-icon>
+                                    <n-icon size={16} color="#25d366" component={<Iv-BsReadr />}></n-icon>
+                                    <n-icon size={16} color="var(--text-color-3)" component={<Iv-BsCheck />}></n-icon>
                                 </Fragment>
                             ) : (
                                 <Fragment>33</Fragment>

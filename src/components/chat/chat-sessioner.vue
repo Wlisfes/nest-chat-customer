@@ -8,6 +8,7 @@ import { divineDelay } from '@/utils/utils-common'
 export default defineComponent({
     name: 'ChatSessioner',
     setup(props) {
+        const user = useUser()
         const session = useSession()
 
         async function onScroller(evt: { target: HTMLElement }) {
@@ -23,7 +24,7 @@ export default defineComponent({
 
         return () => (
             <div class="chat-sessioner n-chunk n-column n-auto n-disover">
-                <chat-compose title="Chats"></chat-compose>
+                <chat-compose title={user.nickname}></chat-compose>
                 <chat-searcher></chat-searcher>
                 <div class="n-chunk n-column n-auto" style={{ overflow: 'hidden' }}>
                     <n-scrollbar class="is-customize" trigger="none" size={60} on-scroll={onScroller}>
