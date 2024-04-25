@@ -25,13 +25,21 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
     /**会话类型详情**/
     async function fetchSessionOneResolver() {
         if (schema.value.source === env.EnumSessionSource.contact) {
-            return await api.httpContactResolver({ uid: schema.value.contactId }).then(({ data }) => {
-                return (contact.value = data)
-            })
+            try {
+                return await api.httpContactResolver({ uid: schema.value.contactId }).then(({ data }) => {
+                    return (contact.value = data)
+                })
+            } catch (e) {
+                return (contact.value = undefined as never)
+            }
         } else if (schema.value.source === env.EnumSessionSource.communit) {
-            return await api.httpCommunitResolver({ uid: schema.value.communitId }).then(({ data }) => {
-                return (communit.value = data)
-            })
+            try {
+                return await api.httpCommunitResolver({ uid: schema.value.communitId }).then(({ data }) => {
+                    return (communit.value = data)
+                })
+            } catch (e) {
+                return (communit.value = undefined as never)
+            }
         }
     }
 
@@ -132,6 +140,8 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
 
     return {
         state,
+        communit,
+        contact,
         next,
         schema,
         ...toRefs(state),

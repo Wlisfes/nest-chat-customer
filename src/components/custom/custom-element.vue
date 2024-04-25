@@ -16,28 +16,38 @@ export default defineComponent({
     setup(props, { slots }) {
         const user = useUser()
         const session = useSession()
-        const read = computed(() => {
+
+        /**私聊消息已读状态**/
+        const ReadContact = computed(() => {
             if (session.schema.source === env.EnumSessionSource.contact) {
-                /**私聊类型**/
+                const { userId, niveId } = session.schema.contact
                 return props.node.reads.some(item => {
-                    if (session.schema.contact.userId === user.uid) {
-                        return item.userId === session.schema.contact.niveId
-                    }
-                    return item.userId === session.schema.contact.userId
+                    return userId === user.uid ? item.userId === niveId : item.userId === userId
                 })
-            } else if (session.schema.source === env.EnumSessionSource.communit) {
-                /**群聊类型**/
             }
             return false
         })
 
-        /**私聊消息对方是否已读**/
-        const isReadContact = computed(() => {
-            const userId = session.schema.contact.userId === user.uid ? session.schema.contact.niveId : session.schema.contact.userId
+        /**群聊消息已读数量**/
+        const member = computed(() => {
+            if (session.schema.source === env.EnumSessionSource.communit) {
+                return session.communit.member.filter(item => item.userId !== user.uid)
+            }
+            return []
+        })
+        const ReadCommunit = computed(() => {
+            if (session.schema.source === env.EnumSessionSource.communit) {
+                return member.value.filter(item => {
+                    return props.node.reads.some(read => read.userId === item.userId)
+                })
+            }
+            return []
         })
 
         onMounted(() => {
-            console.log(session.schema)
+            if (props.current) {
+                console.log(props.node)
+            }
         })
 
         /**消息已读操作**/
@@ -65,20 +75,25 @@ export default defineComponent({
                         <div class="n-chunk n-center" style={{ paddingLeft: '4px' }}>
                             {session.schema.source === env.EnumSessionSource.contact ? (
                                 <Fragment>
-                                    <n-icon size={16} color="#25d366" component={<Iv-BsReadr />}></n-icon>
-                                    <n-icon size={16} color="#25d366" component={<Iv-BsReadr />}></n-icon>
-                                    <n-icon size={16} color="var(--text-color-3)" component={<Iv-BsCheck />}></n-icon>
+                                    {ReadContact.value ? (
+                                        <n-icon size={16} color="#25d366" component={<Iv-BsReadr />}></n-icon>
+                                    ) : props.node.status === env.EnumMessagerStatus.sending ? (
+                                        <n-icon size={16} color="var(--text-color-3)" component={<Iv-BsCheck />}></n-icon>
+                                    ) : props.node.status === env.EnumMessagerStatus.delivered ? (
+                                        <n-icon size={16} color="var(--text-color-3)" component={<Iv-BsReadr />}></n-icon>
+                                    ) : null}
                                 </Fragment>
                             ) : (
-                                <Fragment>33</Fragment>
+                                <Fragment>
+                                    {props.node.status === env.EnumMessagerStatus.sending ? (
+                                        <n-icon size={16} color="var(--text-color-3)" component={<Iv-BsCheck />}></n-icon>
+                                    ) : props.node.status === env.EnumMessagerStatus.delivered && ReadCommunit.value.length === 0 ? (
+                                        <n-icon size={16} color="var(--text-color-3)" component={<Iv-BsReadr />}></n-icon>
+                                    ) : ReadCommunit.value.length > 0 && ReadCommunit.value.length < props.node.reads.length - 1 ? (
+                                        <n-icon size={16} color="#25d366" component={<Iv-BsReadr />}></n-icon>
+                                    ) : null}
+                                </Fragment>
                             )}
-                            {/* {props.read ? (
-                                <n-icon size={14} color="#25d366" component={<Iv-BsReadr />}></n-icon>
-                            ) : props.node.status === env.EnumMessagerStatus.sending ? (
-                                <n-icon size={14} color="var(--text-color-3)" component={<Iv-BsCheck />}></n-icon>
-                            ) : props.node.status === env.EnumMessagerStatus.delivered ? (
-                                <n-icon size={14} color="var(--text-color-3)" component={<Iv-BsReadr />}></n-icon>
-                            ) : null} */}
                         </div>
                     )}
                 </div>
