@@ -29,6 +29,7 @@ export default defineComponent({
             return await divineHandler(message.sid !== node.sid, async () => {
                 const limit = divineWherer(node.unread.length < message.limit, message.limit, node.unread.length)
                 await session.setState({ sid: node.sid })
+                await session.fetchSessionOneResolver()
                 await comment.setState({ message: '' })
                 await message.fetchSessionColumnInitMessager(node.sid, limit)
                 await divineHandler(Boolean(instance.value), () => {

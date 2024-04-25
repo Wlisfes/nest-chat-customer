@@ -1,4 +1,4 @@
-import { ref, toRefs, computed } from 'vue'
+import { ref, toRefs, Ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useState } from '@/hooks/hook-state'
 import { APP_STORE } from '@/utils/utils-storage'
@@ -7,8 +7,8 @@ import * as env from '@/interface/instance.resolver'
 import * as api from '@/api/instance.service'
 
 export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
-    const communit = ref<env.SchemaCommunit>()
-    const contact = ref<env.SchemaContact>()
+    const communit = ref() as Ref<env.SchemaCommunit>
+    const contact = ref() as Ref<env.SchemaContact>
     const { state, setState } = useState({
         sid: '',
         dataSource: [] as Array<env.SchemaSession>,
@@ -22,12 +22,17 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
         return state.dataSource.find(item => item.sid === state.sid) as env.SchemaSession
     })
 
-    async function setCommunit(data: env.SchemaCommunit) {
-        return (communit.value = data)
-    }
-
-    async function setContact(data: env.SchemaContact) {
-        return (contact.value = data)
+    /**会话类型详情**/
+    async function fetchSessionOneResolver() {
+        if (schema.value.source === env.EnumSessionSource.contact) {
+            return await api.httpContactResolver({ uid: schema.value.contactId }).then(({ data }) => {
+                return (contact.value = data)
+            })
+        } else if (schema.value.source === env.EnumSessionSource.communit) {
+            return await api.httpCommunitResolver({ uid: schema.value.communitId }).then(({ data }) => {
+                return (communit.value = data)
+            })
+        }
     }
 
     /**会话列表**/
@@ -131,6 +136,7 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
         schema,
         ...toRefs(state),
         setState,
+        fetchSessionOneResolver,
         fetchSessionInitColumn,
         fetchSessionNextColumn,
         fetchSessionServerMessager,

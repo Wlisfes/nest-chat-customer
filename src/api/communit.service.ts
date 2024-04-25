@@ -17,3 +17,12 @@ export function httpCommunitColumner() {
         method: 'GET'
     })
 }
+
+/**社群详情**/
+export function httpCommunitResolver(params: { uid: string }) {
+    return request<env.SchemaCommunit>({
+        url: `/communit/resolver`,
+        method: 'GET',
+        params
+    })
+}
