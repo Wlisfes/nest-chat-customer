@@ -38,7 +38,7 @@ export default defineComponent({
                     /**消息列表处理**/
                     await fetchSocketServerMessager(data)
                     /**会话列表**/
-                    await fetchNewServerMessager(data)
+                    return await fetchNewServerMessager(data)
                 })
             })
         }

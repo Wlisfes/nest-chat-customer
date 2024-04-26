@@ -38,11 +38,18 @@ export default defineComponent({
                         node.value.message.status = data.status
                         node.value.message.text = data.text
                         node.value.message.userId = data.userId
-                        node.value.unread = node.value.unread.concat(data)
+                        if (data.userId !== user.uid) {
+                            node.value.unread = node.value.unread.concat(data)
+                        }
                     }
                 })
             })
         })
+
+        /**更新会话未读列表**/
+        async function fetchNodeUnread(unread: Array<env.SchemaMessager>) {
+            return (node.value.unread = unread)
+        }
 
         /**选择、切换会话**/
         async function fetchSessionSelector(evt: Event) {
@@ -54,7 +61,8 @@ export default defineComponent({
                     await comment.setState({ message: '' })
                     await message.fetchSessionColumnInitMessager(node.value.sid, limit)
                     return await divineHandler(Boolean(instance.value), {
-                        handler: () => {
+                        handler: async () => {
+                            await fetchNodeUnread([])
                             return instance.value.scrollTo({
                                 top: 999999,
                                 behavior: 'auto'

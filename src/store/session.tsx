@@ -92,6 +92,16 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
         })
     }
 
+    /**修改单条会话未读数量**/
+    async function fetchSessionUnreadUpdate(sessionId: string, sid: string) {
+        const node = state.dataSource.find(item => item.sid === sessionId) as env.SchemaSession
+        return await divineHandler(Boolean(node), {
+            handler: async () => {
+                return (node.unread = node.unread.filter(item => item.sid !== sid))
+            }
+        })
+    }
+
     /**主动发送消息更新绑定会话SID**/
     async function fetchSessionPushSidUpdate(scope: Omix<{ sessionId: string; sid: string }>) {
         const node = state.dataSource.find(item => item.sid === scope.sessionId) as env.SchemaSession
@@ -144,6 +154,7 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
         fetchNewServerMessager,
         fetchSessionPushUpdate,
         fetchSessionPushSidUpdate,
-        fetchSessionReadUpdate
+        fetchSessionReadUpdate,
+        fetchSessionUnreadUpdate
     }
 })

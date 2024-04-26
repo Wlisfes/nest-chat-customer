@@ -59,6 +59,8 @@ export default defineComponent({
                 userId: user.uid,
                 sid: node.value.sid,
                 sessionId: node.value.sessionId
+            }).then(async () => {
+                return await session.fetchSessionUnreadUpdate(node.value.sessionId, node.value.sid)
             })
         }
 

@@ -64,7 +64,7 @@ export default defineComponent({
                             {session.schema.source === env.EnumSessionSource.contact ? (
                                 <Fragment>
                                     {read.value ? (
-                                        <n-icon size={16} color="#25d366" component={<Iv-BsReadr />}></n-icon>
+                                        <n-icon size={16} color="var(--primary-color)" component={<Iv-BsReadr />}></n-icon>
                                     ) : props.node.status === env.EnumMessagerStatus.sending ? (
                                         <n-icon size={16} color="var(--text-color-3)" component={<Iv-BsCheck />}></n-icon>
                                     ) : props.node.status === env.EnumMessagerStatus.delivered ? (
