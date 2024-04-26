@@ -38,20 +38,20 @@ export const useMessenger = defineStore(APP_STORE.STORE_MESSANGER, () => {
 
     /**初始化页面数据**/
     async function fetchSessionColumnInitMessager(sid: string, limit?: number) {
-        await setState({ loading: true, sid: sid, dataSource: [], total: 0 })
-        return await fetchSessionColumnMessager(limit).then(async ({ total, list }) => {
-            return await setState({
-                dataSource: list,
-                total: total,
-                loading: false
+        return await setState({ loading: true, sid: sid, dataSource: [], total: 0 }).then(async () => {
+            const { list, total } = await fetchSessionColumnMessager(limit)
+            return await divineHandler(state.sid === sid, {
+                handler: async () => {
+                    return await setState({ dataSource: list, total: total, loading: false })
+                }
             })
         })
     }
 
     /**分页加载**/
     async function fetchSessionColumnNextMessager(closure: boolean = false) {
-        await setState({ loading: true })
-        return await fetchSessionColumnMessager().then(async ({ total, list }) => {
+        return await setState({ loading: true }).then(async () => {
+            const { list, total } = await fetchSessionColumnMessager()
             return await setState({
                 dataSource: state.dataSource.concat(list),
                 total: total,

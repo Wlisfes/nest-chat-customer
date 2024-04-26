@@ -114,7 +114,7 @@ export default defineComponent({
                                     </n-text>
                                 )}
                             </div>
-                            {node.value.unread.length > 0 && node.value.source === env.EnumSessionSource.contact && (
+                            {(node.value.unread ?? []).length > 0 && node.value.source === env.EnumSessionSource.contact && (
                                 <div class="chat-badge n-chunk n-center n-middle">
                                     <span>{node.value.unread.length}</span>
                                 </div>

@@ -42,10 +42,7 @@ export default defineComponent({
             return socket.value.on(node.value.sid, async (scope: Omix<{ type: string; state: Omix }>) => {
                 if (scope.type === 'server-change-messager') {
                     /**消息状态变更推送**/
-                    return await fetchNodeUpdate({
-                        status: scope.state.status,
-                        reason: scope.state.reason
-                    })
+                    return await fetchNodeUpdate({ status: scope.state.status, reason: scope.state.reason })
                 } else if (scope.type === 'server-read-messager') {
                     /**消息已读推送**/
                     await fetchNodeUpdate({

@@ -16,20 +16,31 @@ export default defineComponent({
     setup(props, { slots }) {
         const user = useUser()
         const session = useSession()
-        /**排除自己以外的社群成员列表**/
+        /**私聊消息已读状态**/
+        const read = computed(() => {
+            if (session.schema.source === env.EnumSessionSource.contact) {
+                const { userId, niveId } = session.schema.contact
+                return props.node.reads.some(item => {
+                    return userId === user.uid ? item.userId === niveId : item.userId === userId
+                })
+            }
+            return false
+        })
+
+        /**群聊消息排除自己以外的社群成员列表**/
         const member = computed(() => {
             if (session.schema.source === env.EnumSessionSource.communit) {
                 return (session.communit?.member ?? []).filter(item => item.userId !== user.uid)
             }
             return []
         })
-        /**排除自己以外的未读用户列表**/
+        /**群聊消息排除自己以外的未读用户列表**/
         const unread = computed(() => {
             return member.value.filter(item => {
                 return !props.node.reads.some(read => read.userId === item.userId)
             })
         })
-        /**排除自己以外的已读用户列表**/
+        /**群聊消息排除自己以外的已读用户列表**/
         const reads = computed(() => {
             return member.value.filter(item => {
                 return props.node.reads.some(read => read.userId === item.userId)
@@ -52,7 +63,7 @@ export default defineComponent({
                         <div class="n-chunk n-center" style={{ padding: '0 4px' }}>
                             {session.schema.source === env.EnumSessionSource.contact ? (
                                 <Fragment>
-                                    {reads.value.length > 0 ? (
+                                    {read.value ? (
                                         <n-icon size={16} color="#25d366" component={<Iv-BsReadr />}></n-icon>
                                     ) : props.node.status === env.EnumMessagerStatus.sending ? (
                                         <n-icon size={16} color="var(--text-color-3)" component={<Iv-BsCheck />}></n-icon>
