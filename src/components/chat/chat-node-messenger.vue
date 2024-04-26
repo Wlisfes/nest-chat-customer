@@ -2,7 +2,6 @@
 import { defineComponent, computed, onMounted, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
 import { useUser, useSession } from '@/store'
-import { divineHandler } from '@/utils/utils-common'
 import { socket, divineSocketCustomizeMessager, divineSocketChangeMessager } from '@/utils/utils-websocket'
 import * as env from '@/interface/instance.resolver'
 

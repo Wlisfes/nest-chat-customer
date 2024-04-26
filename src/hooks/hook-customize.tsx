@@ -39,7 +39,7 @@ export function useFormCustomize<T extends Omix>(scope: ScopeOption<T>) {
     }
 
     async function setForm(value: Partial<T>) {
-        return (form.value = { ...form.value, ...value })
+        return (form.value = { ...(form.value as any), ...value })
     }
 
     /**验证表单**/
@@ -72,12 +72,14 @@ export function useFormCustomize<T extends Omix>(scope: ScopeOption<T>) {
     /**滚动到第一个报错表单选项**/
     async function divineFormScrollbar() {
         await divineDelay(0)
-        return await divineHandler(Boolean(formRef.value), async () => {
-            const element = formRef.value!.$el.querySelector('.el-form-item__error')
-            return element!.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            })
+        return await divineHandler(Boolean(formRef.value), {
+            handler: async () => {
+                const element = formRef.value!.$el.querySelector('.el-form-item__error')
+                return element!.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                })
+            }
         })
     }
 

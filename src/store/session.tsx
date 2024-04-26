@@ -80,22 +80,26 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
     /**主动发送消息更新绑定会话**/
     async function fetchSessionPushUpdate(scope: Omix<env.SchemaMessager>) {
         const node = state.dataSource.find(item => item.sid === scope.sessionId) as env.SchemaSession
-        return await divineHandler(Boolean(node), () => {
-            node.message.createTime = scope.createTime
-            node.message.source = scope.source
-            node.message.status = scope.status
-            node.message.text = scope.text
-            node.message.userId = scope.userId
-            return node
+        return await divineHandler(Boolean(node), {
+            handler: () => {
+                node.message.createTime = scope.createTime
+                node.message.source = scope.source
+                node.message.status = scope.status
+                node.message.text = scope.text
+                node.message.userId = scope.userId
+                return node
+            }
         })
     }
 
     /**主动发送消息更新绑定会话SID**/
     async function fetchSessionPushSidUpdate(scope: Omix<{ sessionId: string; sid: string }>) {
         const node = state.dataSource.find(item => item.sid === scope.sessionId) as env.SchemaSession
-        return await divineHandler(Boolean(node), () => {
-            node.message.sid = scope.sid
-            return node
+        return await divineHandler(Boolean(node), {
+            handler: () => {
+                node.message.sid = scope.sid
+                return node
+            }
         })
     }
 
@@ -129,12 +133,14 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
     /**消息已读、递减未读数**/
     async function fetchSessionReadUpdate(scope: Omix<env.BodySocketChangeMessager>) {
         const node = state.dataSource.find(item => item.sid === scope.sessionId) as env.SchemaSession
-        return await divineHandler(Boolean(node), async () => {
-            const read = node.unread.some(item => item.sid === scope.sid)
-            if (read) {
-                node.unread = node.unread.filter(item => item.sid !== scope.sid)
+        return await divineHandler(Boolean(node), {
+            handler: async () => {
+                const read = node.unread.some(item => item.sid === scope.sid)
+                if (read) {
+                    node.unread = node.unread.filter(item => item.sid !== scope.sid)
+                }
+                return node
             }
-            return node
         })
     }
 

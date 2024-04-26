@@ -69,8 +69,10 @@ export const useMessenger = defineStore(APP_STORE.STORE_MESSANGER, () => {
 
     /**socket消息推送会话处理**/
     async function fetchSessionServerMessager(sid: string, scope: Omix<env.SchemaMessager>) {
-        return await divineHandler(scope.sessionId === sid, async () => {
-            return await fetchSessionPushMessager(scope)
+        return await divineHandler(scope.sessionId === sid, {
+            handler: async () => {
+                return await fetchSessionPushMessager(scope)
+            }
         })
     }
 

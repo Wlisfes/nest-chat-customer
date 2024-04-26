@@ -33,13 +33,18 @@ export function divineDelay(delay = 100, handler?: Function) {
 }
 
 /**条件函数执行**/
-export async function divineHandler<T>(value: boolean | Function, handler: Function, callback?: Function): Promise<T | void> {
-    if ((typeof value === 'boolean' && value) || (typeof value === 'function' && (await value()))) {
-        return await handler()
-    } else if (typeof callback === 'function') {
-        return await callback()
+export async function divineHandler<T>(
+    where: boolean | Function,
+    scope: Omix<{ handler: Function; failure?: Function }>
+): Promise<T | void> {
+    if (typeof where === 'function') {
+        where = await where()
     }
-    return undefined
+    if (where) {
+        return await scope.handler()
+    } else {
+        return (await scope.failure?.()) ?? undefined
+    }
 }
 
 /**参数组合函数**/

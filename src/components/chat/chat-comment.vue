@@ -52,8 +52,10 @@ export default defineComponent({
                 await messenge.fetchSessionPushMessager(compose)
                 return await session.fetchSessionPushUpdate(compose)
             })
-            await divineHandler(Boolean(instance.value), () => {
-                return instance.value.scrollTo({ top: 999999, behavior: 'smooth' })
+            await divineHandler(Boolean(instance.value), {
+                handler: () => {
+                    return instance.value.scrollTo({ top: 999999, behavior: 'smooth' })
+                }
             })
             return await comment.setState({ message: '', loading: false })
         }
@@ -79,7 +81,9 @@ export default defineComponent({
             } else if (evt.key === 'Enter') {
                 evt.preventDefault()
                 evt.stopPropagation()
-                return await divineHandler(Boolean(comment.message), fetchSocketCustomizeMessager)
+                return await divineHandler(Boolean(comment.message), {
+                    handler: fetchSocketCustomizeMessager
+                })
             }
         }
 

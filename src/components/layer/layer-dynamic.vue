@@ -1,9 +1,7 @@
 <script lang="tsx">
 import { defineComponent, onMounted, PropType } from 'vue'
 import { useUser } from '@/store'
-import { useState } from '@/hooks/hook-state'
 import { useFormCustomize } from '@/hooks/hook-customize'
-import { stop, divineHandler, divineDelay } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'LayerDynamic',
