@@ -7,14 +7,15 @@ import * as env from '@/interface/instance.resolver'
 export default defineComponent({
     name: 'ChatLayout',
     setup() {
-        const chat = useChat()
-        const user = useUser()
-        const session = useSession()
-        const messenge = useMessenger()
+        const { setState } = useChat()
+        const { fetchSessionInitColumn, fetchNewServerMessager } = useSession()
+        const { fetchSocketServerMessager } = useMessenger()
+        const { fetchUserResolver } = useUser()
+
         onMounted(async () => {
-            await user.fetchUserResolver()
-            await session.fetchSessionInitColumn()
+            await fetchUserResolver()
             await divineConnectSocketClient()
+            await fetchSessionInitColumn()
         })
 
         /**开启socket连接**/
@@ -22,24 +23,22 @@ export default defineComponent({
             return await connectClient().then(client => {
                 /**监听socket连接**/
                 client.on('connect', async () => {
-                    return await chat.setState({ loading: false, failure: false })
+                    return await setState({ loading: false, failure: false })
                 })
                 /**监听socket断开连接**/
                 client.on('disconnect', async reason => {
-                    console.log(`disconnect:`, reason)
-                    return await chat.setState({ loading: false, failure: true })
+                    return await setState({ loading: false, failure: true })
                 })
                 /**监听socket错误**/
                 client.on('connect_error', async err => {
-                    console.log(`connect_error:`, err)
-                    return await chat.setState({ loading: false, failure: true })
+                    return await setState({ loading: false, failure: true })
                 })
                 /**监听消息推送**/
                 client.on('server-customize-messager', async (data: Omix<env.SchemaMessager>) => {
                     /**消息列表处理**/
-                    await messenge.fetchSessionServerMessager(session.sid, data)
+                    await fetchSocketServerMessager(data)
                     /**会话列表**/
-                    await session.fetchSessionServerMessager(data)
+                    await fetchNewServerMessager(data)
                 })
             })
         }

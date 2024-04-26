@@ -1,9 +1,11 @@
 <script lang="tsx">
-import { defineComponent, computed, Fragment, PropType } from 'vue'
+import { defineComponent, computed, onMounted, Fragment, PropType } from 'vue'
+import { useVModels } from '@vueuse/core'
 import { useUser, useMessenger, useSession, useComment } from '@/store'
 import { instance } from '@/store/messenger'
 import { useProvider } from '@/hooks/hook-provider'
 import { useMoment } from '@/hooks/hook-common'
+import { socket } from '@/utils/utils-websocket'
 import { divineWherer, divineHandler } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 
@@ -12,7 +14,8 @@ export default defineComponent({
     props: {
         node: { type: Object as PropType<Omix<env.SchemaSession>>, required: true }
     },
-    setup(props) {
+    setup(props, { emit }) {
+        const { node } = useVModels(props, emit)
         const user = useUser()
         const session = useSession()
         const message = useMessenger()
@@ -21,18 +24,35 @@ export default defineComponent({
         const { divineDateMomentTransfor } = useMoment()
         const chunk = computed(() => ({
             '--chat-hover-node-sessioner': divineWherer(inverted.value, '#202c33', '#f0f2f5'),
-            '--chat-active-node-sessioner': divineWherer(message.sid === props.node.sid, 'var(--chat-hover-node-sessioner)', '#0000')
+            '--chat-active-node-sessioner': divineWherer(message.sid === node.value.sid, 'var(--chat-hover-node-sessioner)', '#0000')
         }))
 
+        onMounted(() => {
+            socket.value.on('server-customize-messager', async (data: Omix<env.SchemaMessager>) => {
+                return await divineHandler(node.value.sid === data.sessionId, {
+                    handler: async function () {
+                        node.value.message.keyId = data.keyId
+                        node.value.message.sid = data.sid
+                        node.value.message.createTime = data.createTime
+                        node.value.message.source = data.source
+                        node.value.message.status = data.status
+                        node.value.message.text = data.text
+                        node.value.message.userId = data.userId
+                        node.value.unread = node.value.unread.concat(data)
+                    }
+                })
+            })
+        })
+
         /**选择、切换会话**/
-        async function onSessionSelector(node: Omix<env.SchemaSession>, evt: Event) {
-            return await divineHandler(message.sid !== node.sid, {
+        async function fetchSessionSelector(evt: Event) {
+            return await divineHandler(message.sid !== node.value.sid, {
                 handler: async () => {
-                    const limit = divineWherer(node.unread.length < message.limit, message.limit, node.unread.length)
-                    await session.setState({ sid: node.sid })
+                    const limit = divineWherer(node.value.unread.length < message.limit, message.limit, node.value.unread.length)
+                    await session.setState({ sid: node.value.sid })
                     await session.fetchSessionOneResolver()
                     await comment.setState({ message: '' })
-                    await message.fetchSessionColumnInitMessager(node.sid, limit)
+                    await message.fetchSessionColumnInitMessager(node.value.sid, limit)
                     return await divineHandler(Boolean(instance.value), {
                         handler: () => {
                             return instance.value.scrollTo({
@@ -46,61 +66,57 @@ export default defineComponent({
         }
 
         return () => (
-            <div
-                class="chat-node-sessioner n-chunk n-pointer"
-                style={chunk.value}
-                onClick={(evt: Event) => onSessionSelector(props.node, evt)}
-            >
-                {props.node.source === 'communit' ? (
-                    <custom-avatar size={46} src={props.node.communit.poster.fileURL}></custom-avatar>
+            <div class="chat-node-sessioner n-chunk n-pointer" style={chunk.value} onClick={fetchSessionSelector}>
+                {node.value.source === 'communit' ? (
+                    <custom-avatar size={46} src={node.value.communit.poster.fileURL}></custom-avatar>
                 ) : (
                     <Fragment>
-                        {props.node.contact.userId === user.uid ? (
-                            <custom-avatar size={46} src={props.node.contact.nive.avatar}></custom-avatar>
+                        {node.value.contact.userId === user.uid ? (
+                            <custom-avatar size={46} src={node.value.contact.nive.avatar}></custom-avatar>
                         ) : (
-                            <custom-avatar size={46} src={props.node.contact.user.avatar}></custom-avatar>
+                            <custom-avatar size={46} src={node.value.contact.user.avatar}></custom-avatar>
                         )}
                     </Fragment>
                 )}
                 <div class="chat-context n-chunk n-column n-auto" style={{ overflow: 'hidden', rowGap: '4px' }}>
                     <div class="chat-source n-chunk n-center" style={{ columnGap: '10px' }}>
                         <div style={{ flex: 1, overflow: 'hidden' }}>
-                            {props.node.source === 'communit' ? (
+                            {node.value.source === 'communit' ? (
                                 <n-h2 style={{ fontSize: '16px', lineHeight: '22px', fontWeight: 500, margin: 0 }}>
-                                    <n-ellipsis tooltip={false}>{props.node.communit.name}</n-ellipsis>
+                                    <n-ellipsis tooltip={false}>{node.value.communit.name}</n-ellipsis>
                                 </n-h2>
                             ) : (
                                 <n-h2 style={{ fontSize: '16px', lineHeight: '22px', fontWeight: 500, margin: 0 }}>
-                                    {props.node.contact.userId === user.uid ? (
-                                        <n-ellipsis tooltip={false}>{props.node.contact.nive.nickname}</n-ellipsis>
+                                    {node.value.contact.userId === user.uid ? (
+                                        <n-ellipsis tooltip={false}>{node.value.contact.nive.nickname}</n-ellipsis>
                                     ) : (
-                                        <n-ellipsis tooltip={false}>{props.node.contact.user.nickname}</n-ellipsis>
+                                        <n-ellipsis tooltip={false}>{node.value.contact.user.nickname}</n-ellipsis>
                                     )}
                                 </n-h2>
                             )}
                         </div>
-                        {props.node.message && (
+                        {node.value.message && (
                             <n-text depth={3} style={{ fontSize: '12px', lineHeight: '14px' }}>
-                                {divineDateMomentTransfor(props.node.message.createTime)}
+                                {divineDateMomentTransfor(node.value.message.createTime)}
                             </n-text>
                         )}
                     </div>
-                    {props.node.message && (
+                    {node.value.message && (
                         <div class="chat-message n-chunk n-center" style={{ columnGap: '10px', overflow: 'hidden' }}>
                             <div style={{ flex: 1, overflow: 'hidden', lineHeight: '20px', fontSize: '14px' }}>
-                                {props.node.message.source === env.EnumMessagerSource.text ? (
+                                {node.value.message.source === env.EnumMessagerSource.text ? (
                                     <n-text depth={3}>
-                                        <n-ellipsis tooltip={false}>{props.node.message.text}</n-ellipsis>
+                                        <n-ellipsis tooltip={false}>{node.value.message.text}</n-ellipsis>
                                     </n-text>
                                 ) : (
                                     <n-text depth={3}>
-                                        <n-ellipsis tooltip={false}>{`[${props.node.message.source}]`}</n-ellipsis>
+                                        <n-ellipsis tooltip={false}>{`[${node.value.message.source}]`}</n-ellipsis>
                                     </n-text>
                                 )}
                             </div>
-                            {props.node.unread.length > 0 && props.node.source === env.EnumSessionSource.contact && (
+                            {node.value.unread.length > 0 && node.value.source === env.EnumSessionSource.contact && (
                                 <div class="chat-badge n-chunk n-center n-middle">
-                                    <span>{props.node.unread.length}</span>
+                                    <span>{node.value.unread.length}</span>
                                 </div>
                             )}
                         </div>

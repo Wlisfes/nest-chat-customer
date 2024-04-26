@@ -31,7 +31,7 @@ export default defineComponent({
                         <n-element class="n-chunk n-column">
                             <div style={{ position: 'relative', paddingRight: '14px' }}>
                                 {session.dataSource.map((item: Omix) => (
-                                    <chat-node-sessioner key={item.keyId} node={item}></chat-node-sessioner>
+                                    <chat-node-sessioner key={item.keyId} v-model:node={item}></chat-node-sessioner>
                                 ))}
                             </div>
                             {/* <div class="n-chunk n-middle" style={{ padding: '15px 20px' }}>

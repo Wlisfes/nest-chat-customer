@@ -103,31 +103,17 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
         })
     }
 
-    /**socket消息推送会话处理**/
-    async function fetchSessionServerMessager(scope: Omix<env.SchemaMessager>) {
+    /**socket新会话消息推送会话处理**/
+    async function fetchNewServerMessager(scope: Omix<env.SchemaMessager>) {
         const node = state.dataSource.find(item => item.sid === scope.sessionId) as env.SchemaSession
-        if (Boolean(node)) {
-            /**会话存在**/
-            node.message.createTime = scope.createTime
-            node.message.sid = scope.sid
-            node.message.source = scope.source
-            node.message.status = scope.status
-            node.message.text = scope.text
-            node.message.userId = scope.userId
-            node.unread = node.unread.concat([
-                { sessionId: scope.sessionId, sid: scope.sid, source: scope.source, status: scope.status, userId: scope.userId }
-            ] as never)
-            return await setState({
-                dataSource: [node, ...state.dataSource.filter(item => item.sid !== scope.sessionId)]
-            })
-        } else {
-            /**会话不存在**/
-            return await api.httpSessionOneResolver({ sid: scope.sessionId }).then(async ({ data }) => {
-                setState({
-                    dataSource: [data as never, ...state.dataSource.filter(item => item.sid !== scope.sessionId)]
+        return await divineHandler(!Boolean(node), {
+            handler: async () => {
+                const { data } = await api.httpSessionOneResolver({ sid: scope.sessionId })
+                return await setState({
+                    dataSource: [data, ...state.dataSource.filter(item => item.sid !== scope.sessionId)]
                 })
-            })
-        }
+            }
+        })
     }
 
     /**消息已读、递减未读数**/
@@ -155,7 +141,7 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
         fetchSessionOneResolver,
         fetchSessionInitColumn,
         fetchSessionNextColumn,
-        fetchSessionServerMessager,
+        fetchNewServerMessager,
         fetchSessionPushUpdate,
         fetchSessionPushSidUpdate,
         fetchSessionReadUpdate
