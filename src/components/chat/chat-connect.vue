@@ -53,5 +53,6 @@ export default defineComponent({
     padding: 0 16px;
     background-color: var(--chat-connect-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
+    z-index: 10;
 }
 </style>

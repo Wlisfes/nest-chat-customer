@@ -1,7 +1,6 @@
 <script lang="tsx">
-import { defineComponent, onMounted, computed, Fragment, CSSProperties, PropType } from 'vue'
+import { defineComponent, computed, Fragment, CSSProperties, PropType } from 'vue'
 import { useUser, useSession } from '@/store'
-import { socket, divineSocketChangeMessager } from '@/utils/utils-websocket'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -16,48 +15,17 @@ export default defineComponent({
     setup(props, { slots }) {
         const user = useUser()
         const session = useSession()
-
-        /**私聊消息已读状态**/
-        const ReadContact = computed(() => {
-            if (session.schema.source === env.EnumSessionSource.contact) {
-                const { userId, niveId } = session.schema.contact
-                return props.node.reads.some(item => {
-                    return userId === user.uid ? item.userId === niveId : item.userId === userId
-                })
-            }
-            return false
-        })
-
-        /**群聊消息已读数量**/
+        /**排除自己以外的社群成员列表**/
         const member = computed(() => {
             if (session.schema.source === env.EnumSessionSource.communit) {
-                return session.communit.member.filter(item => item.userId !== user.uid)
+                return (session.communit?.member ?? []).filter(item => item.userId !== user.uid)
             }
             return []
         })
-        const ReadCommunit = computed(() => {
-            if (session.schema.source === env.EnumSessionSource.communit) {
-                return member.value.filter(item => {
-                    return props.node.reads.some(read => read.userId === item.userId)
-                })
-            }
-            return []
+        /**排除自己以外的已读用户列表**/
+        const reads = computed(() => {
+            return props.node.reads.filter(item => item.userId !== user.uid)
         })
-
-        onMounted(() => {
-            if (props.current) {
-                console.log(props.node)
-            }
-        })
-
-        /**消息已读操作**/
-        async function fetcnSocketChangeMessager(node: Omix<env.SchemaMessager>) {
-            return await divineSocketChangeMessager(socket.value, {
-                sid: node.sid,
-                userId: user.uid,
-                sessionId: node.value.sessionId
-            })
-        }
 
         return () => (
             <div class="custom-element n-chunk n-column" style={{ width: props.width, maxWidth: props.maxWidth + 'px' }}>
@@ -75,7 +43,7 @@ export default defineComponent({
                         <div class="n-chunk n-center" style={{ paddingLeft: '4px' }}>
                             {session.schema.source === env.EnumSessionSource.contact ? (
                                 <Fragment>
-                                    {ReadContact.value ? (
+                                    {reads.value.length > 0 ? (
                                         <n-icon size={16} color="#25d366" component={<Iv-BsReadr />}></n-icon>
                                     ) : props.node.status === env.EnumMessagerStatus.sending ? (
                                         <n-icon size={16} color="var(--text-color-3)" component={<Iv-BsCheck />}></n-icon>
@@ -85,12 +53,24 @@ export default defineComponent({
                                 </Fragment>
                             ) : (
                                 <Fragment>
-                                    {props.node.status === env.EnumMessagerStatus.sending ? (
+                                    {reads.value.length > 0 && reads.value.length < member.value.length ? (
+                                        <n-popover
+                                            trigger="click"
+                                            placement="bottom-end"
+                                            z-index={1}
+                                            v-slots={{
+                                                trigger: () => (
+                                                    <n-icon class="n-pointer" size={16} color="#ff0000" component={<Iv-BsReadr />}></n-icon>
+                                                ),
+                                                default: () => <div>dsadasd</div>
+                                            }}
+                                        ></n-popover>
+                                    ) : reads.value.length > 0 && reads.value.length >= member.value.length ? (
+                                        <n-icon class="n-pointer" size={16} color="#25d366" component={<Iv-BsReadr />}></n-icon>
+                                    ) : props.node.status === env.EnumMessagerStatus.sending ? (
                                         <n-icon size={16} color="var(--text-color-3)" component={<Iv-BsCheck />}></n-icon>
-                                    ) : props.node.status === env.EnumMessagerStatus.delivered && ReadCommunit.value.length === 0 ? (
+                                    ) : props.node.status === env.EnumMessagerStatus.delivered ? (
                                         <n-icon size={16} color="var(--text-color-3)" component={<Iv-BsReadr />}></n-icon>
-                                    ) : ReadCommunit.value.length > 0 && ReadCommunit.value.length < props.node.reads.length - 1 ? (
-                                        <n-icon size={16} color="#25d366" component={<Iv-BsReadr />}></n-icon>
                                     ) : null}
                                 </Fragment>
                             )}

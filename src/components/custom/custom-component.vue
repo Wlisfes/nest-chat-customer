@@ -10,9 +10,9 @@ export default defineComponent({
     },
     setup(props) {
         const className = computed(() => ({
-            'chunk-messenger n-chunk n-auto n-disover': true,
-            'chunk-current n-end': props.current,
-            'chunk-other': !props.current
+            'custom-component n-chunk n-auto n-disover': true,
+            'is-current n-end': props.current,
+            'is-other': !props.current
         }))
 
         return () => (
@@ -36,7 +36,7 @@ export default defineComponent({
 .custom-component {
     min-height: 40px;
     box-sizing: border-box;
-    &.chunk-current {
+    &.is-current {
         padding-right: 10px;
         &::before {
             content: '';
@@ -51,7 +51,7 @@ export default defineComponent({
             transition: border 0.3s var(--cubic-bezier-ease-in-out);
         }
     }
-    &.chunk-other {
+    &.is-other {
         padding-left: 10px;
         &::before {
             content: '';

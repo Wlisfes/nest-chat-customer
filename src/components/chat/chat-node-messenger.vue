@@ -2,7 +2,7 @@
 import { defineComponent, computed, onMounted, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
 import { useUser, useSession } from '@/store'
-import { socket, divineSocketCustomizeMessager } from '@/utils/utils-websocket'
+import { socket, divineSocketCustomizeMessager, divineSocketChangeMessager } from '@/utils/utils-websocket'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -20,11 +20,11 @@ export default defineComponent({
         onMounted(async () => {
             if (props.node.status === env.EnumMessagerStatus.initialize) {
                 /**消息初始化状态**/
-                await fetchSocketInitialize(props.node)
-            } else {
-                /**Socket事件监听已读状态推送**/
-                await fetchSocketMonitor(props.node.sid)
+                return await fetchSocketInitialize(props.node)
             }
+            /**Socket事件监听已读状态推送**/
+            await fetchSocketMonitor()
+            // await fetcnSocketChangeMessager()
         })
 
         /**更新消息SID**/
@@ -39,9 +39,18 @@ export default defineComponent({
         }
 
         /**Socket事件监听**/
-        async function fetchSocketMonitor(sid: string) {
-            return socket.value.on(sid, async (data: Omix<env.BodySocketChangeMessager>) => {
+        async function fetchSocketMonitor() {
+            return socket.value.on(node.value.sid, async (data: Omix<env.BodySocketChangeMessager>) => {
                 await session.fetchSessionReadUpdate(data)
+            })
+        }
+
+        /**消息已读操作**/
+        async function fetcnSocketChangeMessager() {
+            return await divineSocketChangeMessager(socket.value, {
+                userId: user.uid,
+                sid: node.value.sid,
+                sessionId: node.value.sessionId
             })
         }
 
@@ -54,7 +63,7 @@ export default defineComponent({
                     text: scope.text
                 })
                 await setNodeSid(sid)
-                await fetchSocketMonitor(sid)
+                await fetchSocketMonitor()
                 return await session.fetchSessionPushSidUpdate({ sid: sid, sessionId: scope.sessionId })
             } catch (e: any) {
                 return await setNodeStatus(env.EnumMessagerStatus.failed, e.message)

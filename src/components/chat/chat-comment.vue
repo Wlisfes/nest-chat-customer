@@ -135,6 +135,7 @@ export default defineComponent({
 .chat-comment {
     background-color: var(--chat-comment-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
+    z-index: 10;
     &::before {
         content: '';
         position: absolute;
