@@ -38,7 +38,7 @@ export interface SchemaMessager extends env.CommonSchema {
     status: EnumMessagerStatus
     reason: string
     medias: Array<env.SchemaMedia>
-    reads: Array<{ userId: string }>
+    reads: Array<Omix<{ userId: string; sid: number }>>
 }
 
 /**发送自定义消息**/

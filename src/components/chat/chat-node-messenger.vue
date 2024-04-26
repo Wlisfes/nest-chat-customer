@@ -2,6 +2,7 @@
 import { defineComponent, computed, onMounted, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
 import { useUser, useSession } from '@/store'
+import { divineHandler } from '@/utils/utils-common'
 import { socket, divineSocketCustomizeMessager, divineSocketChangeMessager } from '@/utils/utils-websocket'
 import * as env from '@/interface/instance.resolver'
 
@@ -22,9 +23,13 @@ export default defineComponent({
                 /**消息初始化状态**/
                 return await fetchSocketInitialize(props.node)
             }
-            /**Socket事件监听已读状态推送**/
-            await fetchSocketMonitor()
-            // await fetcnSocketChangeMessager()
+            /**Socket事件监听推送**/
+            return await fetchSocketMonitor().then(async () => {
+                const read = props.node.reads.some(item => item.userId === user.uid)
+                return await divineHandler(props.node.userId !== user.uid && !read, {
+                    handler: fetcnSocketChangeMessager
+                })
+            })
         })
 
         /**更新节点相关信息**/
@@ -34,14 +39,20 @@ export default defineComponent({
 
         /**Socket事件监听**/
         async function fetchSocketMonitor() {
-            return socket.value.on(node.value.sid, async (data: Omix<{ type: string; state: Omix }>) => {
-                console.log(data)
-                if (data.type === 'server-change-messager') {
+            return socket.value.on(node.value.sid, async (scope: Omix<{ type: string; state: Omix }>) => {
+                if (scope.type === 'server-change-messager') {
+                    /**消息状态变更推送**/
                     return await fetchNodeUpdate({
-                        status: env.EnumMessagerStatus.sending
+                        status: scope.state.status,
+                        reason: scope.state.reason
                     })
+                } else if (scope.type === 'server-read-messager') {
+                    /**消息已读推送**/
+                    await fetchNodeUpdate({
+                        reads: node.value.reads.concat(scope.state as never)
+                    })
+                    return await session.fetchSessionReadUpdate(scope.state as env.BodySocketChangeMessager)
                 }
-                // await session.fetchSessionReadUpdate(data)
             })
         }
 
