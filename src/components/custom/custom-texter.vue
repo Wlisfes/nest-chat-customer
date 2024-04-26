@@ -19,7 +19,7 @@ export default defineComponent({
         return () => (
             <custom-element
                 width="auto"
-                current //={props.current}
+                current={props.current}
                 max-width={props.maxWidth}
                 node={props.node}
                 custom-component={customComponent.value}

@@ -2,6 +2,7 @@
 import { defineComponent, computed, onMounted, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
 import { useUser, useSession } from '@/store'
+import { divineHandler } from '@/utils/utils-common'
 import { socket, divineSocketCustomizeMessager, divineSocketChangeMessager } from '@/utils/utils-websocket'
 import * as env from '@/interface/instance.resolver'
 
@@ -27,21 +28,21 @@ export default defineComponent({
             // await fetcnSocketChangeMessager()
         })
 
-        /**更新消息SID**/
-        async function setNodeSid(sid: string) {
-            node.value.sid = sid
-        }
-
-        /**更新消息状态**/
-        async function setNodeStatus(status: env.EnumMessagerStatus, reason: string = '') {
-            node.value.status = status
-            node.value.reason = reason
+        /**更新节点相关信息**/
+        async function fetchNodeUpdate(scope: Partial<env.SchemaMessager> = {}) {
+            return Object.assign(node.value, scope)
         }
 
         /**Socket事件监听**/
         async function fetchSocketMonitor() {
-            return socket.value.on(node.value.sid, async (data: Omix<env.BodySocketChangeMessager>) => {
-                await session.fetchSessionReadUpdate(data)
+            return socket.value.on(node.value.sid, async (data: Omix<{ type: string; state: Omix }>) => {
+                console.log(data)
+                if (data.type === 'server-change-messager') {
+                    return await fetchNodeUpdate({
+                        status: env.EnumMessagerStatus.sending
+                    })
+                }
+                // await session.fetchSessionReadUpdate(data)
             })
         }
 
@@ -62,11 +63,14 @@ export default defineComponent({
                     source: scope.source,
                     text: scope.text
                 })
-                await setNodeSid(sid)
+                await fetchNodeUpdate({ status: env.EnumMessagerStatus.sending, sid })
                 await fetchSocketMonitor()
                 return await session.fetchSessionPushSidUpdate({ sid: sid, sessionId: scope.sessionId })
             } catch (e: any) {
-                return await setNodeStatus(env.EnumMessagerStatus.failed, e.message)
+                return await fetchNodeUpdate({
+                    status: env.EnumMessagerStatus.failed,
+                    reason: e.message
+                })
             }
         }
 

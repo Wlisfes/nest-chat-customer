@@ -1,6 +1,7 @@
 <script lang="tsx">
 import { defineComponent, computed, Fragment, CSSProperties, PropType } from 'vue'
 import { useUser, useSession } from '@/store'
+import { element } from '@/store/messenger'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -22,9 +23,17 @@ export default defineComponent({
             }
             return []
         })
+        /**排除自己以外的未读用户列表**/
+        const unread = computed(() => {
+            return member.value.filter(item => {
+                return !props.node.reads.some(read => read.userId === item.userId)
+            })
+        })
         /**排除自己以外的已读用户列表**/
         const reads = computed(() => {
-            return props.node.reads.filter(item => item.userId !== user.uid)
+            return member.value.filter(item => {
+                return props.node.reads.some(read => read.userId === item.userId)
+            })
         })
 
         return () => (
@@ -40,7 +49,7 @@ export default defineComponent({
                         {props.node.createTime}
                     </n-text>
                     {props.current && (
-                        <div class="n-chunk n-center" style={{ paddingLeft: '4px' }}>
+                        <div class="n-chunk n-center" style={{ padding: '0 4px' }}>
                             {session.schema.source === env.EnumSessionSource.contact ? (
                                 <Fragment>
                                     {reads.value.length > 0 ? (
@@ -57,14 +66,60 @@ export default defineComponent({
                                         <n-popover
                                             trigger="click"
                                             placement="bottom-end"
+                                            style={{ '--n-padding': 0 }}
+                                            arrow-style={{ '--n-arrow-offset': '6px' }}
+                                            disabled={member.value.length === 0}
+                                            to={element.value}
+                                            width={360}
                                             z-index={1}
                                             v-slots={{
                                                 trigger: () => (
-                                                    <n-icon class="n-pointer" size={16} color="#ff0000" component={<Iv-BsReadr />}></n-icon>
-                                                ),
-                                                default: () => <div>dsadasd</div>
+                                                    <n-icon
+                                                        class="n-pointer"
+                                                        size={16}
+                                                        color="var(--info-color)"
+                                                        component={<Iv-BsReadr />}
+                                                    ></n-icon>
+                                                )
                                             }}
-                                        ></n-popover>
+                                        >
+                                            <div class="n-chunk n-disover" style={{ padding: '0 0 10px' }}>
+                                                <div class="n-chunk n-column n-auto n-disover">
+                                                    <n-text style={{ lineHeight: '32px', padding: '0 10px' }}>
+                                                        {`${unread.value.length} 人未读`}
+                                                    </n-text>
+                                                    <n-scrollbar style={{ maxHeight: '100px' }}>
+                                                        <div class="n-chunk n-column" style={{ padding: '0 10px', rowGap: '10px' }}>
+                                                            {unread.value.map(item => (
+                                                                <div key={item.userId} class="n-chunk" style={{ columnGap: '5px' }}>
+                                                                    <custom-avatar size={28} src={item.user.avatar}></custom-avatar>
+                                                                    <n-text depth={1} class="n-chunk n-column n-middle n-disover">
+                                                                        <n-ellipsis tooltip={false}>{item.user.nickname}</n-ellipsis>
+                                                                    </n-text>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </n-scrollbar>
+                                                </div>
+                                                <div class="n-chunk n-column n-auto n-disover">
+                                                    <n-text style={{ lineHeight: '32px', padding: '0 10px' }}>
+                                                        {`${reads.value.length} 人已读`}
+                                                    </n-text>
+                                                    <n-scrollbar style={{ maxHeight: '100px' }}>
+                                                        <div class="n-chunk n-column" style={{ padding: '0 10px', rowGap: '10px' }}>
+                                                            {reads.value.map(item => (
+                                                                <div key={item.userId} class="n-chunk" style={{ columnGap: '5px' }}>
+                                                                    <custom-avatar size={28} src={item.user.avatar}></custom-avatar>
+                                                                    <n-text depth={1} class="n-chunk n-column n-middle n-disover">
+                                                                        <n-ellipsis tooltip={false}>{item.user.nickname}</n-ellipsis>
+                                                                    </n-text>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </n-scrollbar>
+                                                </div>
+                                            </div>
+                                        </n-popover>
                                     ) : reads.value.length > 0 && reads.value.length >= member.value.length ? (
                                         <n-icon class="n-pointer" size={16} color="#25d366" component={<Iv-BsReadr />}></n-icon>
                                     ) : props.node.status === env.EnumMessagerStatus.sending ? (

@@ -5,7 +5,7 @@ import { instance, element } from '@/store/messenger'
 import { divineDelay } from '@/utils/utils-common'
 
 export default defineComponent({
-    name: 'ChatSider',
+    name: 'ChatMessenger',
     setup(props) {
         const message = useMessenger()
 
@@ -54,8 +54,8 @@ export default defineComponent({
                             <n-element class="ctx-messenger n-chunk n-column n-auto">
                                 {message.dataSource.map((item, index) => (
                                     <chat-node-messenger
+                                        v-model:node={item}
                                         key={item.uuid ?? item.sid}
-                                        node={item}
                                         order={message.dataSource.length - index}
                                     ></chat-node-messenger>
                                 ))}
