@@ -14,31 +14,29 @@ export default defineComponent({
 
         onMounted(async () => {
             await fetchUserResolver()
-            await divineConnectSocketClient()
-            await fetchSessionInitColumn()
+            return await divineConnectSocketClient().then(async failure => {
+                await fetchSessionInitColumn()
+                return await setState({ failure, loading: false })
+            })
         })
 
         /**开启socket连接**/
-        async function divineConnectSocketClient() {
-            return await connectClient().then(client => {
-                /**监听socket连接**/
-                client.on('connect', async () => {
-                    return await setState({ loading: false, failure: false })
-                })
-                /**监听socket断开连接**/
-                client.on('disconnect', async reason => {
-                    return await setState({ loading: false, failure: true })
-                })
-                /**监听socket错误**/
-                client.on('connect_error', async err => {
-                    return await setState({ loading: false, failure: true })
-                })
-                /**监听消息推送**/
-                client.on('server-customize-messager', async (data: Omix<env.SchemaMessager>) => {
-                    /**消息列表处理**/
-                    await fetchSocketServerMessager(data)
-                    /**会话列表**/
-                    return await fetchNewServerMessager(data)
+        function divineConnectSocketClient(): Promise<boolean> {
+            return new Promise(resolve => {
+                connectClient().then(client => {
+                    /**监听socket连接**/
+                    client.on('connect', () => resolve(false))
+                    /**监听socket断开连接**/
+                    client.on('disconnect', reason => resolve(true))
+                    /**监听socket错误**/
+                    client.on('connect_error', err => resolve(true))
+                    /**监听消息推送**/
+                    client.on('server-customize-messager', async (data: Omix<env.SchemaMessager>) => {
+                        /**消息列表处理**/
+                        await fetchSocketServerMessager(data)
+                        /**会话列表**/
+                        return await fetchNewServerMessager(data)
+                    })
                 })
             })
         }

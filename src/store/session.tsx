@@ -55,25 +55,17 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
 
     /**初始化会话列表**/
     async function fetchSessionInitColumn() {
-        await setState({ loading: true, dataSource: [], total: 0 })
-        return await fetchSessionColumn().then(async ({ total, list }) => {
-            return await setState({
-                dataSource: list,
-                total: total,
-                loading: false
-            })
+        return await setState({ loading: true, dataSource: [], total: 0 }).then(async () => {
+            const { list, total } = await fetchSessionColumn()
+            return await setState({ dataSource: list, total: total, loading: false })
         })
     }
 
     /**分页加载**/
     async function fetchSessionNextColumn(closure: boolean = false) {
-        await setState({ loading: true })
-        return await fetchSessionColumn().then(async ({ total, list }) => {
-            return await setState({
-                dataSource: state.dataSource.concat(list),
-                total: total,
-                loading: closure
-            })
+        return await setState({ loading: true }).then(async () => {
+            const { list, total } = await fetchSessionColumn()
+            return await setState({ dataSource: state.dataSource.concat(list), total: total, loading: closure })
         })
     }
 
@@ -81,7 +73,7 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
     async function fetchSessionPushUpdate(scope: Omix<env.SchemaMessager>) {
         const node = state.dataSource.find(item => item.sid === scope.sessionId) as env.SchemaSession
         return await divineHandler(Boolean(node), {
-            handler: () => {
+            handler: async () => {
                 node.message.createTime = scope.createTime
                 node.message.source = scope.source
                 node.message.status = scope.status
@@ -106,9 +98,8 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
     async function fetchSessionPushSidUpdate(scope: Omix<{ sessionId: string; sid: string }>) {
         const node = state.dataSource.find(item => item.sid === scope.sessionId) as env.SchemaSession
         return await divineHandler(Boolean(node), {
-            handler: () => {
-                node.message.sid = scope.sid
-                return node
+            handler: async () => {
+                return (node.message.sid = scope.sid)
             }
         })
     }

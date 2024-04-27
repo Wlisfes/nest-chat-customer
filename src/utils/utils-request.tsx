@@ -5,7 +5,7 @@ import { locale } from '@/i18n'
 export const BaseURL = `/web-service`
 export const request = axios.create({
     baseURL: BaseURL,
-    timeout: 60000
+    timeout: 90000
 }) as Request
 
 function inizeNotice(response: AxiosResponse) {
