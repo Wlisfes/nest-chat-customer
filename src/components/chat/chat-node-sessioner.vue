@@ -59,15 +59,16 @@ export default defineComponent({
                     await session.setState({ sid: node.value.sid })
                     await session.fetchSessionOneResolver()
                     await comment.setState({ message: '' })
-                    await message.fetchSessionColumnInitMessager(node.value.sid, limit)
-                    return await divineHandler(Boolean(instance.value), {
-                        handler: async () => {
-                            await fetchNodeUnread([])
-                            return instance.value.scrollTo({
-                                top: 999999,
-                                behavior: 'auto'
-                            })
-                        }
+                    return await message.fetchSessionColumnInitMessager(node.value.sid, limit).then(async ({ compared }) => {
+                        return await divineHandler(compared && Boolean(instance.value), {
+                            handler: async () => {
+                                await fetchNodeUnread([])
+                                return instance.value.scrollTo({
+                                    top: 999999,
+                                    behavior: 'auto'
+                                })
+                            }
+                        })
                     })
                 }
             })

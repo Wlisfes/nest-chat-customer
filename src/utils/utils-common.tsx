@@ -33,10 +33,7 @@ export function divineDelay(delay = 100, handler?: Function) {
 }
 
 /**条件函数执行**/
-export async function divineHandler<T>(
-    where: boolean | Function,
-    scope: Omix<{ handler: Function; failure?: Function }>
-): Promise<T | void> {
+export async function divineHandler<T>(where: boolean | Function, scope: Omix<{ handler: Function; failure?: Function }>): Promise<T> {
     if (typeof where === 'function') {
         where = await where()
     }
