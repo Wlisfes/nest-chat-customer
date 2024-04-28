@@ -27,6 +27,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .chat-avatar {
+    user-select: none;
     width: var(--chat-avatar-size);
     height: var(--chat-avatar-size);
     min-width: var(--chat-avatar-size);

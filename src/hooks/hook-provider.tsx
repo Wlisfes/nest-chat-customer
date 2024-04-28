@@ -6,10 +6,11 @@ export interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
     '--chat-layout-loadiner': string
     '--chat-layout-before': string
     '--chat-carte-color': string
+    '--chat-carte-popover': string
     '--chat-compose-color': string
     '--chat-searcher-color': string
     '--chat-searcher-wrapper': string
-    '--chat-chat-sider': string
+    '--chat-sider-color': string
     '--chat-border-color': string
     '--chat-connect-color': string
     '--chat-comment-color': string
@@ -50,10 +51,11 @@ export function useProvider() {
             '--chat-layout-loadiner': '#f0f2f5',
             '--chat-layout-before': '#0000',
             '--chat-carte-color': '#f0f2f5',
+            '--chat-carte-popover': '#ffffff',
             '--chat-compose-color': '#ffffff',
             '--chat-searcher-color': '#ffffff',
             '--chat-searcher-wrapper': '#f0f2f5',
-            '--chat-chat-sider': '#ffffff',
+            '--chat-sider-color': '#ffffff',
             '--chat-border-color': 'rgba(134, 150, 160, 0.15)',
             '--chat-connect-color': '#ffffff',
             '--chat-comment-color': '#ffffff',
@@ -81,10 +83,11 @@ export function useProvider() {
             '--chat-layout-loadiner': '#202c33',
             '--chat-layout-before': '#000000b3',
             '--chat-carte-color': '#202c33',
+            '--chat-carte-popover': '#202c33',
             '--chat-compose-color': '#111b21',
             '--chat-searcher-color': '#111b21',
             '--chat-searcher-wrapper': '#202c33',
-            '--chat-chat-sider': '#111b21',
+            '--chat-sider-color': '#111b21',
             '--chat-border-color': 'rgba(134, 150, 160, 0.15)',
             '--chat-connect-color': '#202c33',
             '--chat-comment-color': '#202c33',

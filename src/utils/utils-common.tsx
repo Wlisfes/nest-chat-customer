@@ -3,10 +3,13 @@ export function prevent(evt: Event, handler?: Function) {
     return handler?.(evt)
 }
 
-export function stop(evt: Event, handler?: Function) {
+export async function stop(evt: Event, handler?: Function) {
     evt.preventDefault()
     evt.stopPropagation()
-    return handler?.(evt)
+    if (handler && typeof handler === 'function') {
+        return await handler(evt)
+    }
+    return evt
 }
 
 /**回车事件**/

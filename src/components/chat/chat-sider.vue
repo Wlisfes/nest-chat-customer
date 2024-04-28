@@ -35,7 +35,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .chat-sider {
-    background-color: var(--chat-chat-sider);
+    background-color: var(--chat-sider-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
 }
 </style>
