@@ -7,13 +7,13 @@ import { useLocale } from '@/hooks/hook-locale'
 import { useFormCustomize } from '@/hooks/hook-customize'
 import { useTiminer } from '@/hooks/hook-common'
 import { enter } from '@/utils/utils-common'
-import { createNotice } from '@/utils/utils-component'
+import { divineNotice } from '@/utils/utils-component'
 import { httpUserRegister, httpNodemailerSender } from '@/api/instance.service'
 
 export default defineComponent({
     name: 'AuthRegister',
     setup(props) {
-        const configer = useConfiger()
+        const { setAuthorize } = useConfiger()
         const { inverted } = useProvider()
         const { setupNotice } = useLocale()
         const { duration, complete, setDuration } = useTiminer()
@@ -54,11 +54,11 @@ export default defineComponent({
                     await done({ loading: true })
                     return await httpNodemailerSender({ email: form.value.email, source: 'register' }).then(async ({ data }) => {
                         await setDuration(60)
-                        await createNotice({ content: setupNotice(data.message) })
+                        await divineNotice({ content: setupNotice(data.message) })
                         return await done({ loading: false })
                     })
                 } catch (e) {
-                    await createNotice({ type: 'error', content: setupNotice(e) })
+                    await divineNotice({ type: 'error', content: setupNotice(e) })
                     return await done({ loading: false })
                 }
             })
@@ -78,12 +78,12 @@ export default defineComponent({
                         code: form.value.code,
                         password: window.btoa(form.value.password)
                     }).then(async ({ data }) => {
-                        await createNotice({ content: setupNotice(data.message) })
+                        await divineNotice({ content: setupNotice(data.message) })
                         await setLoading(false)
-                        return await configer.setAuthorize('login')
+                        return await setAuthorize('login')
                     })
                 } catch (e) {
-                    await createNotice({ type: 'error', content: setupNotice(e) })
+                    await divineNotice({ type: 'error', content: setupNotice(e) })
                     return await setLoading(false)
                 }
             })
@@ -199,7 +199,7 @@ export default defineComponent({
                 </n-form-item>
                 <n-space wrap-item={false} justify="space-between" style={{ width: '100%' }}>
                     <n-button text focusable={false}></n-button>
-                    <n-button text focusable={false} onClick={(evt: Event) => configer.setAuthorize('login')}>
+                    <n-button text focusable={false} onClick={(evt: Event) => setAuthorize('login')}>
                         返回登录
                     </n-button>
                 </n-space>

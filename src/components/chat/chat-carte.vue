@@ -1,8 +1,9 @@
 <script lang="tsx">
-import { defineComponent, ref, computed } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useConfiger, useUser, useChat } from '@/store'
 import { useState } from '@/hooks/hook-state'
 import { stop, divineWherer, divineHandler, divineDelay } from '@/utils/utils-common'
+import { divineRender, divineDiscover } from '@/utils/utils-component'
 
 export default defineComponent({
     name: 'ChatCarte',
@@ -53,7 +54,32 @@ export default defineComponent({
         }
 
         /**登出**/
-        async function fetchSignout() {}
+        async function fetchSignout() {
+            await divineDiscover({
+                type: 'error',
+                negativeText: '取消',
+                positiveText: '确定登出',
+                title: divineRender(
+                    <common-discover
+                        content="确定要登出吗？"
+                        icon={<n-icon size={26} color="var(--error-color)" component={<Iv-BsMistake />}></n-icon>}
+                    ></common-discover>
+                ),
+                content: divineRender(
+                    <div class="n-chunk n-column" style={{ padding: '20px 0 40px' }}>
+                        <n-text>登出后会中断连接、并且无法接收和发送消息。</n-text>
+                    </div>
+                ),
+                onPositiveClick: async (evt, vm, done) => {
+                    await done(true)
+                    await divineDelay(500)
+                    return await user.fetchReset().then(() => {
+                        return true
+                    })
+                }
+            })
+            return await fetchClickoutside()
+        }
 
         return () => (
             <div class="chat-carte n-chunk n-column n-auto n-space">
@@ -140,7 +166,7 @@ export default defineComponent({
                                         )}
                                     </div>
                                 </div>
-                                <div class="chunk-block n-chunk n-center n-disover n-pointer">
+                                <div class="chunk-block n-chunk n-center n-disover n-pointer" onClick={fetchSignout}>
                                     <div class="n-chunk n-center n-middle" style={{ width: '40px' }}>
                                         <n-icon size={24} color="var(--error-color)" component={<Iv-BsExit />}></n-icon>
                                     </div>

@@ -1,7 +1,7 @@
 import { toRefs } from 'vue'
 import { defineStore } from 'pinia'
 import { useState } from '@/hooks/hook-state'
-import { APP_STORE, APP_COMMON, getStore, setStore } from '@/utils/utils-storage'
+import { APP_STORE, APP_COMMON, getStore, setStore, delStore } from '@/utils/utils-storage'
 import { httpUserResolver } from '@/api/instance.service'
 
 export const useUser = defineStore(APP_STORE.STORE_USER, () => {
@@ -29,11 +29,18 @@ export const useUser = defineStore(APP_STORE.STORE_USER, () => {
         })
     }
 
+    /**退出登录**/
+    async function fetchReset() {
+        await delStore(APP_COMMON.CHAT_TOKEN)
+        return await setState({ token: '', uid: '', nickname: '', avatar: '', email: '', status: '', comment: '' })
+    }
+
+    /**存储token**/
     async function setToken(token: string, expire: number) {
         return await setStore(APP_COMMON.CHAT_TOKEN, token, expire).then(async () => {
             return await setState({ token })
         })
     }
 
-    return { state, ...toRefs(state), setState, setToken, fetchUserResolver }
+    return { state, ...toRefs(state), setState, setToken, fetchReset, fetchUserResolver }
 })

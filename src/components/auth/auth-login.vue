@@ -5,15 +5,15 @@ import { useConfiger, useUser } from '@/store'
 import { useLocale } from '@/hooks/hook-locale'
 import { useFormCustomize } from '@/hooks/hook-customize'
 import { enter } from '@/utils/utils-common'
-import { createNotice } from '@/utils/utils-component'
+import { divineNotice } from '@/utils/utils-component'
 import { httpUserAuthorizer } from '@/api/instance.service'
 
 export default defineComponent({
     name: 'AuthLogin',
     setup(props) {
         const grapher = ref<Omix<{ done: Function }>>()
-        const configer = useConfiger()
-        const user = useUser()
+        const { setAuthorize } = useConfiger()
+        const { setToken, fetchUserResolver } = useUser()
         const { setupNotice } = useLocale()
         const { formRef, form, rules, loading, setLoading, divineFormValidater } = useFormCustomize({
             form: {
@@ -51,14 +51,14 @@ export default defineComponent({
                         code: form.value.code,
                         password: window.btoa(form.value.password)
                     }).then(async ({ data, message }) => {
-                        await user.setToken(data.token, data.expire * 1000)
-                        await user.fetchUserResolver()
-                        return await createNotice({ content: setupNotice(message) }).then(() => {
+                        await setToken(data.token, data.expire * 1000)
+                        await fetchUserResolver()
+                        return await divineNotice({ content: setupNotice(message) }).then(() => {
                             return setLoading(false)
                         })
                     })
                 } catch (e) {
-                    await createNotice({ type: 'error', content: setupNotice(e) })
+                    await divineNotice({ type: 'error', content: setupNotice(e) })
                     await setLoading(false)
                     return grapher.value?.done(true)
                 }
@@ -146,7 +146,7 @@ export default defineComponent({
                     <n-button text focusable={false}>
                         忘记密码
                     </n-button>
-                    <n-button text focusable={false} onClick={(evt: Event) => configer.setAuthorize('register')}>
+                    <n-button text focusable={false} onClick={(evt: Event) => setAuthorize('register')}>
                         注册账号
                     </n-button>
                 </n-space>
