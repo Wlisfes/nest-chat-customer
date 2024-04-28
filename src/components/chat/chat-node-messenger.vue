@@ -88,11 +88,11 @@ export default defineComponent({
                 {current.value ? (
                     <div class="n-chunk n-end n-disover" style={{ columnGap: '10px' }}>
                         <custom-component current node={node.value}></custom-component>
-                        <custom-avatar src={node.value.user.avatar}></custom-avatar>
+                        <chat-avatar src={node.value.user.avatar}></chat-avatar>
                     </div>
                 ) : (
                     <div class="n-chunk n-disover" style={{ columnGap: '10px' }}>
-                        <custom-avatar src={node.value.user.avatar}></custom-avatar>
+                        <chat-avatar src={node.value.user.avatar}></chat-avatar>
                         <custom-component current={false} node={node.value}></custom-component>
                     </div>
                 )}

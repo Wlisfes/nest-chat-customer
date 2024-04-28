@@ -16,9 +16,9 @@ export default defineComponent({
                         {session.schema.source === env.EnumSessionSource.contact ? (
                             <Fragment>
                                 {session.schema.contact.userId === user.uid ? (
-                                    <custom-avatar size={34} src={session.schema.contact.nive.avatar}></custom-avatar>
+                                    <chat-avatar size={34} src={session.schema.contact.nive.avatar}></chat-avatar>
                                 ) : (
-                                    <custom-avatar size={34} src={session.schema.contact.user.avatar}></custom-avatar>
+                                    <chat-avatar size={34} src={session.schema.contact.user.avatar}></chat-avatar>
                                 )}
                                 {session.schema.contact.userId === user.uid ? (
                                     <n-text depth={1} style={{ fontSize: '16px' }}>
@@ -32,7 +32,7 @@ export default defineComponent({
                             </Fragment>
                         ) : session.schema.source === env.EnumSessionSource.communit ? (
                             <Fragment>
-                                <custom-avatar size={34} src={session.schema.communit.poster.fileURL}></custom-avatar>
+                                <chat-avatar size={34} src={session.schema.communit.poster.fileURL}></chat-avatar>
                                 <n-text depth={1} style={{ fontSize: '16px' }}>
                                     {session.schema.communit.name}
                                 </n-text>

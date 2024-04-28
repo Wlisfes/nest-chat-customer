@@ -103,7 +103,7 @@ export default defineComponent({
                                                         <div class="n-chunk n-column" style={{ padding: '0 10px', rowGap: '10px' }}>
                                                             {unread.value.map(item => (
                                                                 <div key={item.userId} class="n-chunk" style={{ columnGap: '5px' }}>
-                                                                    <custom-avatar size={28} src={item.user.avatar}></custom-avatar>
+                                                                    <chat-avatar size={28} src={item.user.avatar}></chat-avatar>
                                                                     <n-text depth={1} class="n-chunk n-column n-middle n-disover">
                                                                         <n-ellipsis tooltip={false}>{item.user.nickname}</n-ellipsis>
                                                                     </n-text>
@@ -120,7 +120,7 @@ export default defineComponent({
                                                         <div class="n-chunk n-column" style={{ padding: '0 10px', rowGap: '10px' }}>
                                                             {reads.value.map(item => (
                                                                 <div key={item.userId} class="n-chunk" style={{ columnGap: '5px' }}>
-                                                                    <custom-avatar size={28} src={item.user.avatar}></custom-avatar>
+                                                                    <chat-avatar size={28} src={item.user.avatar}></chat-avatar>
                                                                     <n-text depth={1} class="n-chunk n-column n-middle n-disover">
                                                                         <n-ellipsis tooltip={false}>{item.user.nickname}</n-ellipsis>
                                                                     </n-text>

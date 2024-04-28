@@ -84,13 +84,13 @@ export default defineComponent({
         return () => (
             <div class="chat-node-sessioner n-chunk n-pointer" style={chunk.value} onClick={fetchSessionSelector}>
                 {node.value.source === 'communit' ? (
-                    <custom-avatar size={46} src={node.value.communit.poster.fileURL}></custom-avatar>
+                    <chat-avatar size={46} src={node.value.communit.poster.fileURL}></chat-avatar>
                 ) : (
                     <Fragment>
                         {node.value.contact.userId === user.uid ? (
-                            <custom-avatar size={46} src={node.value.contact.nive.avatar}></custom-avatar>
+                            <chat-avatar size={46} src={node.value.contact.nive.avatar}></chat-avatar>
                         ) : (
-                            <custom-avatar size={46} src={node.value.contact.user.avatar}></custom-avatar>
+                            <chat-avatar size={46} src={node.value.contact.user.avatar}></chat-avatar>
                         )}
                     </Fragment>
                 )}
