@@ -31,23 +31,30 @@ export default defineComponent({
             socket.value.on('server-customize-messager', async (data: Omix<env.SchemaMessager>) => {
                 return await divineHandler(node.value.sid === data.sessionId, {
                     handler: async function () {
-                        node.value.message.keyId = data.keyId
-                        node.value.message.sid = data.sid
-                        node.value.message.createTime = data.createTime
-                        node.value.message.source = data.source
-                        node.value.message.status = data.status
-                        node.value.message.text = data.text
-                        node.value.message.userId = data.userId
-                        if (data.userId !== user.uid) {
-                            node.value.unread = node.value.unread.concat(data)
-                        }
+                        return await fetchUpdateNodeMessager(data)
                     }
                 })
             })
         })
 
+        /**更新最新消息数据**/
+        async function fetchUpdateNodeMessager(scope: Omix<env.SchemaMessager>) {
+            node.value.message.keyId = scope.keyId
+            node.value.message.sid = scope.sid
+            node.value.message.createTime = scope.createTime
+            node.value.message.source = scope.source
+            node.value.message.status = scope.status
+            node.value.message.text = scope.text
+            node.value.message.userId = scope.userId
+            return await divineHandler(scope.userId !== user.uid, {
+                handler: async () => {
+                    return (node.value.unread = node.value.unread.concat(scope))
+                }
+            })
+        }
+
         /**更新会话未读列表**/
-        async function fetchNodeUnread(unread: Array<env.SchemaMessager>) {
+        async function fetchUpdateNodeUnread(unread: Array<env.SchemaMessager>) {
             return (node.value.unread = unread)
         }
 
@@ -62,7 +69,7 @@ export default defineComponent({
                     return await message.fetchSessionColumnInitMessager(node.value.sid, limit).then(async ({ compared }) => {
                         return await divineHandler(compared && Boolean(instance.value), {
                             handler: async () => {
-                                await fetchNodeUnread([])
+                                await fetchUpdateNodeUnread([])
                                 return instance.value.scrollTo({
                                     top: 999999,
                                     behavior: 'auto'
