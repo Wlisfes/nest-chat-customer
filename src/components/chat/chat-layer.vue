@@ -115,6 +115,15 @@ export default defineComponent({
     box-sizing: border-box;
     max-width: var(--chat-layer-width);
     transition: max-width 0.3s var(--cubic-bezier-ease-in-out);
+    animation: zoom-scale 0.3s var(--cubic-bezier-ease-in-out);
+    @keyframes zoom-scale {
+        from {
+            transform: scale(0.5);
+        }
+        to {
+            transform: scale(1);
+        }
+    }
     &__container {
         position: relative;
         width: 100%;
