@@ -56,15 +56,10 @@ export default defineComponent({
         /**登出**/
         async function fetchSignout() {
             await divineDiscover({
-                type: 'error',
+                type: 'default',
+                title: 'ghdfhf',
                 negativeText: '取消',
                 positiveText: '确定登出',
-                title: divineRender(
-                    <common-discover
-                        content="确定要登出吗？"
-                        icon={<n-icon size={26} color="var(--error-color)" component={<Iv-BsMistake />}></n-icon>}
-                    ></common-discover>
-                ),
                 content: divineRender(
                     <div class="n-chunk n-column" style={{ padding: '20px 0 40px' }}>
                         <n-text>登出后会中断连接、并且无法接收和发送消息。</n-text>
@@ -73,9 +68,14 @@ export default defineComponent({
                 onPositiveClick: async (evt, vm, done) => {
                     await done(true)
                     await divineDelay(500)
-                    return await user.fetchReset().then(() => {
+                    return await user.fetchReset().then(async () => {
+                        await chat.setState({ current: 'session' })
                         return true
                     })
+                },
+                onClose: () => {
+                    console.log(`onClose`)
+                    return true
                 }
             })
             return await fetchClickoutside()

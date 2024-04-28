@@ -2,6 +2,7 @@ import { createApp, createVNode, nextTick, render, App, CSSProperties, VNode } f
 import { DialogOptions, DialogReactive, NotificationOptions, NotificationReactive, IconProps } from 'naive-ui'
 import { setupI18n } from '@/i18n'
 import { setupStore } from '@/store'
+import { divineWherer, divineHandler } from '@/utils/utils-common'
 import { divineTransfer } from '@/utils/utils-transfer'
 
 export interface ComponentResolver {
@@ -59,24 +60,43 @@ export function divineRender(Component: Parameters<typeof createApp>['0']) {
 
 /**对话弹窗二次封装**/
 export function divineDiscover(
-    option: Omit<DialogOptions, 'onAfterEnter' | 'onAfterLeave' | 'onClose' | 'onEsc' | 'onNegativeClick' | 'onPositiveClick'> & {
-        onAfterEnter?: (e: HTMLElement, x: DialogReactive) => void | any | undefined
-        onAfterLeave?: (x: DialogReactive) => void | any | undefined
+    option: Pick<DialogOptions, 'type' | 'content' | 'title' | 'closable' | 'negativeText' | 'positiveText'> & {
+        icon?: VNode
+        onAfterEnter?: (e: HTMLElement, x: DialogReactive) => any
         onClose?: (x: DialogReactive) => boolean | Promise<boolean>
-        onEsc?: (x: DialogReactive) => void | any | undefined
         onNegativeClick?: (e: MouseEvent, x: DialogReactive) => boolean | Promise<boolean>
         onPositiveClick?: (e: MouseEvent, x: DialogReactive, done: (loading: boolean) => Promise<boolean>) => boolean | Promise<boolean>
     }
 ): Promise<DialogReactive> {
     return new Promise(async resolve => {
+        const closable = option.closable ?? true
         const vm = window.$dialog.create({
             ...option,
+            closable,
             showIcon: false,
             autoFocus: false,
-            closable: option.closable,
-            maskClosable: option.maskClosable ?? false,
+            maskClosable: false,
+            title: function render() {
+                console.log(option)
+                if (!option.title) return undefined
+                return (
+                    <n-element class="n-chunk n-auto n-disover" style={{ columnGap: '10px' }}>
+                        {option.icon && (
+                            <div class="n-chunk n-center" style={{ height: '28px' }}>
+                                <n-icon size={26} color="var(--error-color)" component={<Iv-BsMistake />}></n-icon>,
+                            </div>
+                        )}
+                        <div class="n-chunk n-column n-auto n-disover">
+                            <n-text style={{ fontSize: '18px', lineHeight: '28px', fontWeight: 500 }}>
+                                确定要登出吗确定要登出吗确定要登出吗
+                            </n-text>
+                        </div>
+                    </n-element>
+                )
+            },
+            class: 'divineDiscover',
             style: {
-                '--n-padding': '16px 20px 20px',
+                '--n-padding': '20px',
                 '--n-close-margin': '16px 16px 0 0',
                 '--n-content-margin': '0px',
                 '--n-close-size': '-6px'
@@ -85,36 +105,50 @@ export function divineDiscover(
                 size: 'medium',
                 ghost: false,
                 secondary: true,
-                style: { '--n-height': '30px', '--n-padding': '0 10px' },
-                ...option.negativeButtonProps
+                style: { '--n-height': '30px', '--n-padding': '0 10px' }
             },
             positiveButtonProps: {
                 size: 'medium',
                 type: 'error',
-                style: { '--n-height': '30px', '--n-padding': '0 10px' },
-                ...option.positiveButtonProps
+                style: { '--n-height': '30px', '--n-padding': '0 10px' }
             },
             onAfterEnter: async (e: HTMLElement) => {
-                await divineTransfer(e)
-                return option.onAfterEnter ? option.onAfterEnter(e, vm) : undefined
+                return await divineHandler(Boolean(option.onAfterEnter), {
+                    handler: async () => {
+                        await divineTransfer(e)
+                        return await option.onAfterEnter!(e, vm)
+                    },
+                    failure: async () => {
+                        return await divineTransfer(e)
+                    }
+                })
             },
-            onAfterLeave: () => {
-                return option.onAfterLeave ? option.onAfterLeave(vm) : undefined
+            onClose: async function onClose() {
+                return await divineHandler(Boolean(option.onClose), {
+                    handler: () => option.onClose!(vm),
+                    failure: () => true
+                })
             },
-            onClose: () => {
-                return option.onClose ? option.onClose(vm) : true
+            onEsc: async function onEsc() {
+                return await divineHandler(Boolean(option.onClose), {
+                    handler: () => option.onClose!(vm),
+                    failure: () => true
+                })
             },
-            onEsc: () => {
-                return option.onEsc ? option.onEsc(vm) : undefined
+            onNegativeClick: async function onNegativeClick(e: MouseEvent) {
+                return await divineHandler(Boolean(option.onNegativeClick), {
+                    handler: () => option.onNegativeClick!(e, vm),
+                    failure: () => true
+                })
             },
-            onNegativeClick: (e: MouseEvent) => {
-                return option.onNegativeClick ? option.onNegativeClick(e, vm) : true
-            },
-            onPositiveClick: (e: MouseEvent) => {
-                return option.onPositiveClick ? option.onPositiveClick(e, vm, async loading => (vm.loading = loading)) : true
+            onPositiveClick: async function onPositiveClick(e: MouseEvent) {
+                return await divineHandler(Boolean(option.onPositiveClick), {
+                    handler: () => option.onPositiveClick!(e, vm, async loading => (vm.loading = loading)),
+                    failure: () => true
+                })
             }
         } as unknown as DialogOptions)
-        resolve(vm)
+        return await resolve(vm)
     })
 }
 
