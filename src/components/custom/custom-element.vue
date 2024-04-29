@@ -99,7 +99,7 @@ export default defineComponent({
                                                     <n-text style={{ lineHeight: '32px', padding: '0 10px' }}>
                                                         {`${unread.value.length} 人未读`}
                                                     </n-text>
-                                                    <n-scrollbar style={{ maxHeight: '100px' }}>
+                                                    <n-scrollbar style={{ maxHeight: '240px' }}>
                                                         <div class="n-chunk n-column" style={{ padding: '0 10px', rowGap: '10px' }}>
                                                             {unread.value.map(item => (
                                                                 <div key={item.userId} class="n-chunk" style={{ columnGap: '5px' }}>
@@ -116,7 +116,7 @@ export default defineComponent({
                                                     <n-text style={{ lineHeight: '32px', padding: '0 10px' }}>
                                                         {`${reads.value.length} 人已读`}
                                                     </n-text>
-                                                    <n-scrollbar style={{ maxHeight: '100px' }}>
+                                                    <n-scrollbar style={{ maxHeight: '240px' }}>
                                                         <div class="n-chunk n-column" style={{ padding: '0 10px', rowGap: '10px' }}>
                                                             {reads.value.map(item => (
                                                                 <div key={item.userId} class="n-chunk" style={{ columnGap: '5px' }}>
