@@ -1,6 +1,8 @@
 import { computed, ComputedRef } from 'vue'
 import { useThemeVars, darkTheme, lightTheme, GlobalThemeOverrides, ThemeCommonVars } from 'naive-ui'
 import { useConfiger } from '@/store/configer'
+import { divineHandler } from '@/utils/utils-common'
+
 export interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
     '--auth-layout-color': string
     '--chat-layout-loadiner': string
@@ -109,5 +111,13 @@ export function useProvider() {
         }
     }))
 
-    return { theme, themeOverrides, vars, inverted }
+    /**切换主题模式**/
+    async function fetchUpdateTheme() {
+        return await divineHandler(inverted.value, {
+            handler: () => configer.setTheme('light'),
+            failure: () => configer.setTheme('dark')
+        })
+    }
+
+    return { theme, themeOverrides, vars, inverted, fetchUpdateTheme }
 }

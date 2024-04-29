@@ -1,15 +1,15 @@
 <script lang="tsx">
 import { defineComponent, ref } from 'vue'
-import { useConfiger, useUser, useChat } from '@/store'
+import { useUser, useChat } from '@/store'
 import { useState } from '@/hooks/hook-state'
+import { useProvider } from '@/hooks/hook-provider'
 import { stop, divineWherer, divineHandler, divineDelay } from '@/utils/utils-common'
-import { divineDiscover } from '@/utils/utils-component'
 
 export default defineComponent({
     name: 'ChatCarte',
     setup() {
         const { state, setState } = useState({ visible: false, switch: false })
-        const configer = useConfiger()
+        const { inverted, fetchUpdateTheme } = useProvider()
         const chat = useChat()
         const user = useUser()
         const dataSource = ref([
@@ -45,31 +45,10 @@ export default defineComponent({
             return await fetchClickoutside()
         }
 
-        /**切换主题模式**/
-        async function fetchUpdateTheme() {
-            return await divineHandler(configer.theme === 'light', {
-                handler: () => configer.setTheme('dark'),
-                failure: () => configer.setTheme('light')
-            })
-        }
-
         /**登出**/
-        async function fetchSignout() {
-            return await divineDiscover({
-                icon: 'BsMistake',
-                title: '确定要登出吗？',
-                negativeText: '取消',
-                positiveText: '确定登出',
-                content: `登出后会中断连接、并且无法接收和发送消息。`,
-                onAfterEnter: fetchClickoutside,
-                onPositiveClick: async (evt, vm, done) => {
-                    await done(true)
-                    await divineDelay(500)
-                    return await user.fetchReset().then(async () => {
-                        await chat.setState({ current: 'session' })
-                        return true
-                    })
-                }
+        async function fetchUserSignout() {
+            return await fetchClickoutside().then(async () => {
+                return await user.fetchUserSignout()
             })
         }
 
@@ -144,21 +123,17 @@ export default defineComponent({
                                 </div>
                                 <div class="chunk-block n-chunk n-center n-disover n-pointer" onClick={fetchUpdateTheme}>
                                     <div class="n-chunk n-center n-middle" style={{ width: '40px' }}>
-                                        {configer.theme === 'light' ? (
-                                            <n-icon size={24} component={<Iv-BsLight />}></n-icon>
+                                        {inverted.value ? (
+                                            <n-icon size={23} component={<Iv-BsDark />}></n-icon>
                                         ) : (
-                                            <n-icon size={22} component={<Iv-BsDark />}></n-icon>
+                                            <n-icon size={24} component={<Iv-BsLight />}></n-icon>
                                         )}
                                     </div>
                                     <div class="n-chunk n-center n-auto n-disover">
-                                        {configer.theme === 'light' ? (
-                                            <n-text depth={2}>深色模式</n-text>
-                                        ) : (
-                                            <n-text depth={2}>浅色模式</n-text>
-                                        )}
+                                        {inverted.value ? <n-text depth={2}>浅色模式</n-text> : <n-text depth={2}>深色模式</n-text>}
                                     </div>
                                 </div>
-                                <div class="chunk-block n-chunk n-center n-disover n-pointer" onClick={fetchSignout}>
+                                <div class="chunk-block n-chunk n-center n-disover n-pointer" onClick={fetchUserSignout}>
                                     <div class="n-chunk n-center n-middle" style={{ width: '40px' }}>
                                         <n-icon size={24} color="var(--error-color)" component={<Iv-BsExit />}></n-icon>
                                     </div>
