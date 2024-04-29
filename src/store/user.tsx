@@ -70,7 +70,7 @@ export const useUser = defineStore(APP_STORE.STORE_USER, () => {
                     await comment.setState({ message: '' })
                     await session.setState({ sid: '', dataSource: [], total: 0 })
                     await message.setState({ sid: '', dataSource: [], total: 0, limit: 30, distance: 0 })
-                    return await chat.setState({ current: 'session' }).then(() => {
+                    return await chat.setState({ current: 'session', loading: true, failure: false }).then(() => {
                         return true
                     })
                 })
