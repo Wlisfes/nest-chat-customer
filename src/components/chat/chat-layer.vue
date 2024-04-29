@@ -135,27 +135,29 @@ export default defineComponent({
 
 .chunk-context {
     width: var(--chat-layer-context);
-    transition: width 0.3s var(--cubic-bezier-ease-in-out);
+    background-color: var(--chat-context-color);
+    transition: width 0.3s, background-color 0.3s var(--cubic-bezier-ease-in-out);
 }
 
 .chunk-sider {
     overflow: hidden;
     width: var(--chat-layer-sider-shrink);
-    transition: width 0.3s var(--cubic-bezier-ease-in-out);
+    transition: width 0.3s;
     &::before {
         content: '';
         position: absolute;
         top: 0;
         right: 0;
         bottom: 0;
-        border-right: 1px solid var(--chat-border-color);
-        transition: border-right 0.3s var(--cubic-bezier-ease-in-out);
+        width: 1px;
+        background-color: var(--chat-border-color);
+        transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
         z-index: 1;
     }
     &__element {
         overflow: hidden;
         width: 100%;
-        transition: width 0.3s var(--cubic-bezier-ease-in-out);
+        transition: width 0.3s;
     }
 }
 </style>
