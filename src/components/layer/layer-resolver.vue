@@ -1,6 +1,51 @@
 <script lang="tsx">
 import { defineComponent, onMounted, PropType } from 'vue'
 import { useUser } from '@/store'
+import { useLayer } from '@/hooks/hook-layer'
+import { useFormCustomize } from '@/hooks/hook-customize'
+import { stop, divineHandler, divineDelay } from '@/utils/utils-common'
+
+export default defineComponent({
+    name: 'LayerResolver',
+    emits: ['close', 'submit'],
+    props: {
+        width: { type: [Number, String], default: 420 }
+    },
+    setup(props, { emit }) {
+        const user = useUser()
+
+        const { form, visible, setVisible } = useFormCustomize({
+            form: {
+                nickname: user.nickname,
+                comment: user.comment
+            }
+        })
+        const { element } = useLayer(() => {
+            setVisible(false)
+        })
+
+        onMounted(() => setVisible(true))
+
+        return () => (
+            <n-drawer
+                v-model:show={visible.value}
+                width={props.width}
+                to={element.value ?? document.body}
+                content-style={{ overflow: 'hidden', userSelect: 'none' }}
+                placement="left"
+                auto-focus={false}
+                mask-closable={false}
+                show-mask={false}
+                on-after-leave={() => emit('close')}
+            ></n-drawer>
+        )
+    }
+})
+</script>
+
+<!-- <script lang="tsx">
+import { defineComponent, onMounted, PropType } from 'vue'
+import { useUser } from '@/store'
 import { useFormCustomize } from '@/hooks/hook-customize'
 import { stop, divineHandler, divineDelay } from '@/utils/utils-common'
 
@@ -189,4 +234,4 @@ export default defineComponent({
         }
     }
 }
-</style>
+</style> -->

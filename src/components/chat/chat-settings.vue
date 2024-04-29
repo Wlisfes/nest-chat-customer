@@ -1,25 +1,36 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
 import { useUser, useMessenger, useSession, useComment } from '@/store'
+import { useLayer } from '@/hooks/hook-layer'
 import { useProvider } from '@/hooks/hook-provider'
+import { fetchResolver } from '@/components/layer/layer.instance'
 
 export default defineComponent({
     name: 'ChatSettings',
     setup() {
-        const { inverted, fetchThemeUpdate } = useProvider()
         const user = useUser()
+        const { element } = useLayer()
+        const { inverted, fetchThemeUpdate } = useProvider()
 
         /**登出**/
         async function fetchUserSignout() {
             return await user.fetchUserSignout()
         }
 
+        async function fetchUseResolver() {
+            const { unmount } = await fetchResolver({
+                element: element.value,
+                width: '300px',
+                onClose: () => unmount(300)
+            })
+        }
+
         return () => (
-            <div class="chat-settings n-chunk n-column n-auto n-disover">
+            <div ref={element} class="chat-settings n-chunk n-column n-auto n-disover">
                 <chat-compose title="设置"></chat-compose>
                 <div class="n-chunk n-column n-auto n-disover">
                     <n-scrollbar class="is-customize">
-                        <div class="n-chunk n-center n-disover" style={{ padding: '20px 14px', columnGap: '10px' }}>
+                        <div class="chunk-user n-chunk n-center n-disover n-pointer" onClick={fetchUseResolver}>
                             <chat-avatar size={80} radius={40} src={user.avatar}></chat-avatar>
                             <div class="n-chunk n-column n-auto">
                                 <n-text depth={1} style={{ fontSize: '20px', lineHeight: '28px' }}>
@@ -109,12 +120,24 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.chunk-user {
+    user-select: none;
+    padding: 10px 16px;
+    column-gap: 10px;
+    transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
+    &:hover {
+        background-color: var(--divider-color);
+    }
+}
 .chunk-block {
     user-select: none;
     height: 60px;
     font-size: 16px;
     padding-right: 16px;
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
+    &:hover {
+        background-color: var(--divider-color);
+    }
     &::before {
         content: '';
         position: absolute;
@@ -124,9 +147,6 @@ export default defineComponent({
         height: 1px;
         background-color: var(--chat-border-color);
         transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
-    }
-    &:hover {
-        background-color: var(--divider-color);
     }
 }
 </style>

@@ -6,7 +6,10 @@ import { APP_STORE } from '@/utils/utils-storage'
 import { divineHandler, divineParameter } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 import * as api from '@/api/instance.service'
+
+/**右侧滚动消息记录容器**/
 export const element = ref<HTMLElement>() as Ref<HTMLElement>
+/**右侧滚动容器实例**/
 export const instance = ref<ScrollbarInst>() as Ref<ScrollbarInst>
 
 export const useMessenger = defineStore(APP_STORE.STORE_MESSANGER, () => {
