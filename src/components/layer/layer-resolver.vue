@@ -4,35 +4,38 @@ import { useUser } from '@/store'
 import { useLayer } from '@/hooks/hook-layer'
 import { useFormCustomize } from '@/hooks/hook-customize'
 import { stop, divineHandler, divineDelay } from '@/utils/utils-common'
+import { Observer } from '@/utils/utils-observer'
 
 export default defineComponent({
     name: 'LayerResolver',
     emits: ['close', 'submit'],
     props: {
-        width: { type: [Number, String], default: 420 }
+        observer: { type: Object as PropType<Observer<Omix>>, required: true }
     },
     setup(props, { emit }) {
         const user = useUser()
-
+        const { element, chunkContent, divineLayerUnmounted } = useLayer()
         const { form, visible, setVisible } = useFormCustomize({
             form: {
                 nickname: user.nickname,
                 comment: user.comment
             }
         })
-        const { element } = useLayer(() => {
-            setVisible(false)
-        })
 
-        onMounted(() => setVisible(true))
+        onMounted(async () => {
+            setVisible(true)
+            return await divineLayerUnmounted(props.observer, () => {
+                return setVisible(false)
+            })
+        })
 
         return () => (
             <n-drawer
                 v-model:show={visible.value}
-                width={props.width}
+                width="100%"
                 to={element.value ?? document.body}
-                content-style={{ overflow: 'hidden', userSelect: 'none' }}
-                placement="left"
+                content-style={chunkContent.value}
+                placement="right"
                 auto-focus={false}
                 mask-closable={false}
                 show-mask={false}

@@ -1,10 +1,12 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
 import { useChat } from '@/store'
+import { useLayer } from '@/hooks/hook-layer'
 
 export default defineComponent({
     name: 'ChatSider',
-    setup(props) {
+    setup() {
+        const { element } = useLayer()
         const chat = useChat()
 
         return () => (
@@ -12,7 +14,7 @@ export default defineComponent({
                 <div class="n-chunk n-column n-disover" style={{ width: '60px' }}>
                     <chat-carte></chat-carte>
                 </div>
-                <div class="n-chunk n-column n-auto n-disover">
+                <div ref={element} class="n-chunk n-column n-auto n-disover">
                     {chat.current === 'session' ? (
                         <chat-sessioner></chat-sessioner>
                     ) : chat.current === 'society' ? (

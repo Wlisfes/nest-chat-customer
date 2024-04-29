@@ -7,6 +7,7 @@ export interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
     '--auth-layout-color': string
     '--chat-layout-loadiner': string
     '--chat-layout-before': string
+    '--chat-layer-color': string
     '--chat-carte-color': string
     '--chat-carte-popover': string
     '--chat-compose-color': string
@@ -52,6 +53,7 @@ export function useProvider() {
             '--auth-layout-color': '#ffffff',
             '--chat-layout-loadiner': '#f0f2f5',
             '--chat-layout-before': '#0000',
+            '--chat-layer-color': '#ffffff',
             '--chat-carte-color': '#f0f2f5',
             '--chat-carte-popover': '#ffffff',
             '--chat-compose-color': '#ffffff',
@@ -84,6 +86,7 @@ export function useProvider() {
             '--auth-layout-color': '#0d1317',
             '--chat-layout-loadiner': '#202c33',
             '--chat-layout-before': '#000000b3',
+            '--chat-layer-color': '#111b21',
             '--chat-carte-color': '#202c33',
             '--chat-carte-popover': '#202c33',
             '--chat-compose-color': '#111b21',
