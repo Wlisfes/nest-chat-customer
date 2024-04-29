@@ -112,12 +112,12 @@ export function useProvider() {
     }))
 
     /**切换主题模式**/
-    async function fetchUpdateTheme() {
+    async function fetchThemeUpdate() {
         return await divineHandler(inverted.value, {
             handler: () => configer.setTheme('light'),
             failure: () => configer.setTheme('dark')
         })
     }
 
-    return { theme, themeOverrides, vars, inverted, fetchUpdateTheme }
+    return { theme, themeOverrides, vars, inverted, fetchThemeUpdate }
 }

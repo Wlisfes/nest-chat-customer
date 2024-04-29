@@ -9,7 +9,7 @@ export default defineComponent({
     name: 'ChatCarte',
     setup() {
         const { state, setState } = useState({ visible: false, switch: false })
-        const { inverted, fetchUpdateTheme } = useProvider()
+        const { inverted, fetchThemeUpdate } = useProvider()
         const chat = useChat()
         const user = useUser()
         const dataSource = ref([
@@ -121,7 +121,7 @@ export default defineComponent({
                                         <n-text depth={2}>设置</n-text>
                                     </div>
                                 </div>
-                                <div class="chunk-block n-chunk n-center n-disover n-pointer" onClick={fetchUpdateTheme}>
+                                <div class="chunk-block n-chunk n-center n-disover n-pointer" onClick={fetchThemeUpdate}>
                                     <div class="n-chunk n-center n-middle" style={{ width: '40px' }}>
                                         {inverted.value ? (
                                             <n-icon size={23} component={<Iv-BsDark />}></n-icon>
@@ -130,7 +130,13 @@ export default defineComponent({
                                         )}
                                     </div>
                                     <div class="n-chunk n-center n-auto n-disover">
-                                        {inverted.value ? <n-text depth={2}>浅色模式</n-text> : <n-text depth={2}>深色模式</n-text>}
+                                        <n-text depth={2}>
+                                            {inverted.value ? (
+                                                <n-ellipsis tooltip={false}>浅色模式</n-ellipsis>
+                                            ) : (
+                                                <n-ellipsis tooltip={false}>深色模式</n-ellipsis>
+                                            )}
+                                        </n-text>
                                     </div>
                                 </div>
                                 <div class="chunk-block n-chunk n-center n-disover n-pointer" onClick={fetchUserSignout}>
@@ -165,8 +171,9 @@ export default defineComponent({
         top: 0;
         right: 0;
         bottom: 0;
-        border-right: 1px solid var(--chat-border-color);
-        transition: border-right 0.3s var(--cubic-bezier-ease-in-out);
+        width: 1px;
+        background-color: var(--chat-border-color);
+        transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
         z-index: 1;
     }
     :deep(.n-image),
@@ -191,8 +198,9 @@ export default defineComponent({
             left: 0;
             right: 0;
             bottom: 0;
-            border-top: 1px solid var(--chat-border-color);
-            transition: border-top 0.3s var(--cubic-bezier-ease-in-out);
+            height: 1px;
+            background-color: var(--chat-border-color);
+            transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
         }
     }
     .chunk-block {

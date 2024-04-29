@@ -1,6 +1,6 @@
 import { toRefs } from 'vue'
 import { defineStore } from 'pinia'
-import { useChat } from '@/store'
+import { useChat, useMessenger, useSession, useComment } from '@/store'
 import { useState } from '@/hooks/hook-state'
 import { APP_STORE, APP_COMMON, getStore, setStore, delStore } from '@/utils/utils-storage'
 import { divineHandler, divineDelay } from '@/utils/utils-common'
@@ -9,6 +9,9 @@ import * as api from '@/api/instance.service'
 
 export const useUser = defineStore(APP_STORE.STORE_USER, () => {
     const chat = useChat()
+    const session = useSession()
+    const message = useMessenger()
+    const comment = useComment()
     const { state, setState } = useState({
         token: getStore(APP_COMMON.CHAT_TOKEN, ''),
         uid: '',
@@ -47,7 +50,7 @@ export const useUser = defineStore(APP_STORE.STORE_USER, () => {
     }
 
     /**退出登录**/
-    async function fetchUserSignout(scope?: { onAfterEnter?: Function; onPositiveClick?: Function }) {
+    async function fetchUserSignout(scope?: Omix<{ onAfterEnter?: Function; onPositiveClick?: Function }>) {
         return await divineDiscover({
             icon: 'BsMistake',
             title: '确定要登出吗？',
@@ -64,6 +67,9 @@ export const useUser = defineStore(APP_STORE.STORE_USER, () => {
                 await divineDelay(500)
                 return await fetchReset().then(async () => {
                     await scope?.onPositiveClick?.()
+                    await comment.setState({ message: '' })
+                    await session.setState({ sid: '', dataSource: [], total: 0 })
+                    await message.setState({ sid: '', dataSource: [], total: 0, limit: 30, distance: 0 })
                     return await chat.setState({ current: 'session' }).then(() => {
                         return true
                     })

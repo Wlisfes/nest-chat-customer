@@ -1,13 +1,18 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
-import { useConfiger, useUser, useMessenger, useSession, useComment } from '@/store'
+import { useUser, useMessenger, useSession, useComment } from '@/store'
 import { useProvider } from '@/hooks/hook-provider'
 
 export default defineComponent({
     name: 'ChatSettings',
-    setup(props, { emit }) {
-        const { inverted, fetchUpdateTheme } = useProvider()
+    setup() {
+        const { inverted, fetchThemeUpdate } = useProvider()
         const user = useUser()
+
+        /**登出**/
+        async function fetchUserSignout() {
+            return await user.fetchUserSignout()
+        }
 
         return () => (
             <div class="chat-settings n-chunk n-column n-auto n-disover">
@@ -27,7 +32,7 @@ export default defineComponent({
                         </div>
                         <div class="n-chunk n-column n-auto n-disover">
                             <div class="chunk-block n-chunk n-disover n-pointer">
-                                <div class="n-chunk n-center n-middle" style={{ width: '60px' }}>
+                                <div class="n-chunk n-center n-middle" style={{ width: '70px' }}>
                                     <n-icon size={26} color="var(--text-color-1)" component={<Iv-BsUser />}></n-icon>
                                 </div>
                                 <div class="n-chunk n-center n-auto n-disover">
@@ -37,7 +42,7 @@ export default defineComponent({
                                 </div>
                             </div>
                             <div class="chunk-block n-chunk n-disover n-pointer">
-                                <div class="n-chunk n-center n-middle" style={{ width: '60px' }}>
+                                <div class="n-chunk n-center n-middle" style={{ width: '70px' }}>
                                     <n-icon size={25} color="var(--text-color-1)" component={<Iv-BsOckes />}></n-icon>
                                 </div>
                                 <div class="n-chunk n-center n-auto n-disover">
@@ -47,7 +52,17 @@ export default defineComponent({
                                 </div>
                             </div>
                             <div class="chunk-block n-chunk n-disover n-pointer">
-                                <div class="n-chunk n-center n-middle" style={{ width: '60px' }}>
+                                <div class="n-chunk n-center n-middle" style={{ width: '70px' }}>
+                                    <n-icon size={26} color="var(--text-color-1)" component={<Iv-BsSession />}></n-icon>
+                                </div>
+                                <div class="n-chunk n-center n-auto n-disover">
+                                    <n-text depth={1}>
+                                        <n-ellipsis tooltip={false}>对话</n-ellipsis>
+                                    </n-text>
+                                </div>
+                            </div>
+                            <div class="chunk-block n-chunk n-disover n-pointer">
+                                <div class="n-chunk n-center n-middle" style={{ width: '70px' }}>
                                     <n-icon size={26} color="var(--text-color-1)" component={<Iv-BsAlert />}></n-icon>
                                 </div>
                                 <div class="n-chunk n-center n-auto n-disover">
@@ -56,8 +71,8 @@ export default defineComponent({
                                     </n-text>
                                 </div>
                             </div>
-                            <div class="chunk-block n-chunk n-disover n-pointer" onClick={fetchUpdateTheme}>
-                                <div class="n-chunk n-center n-middle" style={{ width: '60px' }}>
+                            <div class="chunk-block n-chunk n-disover n-pointer" onClick={fetchThemeUpdate}>
+                                <div class="n-chunk n-center n-middle" style={{ width: '70px' }}>
                                     {inverted.value ? (
                                         <n-icon size={26} color="var(--text-color-1)" component={<Iv-BsDark />}></n-icon>
                                     ) : (
@@ -74,6 +89,16 @@ export default defineComponent({
                                     </n-text>
                                 </div>
                             </div>
+                            <div class="chunk-block n-chunk n-disover n-pointer" onClick={fetchUserSignout}>
+                                <div class="n-chunk n-center n-middle" style={{ width: '70px' }}>
+                                    <n-icon size={27} color="var(--error-color)" component={<Iv-BsExit />}></n-icon>
+                                </div>
+                                <div class="n-chunk n-center n-auto n-disover">
+                                    <n-text depth={1} style={{ color: 'var(--error-color)' }}>
+                                        <n-ellipsis tooltip={false}>登出</n-ellipsis>
+                                    </n-text>
+                                </div>
+                            </div>
                         </div>
                     </n-scrollbar>
                 </div>
@@ -85,10 +110,21 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .chunk-block {
+    user-select: none;
     height: 60px;
     font-size: 16px;
     padding-right: 16px;
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
+    &::before {
+        content: '';
+        position: absolute;
+        left: 70px;
+        right: 0;
+        bottom: 0;
+        height: 1px;
+        background-color: var(--chat-border-color);
+        transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
+    }
     &:hover {
         background-color: var(--divider-color);
     }
