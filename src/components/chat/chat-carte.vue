@@ -3,7 +3,7 @@ import { defineComponent, ref } from 'vue'
 import { useConfiger, useUser, useChat } from '@/store'
 import { useState } from '@/hooks/hook-state'
 import { stop, divineWherer, divineHandler, divineDelay } from '@/utils/utils-common'
-import { divineRender, divineDiscover } from '@/utils/utils-component'
+import { divineDiscover } from '@/utils/utils-component'
 
 export default defineComponent({
     name: 'ChatCarte',
@@ -55,16 +55,13 @@ export default defineComponent({
 
         /**登出**/
         async function fetchSignout() {
-            await divineDiscover({
-                type: 'default',
-                title: 'ghdfhf',
+            return await divineDiscover({
+                icon: 'BsMistake',
+                title: '确定要登出吗？',
                 negativeText: '取消',
                 positiveText: '确定登出',
-                content: divineRender(
-                    <div class="n-chunk n-column" style={{ padding: '20px 0 40px' }}>
-                        <n-text>登出后会中断连接、并且无法接收和发送消息。</n-text>
-                    </div>
-                ),
+                content: `登出后会中断连接、并且无法接收和发送消息。`,
+                onAfterEnter: fetchClickoutside,
                 onPositiveClick: async (evt, vm, done) => {
                     await done(true)
                     await divineDelay(500)
@@ -72,13 +69,8 @@ export default defineComponent({
                         await chat.setState({ current: 'session' })
                         return true
                     })
-                },
-                onClose: () => {
-                    console.log(`onClose`)
-                    return true
                 }
             })
-            return await fetchClickoutside()
         }
 
         return () => (

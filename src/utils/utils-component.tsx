@@ -1,7 +1,8 @@
 import { createApp, createVNode, nextTick, render, App, CSSProperties, VNode } from 'vue'
-import { DialogOptions, DialogReactive, NotificationOptions, NotificationReactive, IconProps } from 'naive-ui'
+import { DialogOptions, DialogReactive, NotificationOptions, NotificationReactive } from 'naive-ui'
 import { setupI18n } from '@/i18n'
 import { setupStore } from '@/store'
+import { isEmpty } from 'class-validator'
 import { divineWherer, divineHandler } from '@/utils/utils-common'
 import { divineTransfer } from '@/utils/utils-transfer'
 
@@ -60,8 +61,10 @@ export function divineRender(Component: Parameters<typeof createApp>['0']) {
 
 /**对话弹窗二次封装**/
 export function divineDiscover(
-    option: Pick<DialogOptions, 'type' | 'content' | 'title' | 'closable' | 'negativeText' | 'positiveText'> & {
-        icon?: VNode
+    option: Pick<DialogOptions, 'type' | 'closable' | 'negativeText' | 'positiveText' | 'negativeButtonProps' | 'positiveButtonProps'> & {
+        title?: string | VNode
+        content?: string | VNode
+        icon?: 'BsMistake' | 'BsCorrect' | VNode
         onAfterEnter?: (e: HTMLElement, x: DialogReactive) => any
         onClose?: (x: DialogReactive) => boolean | Promise<boolean>
         onNegativeClick?: (e: MouseEvent, x: DialogReactive) => boolean | Promise<boolean>
@@ -69,48 +72,55 @@ export function divineDiscover(
     }
 ): Promise<DialogReactive> {
     return new Promise(async resolve => {
-        const closable = option.closable ?? true
         const vm = window.$dialog.create({
-            ...option,
-            closable,
             showIcon: false,
             autoFocus: false,
             maskClosable: false,
+            type: option.type ?? 'default',
+            closable: option.closable,
+            negativeText: option.negativeText,
+            positiveText: option.positiveText,
             title: function render() {
-                console.log(option)
-                if (!option.title) return undefined
+                if (isEmpty(option.title)) {
+                    return undefined
+                } else if (typeof option.title === 'string') {
+                    return <done-title content={option.title} icon={option.icon} type={option.type ?? 'default'}></done-title>
+                }
                 return (
-                    <n-element class="n-chunk n-auto n-disover" style={{ columnGap: '10px' }}>
-                        {option.icon && (
-                            <div class="n-chunk n-center" style={{ height: '28px' }}>
-                                <n-icon size={26} color="var(--error-color)" component={<Iv-BsMistake />}></n-icon>,
-                            </div>
-                        )}
-                        <div class="n-chunk n-column n-auto n-disover">
-                            <n-text style={{ fontSize: '18px', lineHeight: '28px', fontWeight: 500 }}>
-                                确定要登出吗确定要登出吗确定要登出吗
-                            </n-text>
-                        </div>
-                    </n-element>
+                    <done-title icon={option.icon} type={option.type ?? 'default'}>
+                        {option.title}
+                    </done-title>
                 )
             },
-            class: 'divineDiscover',
+            content: function render() {
+                if (isEmpty(option.content)) {
+                    return undefined
+                } else if (typeof option.content === 'string') {
+                    return <done-content content={option.content} show-icon={Boolean(option.icon)}></done-content>
+                }
+                return <done-content show-icon={Boolean(option.icon)}>{option.content}</done-content>
+            },
             style: {
-                '--n-padding': '20px',
+                '--n-padding': '20px 20px',
                 '--n-close-margin': '16px 16px 0 0',
                 '--n-content-margin': '0px',
-                '--n-close-size': '-6px'
+                '--n-close-size': divineWherer(option.closable ?? true, '22px', '-6px'),
+                display: 'flex',
+                flexDirection: 'column',
+                rowGap: '10px'
             },
             negativeButtonProps: {
                 size: 'medium',
                 ghost: false,
                 secondary: true,
-                style: { '--n-height': '30px', '--n-padding': '0 10px' }
+                style: { '--n-height': '30px', '--n-padding': '0 10px' },
+                ...option.negativeButtonProps
             },
             positiveButtonProps: {
                 size: 'medium',
                 type: 'error',
-                style: { '--n-height': '30px', '--n-padding': '0 10px' }
+                style: { '--n-height': '30px', '--n-padding': '0 10px' },
+                ...option.positiveButtonProps
             },
             onAfterEnter: async (e: HTMLElement) => {
                 return await divineHandler(Boolean(option.onAfterEnter), {
