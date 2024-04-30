@@ -12,7 +12,9 @@ export function useLayer(initialize: boolean = false) {
         overflow: 'hidden',
         userSelect: 'none',
         backgroundColor: 'var(--chat-layer-color)',
-        transition: 'background-color 0.3s var(--cubic-bezier-ease-in-out)'
+        transition: 'background-color 0.3s var(--cubic-bezier-ease-in-out)',
+        display: 'flex',
+        flexDirection: 'column'
     }))
 
     /**监听销毁事件**/

@@ -9,14 +9,12 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         return () => (
-            <div class="chat-header n-chunk n-center">
+            <div class="chat-header n-chunk n-center n-disover">
                 <n-button text onClick={(evt: Event) => emit('close', evt)}>
-                    <n-icon size={24} color="var(--chat-header-text-color)" component={<Iv-BsBack />}></n-icon>
+                    <n-icon size={24} component={<Iv-BsBack />}></n-icon>
                 </n-button>
-                <div style={{ flex: 1, overflow: 'hidden' }}>
-                    <n-ellipsis tooltip={false}>
-                        <n-text style={{ color: 'var(--chat-header-text-color)' }}>{props.title}</n-text>
-                    </n-ellipsis>
+                <div class="n-chunk n-auto n-disover">
+                    <n-text depth={2}>{props.title}</n-text>
                 </div>
             </div>
         )
@@ -27,12 +25,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .chat-header {
     overflow: hidden;
-    background-color: var(--chat-header-color);
-    transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
-    padding: 50px 24px 20px;
-    font-size: 20px;
+    padding: 16px 24px;
+    font-size: 18px;
     line-height: 32px;
-    gap: 20px;
+    column-gap: 20px;
     box-sizing: border-box;
 }
 </style>

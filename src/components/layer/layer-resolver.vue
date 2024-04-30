@@ -40,7 +40,14 @@ export default defineComponent({
                 mask-closable={false}
                 show-mask={false}
                 on-after-leave={() => emit('close')}
-            ></n-drawer>
+            >
+                <n-element class="layer-resolver n-chunk n-column n-auto n-disover">
+                    <chat-header title="个人信息" onClose={(evt: Event) => setVisible(false)}></chat-header>
+                    <div class="n-chunk n-center n-middle" style={{ padding: '24px' }}>
+                        <chat-avatar upload={true} src={user.avatar} size={200} radius={100}></chat-avatar>
+                    </div>
+                </n-element>
+            </n-drawer>
         )
     }
 })
