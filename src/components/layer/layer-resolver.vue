@@ -2,8 +2,6 @@
 import { defineComponent, onMounted, PropType } from 'vue'
 import { useUser } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
-import { useFormCustomize } from '@/hooks/hook-customize'
-import { stop, divineHandler, divineDelay } from '@/utils/utils-common'
 import { divineNotice } from '@/utils/utils-component'
 import { Observer } from '@/utils/utils-observer'
 import * as env from '@/interface/instance.resolver'
@@ -18,12 +16,6 @@ export default defineComponent({
     setup(props, { emit }) {
         const user = useUser()
         const { visible, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
-        // const { form, visible, setVisible } = useFormCustomize({
-        //     form: {
-        //         nickname: user.nickname,
-        //         comment: user.comment
-        //     }
-        // })
 
         onMounted(async () => {
             await fetchState({ visible: true })
@@ -56,7 +48,6 @@ export default defineComponent({
                     return await done({ loading: false })
                 })
             } catch (e) {
-                console.log(e)
                 return await divineNotice({ type: 'error', title: e.message }).then(async () => {
                     return await done({ loading: false })
                 })
