@@ -1,5 +1,4 @@
-import { ref, Ref, toRefs, computed, onBeforeUnmount, CSSProperties } from 'vue'
-import { useState } from '@/hooks/hook-state'
+import { ref, Ref, computed, onBeforeUnmount, CSSProperties } from 'vue'
 import { Observer } from '@/utils/utils-observer'
 import { divineHandler, divineWherer } from '@/utils/utils-common'
 
@@ -9,7 +8,8 @@ export const element = ref<HTMLElement>() as Ref<HTMLElement>
 /**抽屉组件使用实例**/
 export function useDrawer(initialize: boolean = false) {
     const observer = new Observer()
-
+    const visible = ref<boolean>(false)
+    const loading = ref<boolean>(false)
     const chunkContent = computed<CSSProperties>(() => ({
         overflow: 'hidden',
         userSelect: 'none',
@@ -35,12 +35,21 @@ export function useDrawer(initialize: boolean = false) {
         })
     })
 
-    return { element, chunkContent, observer, divineUnmounted, divineLayerUnmounted }
+    async function setVisible(value: boolean) {
+        return (visible.value = value)
+    }
+
+    async function setLoading(value: boolean) {
+        return (loading.value = value)
+    }
+
+    return { element, chunkContent, observer, setVisible, setLoading, divineUnmounted, divineLayerUnmounted }
 }
 
 /**模态框组件使用实例**/
 export function useModal(option: { width: number; closable?: boolean }) {
-    const { state, setState } = useState({ visible: false })
+    const visible = ref<boolean>(false)
+    const loading = ref<boolean>(false)
     const chunkContent = computed<CSSProperties>(() => ({
         width: option.width + 'px',
         '--n-padding': '20px 20px',
@@ -51,5 +60,13 @@ export function useModal(option: { width: number; closable?: boolean }) {
         flexDirection: 'column'
     }))
 
-    return { state, chunkContent, ...toRefs(state), setState }
+    async function setVisible(value: boolean) {
+        return (visible.value = value)
+    }
+
+    async function setLoading(value: boolean) {
+        return (loading.value = value)
+    }
+
+    return { visible, loading, chunkContent, setVisible, setLoading }
 }

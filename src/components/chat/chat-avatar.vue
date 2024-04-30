@@ -25,8 +25,9 @@ export default defineComponent({
 
         /**文件上传前拦截**/
         async function onBeforeUpload({ file }: { file: UploadFileInfo }) {
-            console.log(file)
             const { unmount } = await fetchCropper({
+                fileName: file.name,
+                src: window.URL.createObjectURL(file.file as File),
                 onClose: () => unmount(300)
             })
             return false

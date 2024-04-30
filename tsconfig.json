@@ -21,7 +21,7 @@
         "noUnusedLocals": false /**import导入模板未使用会爆警告**/,
         "noUnusedParameters": false /**声明变量未使用会爆警告**/,
         "noFallthroughCasesInSwitch": true,
-        "useUnknownInCatchVariables": true,
+        "useUnknownInCatchVariables": false,
 
         "baseUrl": "." /**配置根路径**/,
         "paths": {

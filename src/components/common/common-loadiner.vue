@@ -8,8 +8,8 @@ export default defineComponent({
         size: { type: Number, default: 20 },
         sizeBorder: { type: Number, default: 3 },
         circle: { type: Number, default: 2 },
-        circleColor: { type: String, default: '#24B89E' },
-        circleLowColor: { type: String, default: 'rgba(212, 212, 212, 0.6)' }
+        circleColor: { type: String, default: 'var(--primary-color)' },
+        circleLowColor: { type: String, default: 'var(--text-color-3)' }
     },
     setup(props) {
         const compute = computed<CSSProperties>(() => {
@@ -33,9 +33,9 @@ export default defineComponent({
         })
 
         return () => (
-            <div class="common-loadiner" style={{ '--circle-size-iner': props.sizeIner + 'px' }}>
+            <n-element class="common-loadiner" style={{ '--circle-size-iner': props.sizeIner + 'px' }}>
                 <div class="common-loadiner__component" style={compute.value}></div>
-            </div>
+            </n-element>
         )
     }
 })

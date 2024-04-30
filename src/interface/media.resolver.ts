@@ -22,3 +22,13 @@ export interface SchemaMedia extends env.CommonSchema {
     height: number
     depater: SchemaMedia
 }
+
+/**文件上传**/
+export interface ResultStreamUploader {
+    fieldName: string
+    fileId: string
+    fileName: string
+    folder: string
+    url: string
+    message: string
+}
