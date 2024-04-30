@@ -114,7 +114,7 @@ export default defineComponent({
     margin: auto;
     box-sizing: border-box;
     max-width: var(--chat-layer-width);
-    transition: max-width 0.3s var(--cubic-bezier-ease-in-out);
+    transition: max-width 0.3s;
     animation: zoom-scale 0.3s var(--cubic-bezier-ease-in-out);
     @keyframes zoom-scale {
         from {
