@@ -71,7 +71,7 @@ export default defineComponent({
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     &.chunk-start {
         :deep(.n-input) {
-            border-bottom-color: var(--divider-color);
+            border-bottom-color: var(--text-color-3);
         }
     }
     :deep(.n-form-item-label) {
@@ -104,6 +104,7 @@ export default defineComponent({
         --n-border-radius: 0;
         --n-line-height-textarea: 28px;
         --n-text-color-disabled: var(--text-color-2);
+        word-break: break-all;
         font-size: 16px;
         padding-bottom: 5px;
         border-bottom: 2px solid #0000;
