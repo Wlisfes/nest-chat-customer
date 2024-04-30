@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
 import { useUser } from '@/store'
-import { useLayer } from '@/hooks/hook-layer'
+import { useDrawer } from '@/hooks/hook-layer'
 import { useProvider } from '@/hooks/hook-provider'
 import { fetchResolver } from '@/components/layer/layer.instance'
 
@@ -9,7 +9,7 @@ export default defineComponent({
     name: 'ChatSettings',
     setup() {
         const user = useUser()
-        const { observer } = useLayer(true)
+        const { observer } = useDrawer(true)
         const { inverted, fetchThemeUpdate } = useProvider()
 
         /**登出**/

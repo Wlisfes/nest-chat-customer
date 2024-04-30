@@ -7,3 +7,10 @@ export async function fetchResolver(props: Omix<{ observer: Observer<Omix> }>) {
         return await createComponent(component.default, props)
     })
 }
+
+/**图片裁剪**/
+export async function fetchCropper(props: Omix = {}) {
+    return await import('@/components/layer/layer-cropper.vue').then(async component => {
+        return await createComponent(component.default, props)
+    })
+}

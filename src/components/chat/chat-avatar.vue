@@ -2,6 +2,7 @@
 import { defineComponent, computed, PropType, CSSProperties, Fragment } from 'vue'
 import { UploadFileInfo } from 'naive-ui'
 import { useState } from '@/hooks/hook-state'
+import { fetchCropper } from '@/components/layer/layer.instance'
 
 export default defineComponent({
     name: 'ChatAvatar',
@@ -25,7 +26,9 @@ export default defineComponent({
         /**文件上传前拦截**/
         async function onBeforeUpload({ file }: { file: UploadFileInfo }) {
             console.log(file)
-
+            const { unmount } = await fetchCropper({
+                onClose: () => unmount(300)
+            })
             return false
         }
 

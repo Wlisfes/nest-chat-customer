@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, onMounted, PropType } from 'vue'
 import { useUser } from '@/store'
-import { useLayer } from '@/hooks/hook-layer'
+import { useDrawer } from '@/hooks/hook-layer'
 import { useFormCustomize } from '@/hooks/hook-customize'
 import { stop, divineHandler, divineDelay } from '@/utils/utils-common'
 import { Observer } from '@/utils/utils-observer'
@@ -14,7 +14,7 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const user = useUser()
-        const { element, chunkContent, divineLayerUnmounted } = useLayer()
+        const { element, chunkContent, divineLayerUnmounted } = useDrawer()
         const { form, visible, setVisible } = useFormCustomize({
             form: {
                 nickname: user.nickname,

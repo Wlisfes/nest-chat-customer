@@ -1,12 +1,12 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
 import { useChat } from '@/store'
-import { useLayer } from '@/hooks/hook-layer'
+import { useDrawer } from '@/hooks/hook-layer'
 
 export default defineComponent({
     name: 'ChatSider',
     setup() {
-        const { element } = useLayer()
+        const { element } = useDrawer()
         const chat = useChat()
 
         return () => (
