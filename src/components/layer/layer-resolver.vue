@@ -1,6 +1,7 @@
 <script lang="tsx">
 import { defineComponent, onMounted, PropType } from 'vue'
 import { useUser } from '@/store'
+import { useState } from '@/hooks/hook-state'
 import { useDrawer } from '@/hooks/hook-layer'
 import { divineNotice } from '@/utils/utils-component'
 import { Observer } from '@/utils/utils-observer'
@@ -15,6 +16,7 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const user = useUser()
+        const { state } = useState({ nickname: user.nickname, comment: user.comment })
         const { visible, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
 
         onMounted(async () => {
@@ -74,13 +76,13 @@ export default defineComponent({
                     <common-revise
                         label="昵称"
                         placeholder="昵称"
-                        content={user.nickname}
+                        v-model:content={state.nickname}
                         onSubmit={({ done, content }: Omix) => fetchUserUpdate({ done, nickname: content })}
                     ></common-revise>
                     <common-revise
                         label="状态"
                         placeholder="状态"
-                        content={user.comment}
+                        v-model:content={state.comment}
                         onSubmit={({ done, content }: Omix) => fetchUserUpdate({ done, comment: content })}
                     ></common-revise>
                 </n-element>

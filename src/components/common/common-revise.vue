@@ -1,46 +1,54 @@
 <script lang="tsx">
 import { defineComponent, PropType } from 'vue'
+import { FormItemProps } from 'naive-ui'
+import { useVModels } from '@vueuse/core'
 import { useState } from '@/hooks/hook-state'
 import { stop } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'CommonRevise',
-    emits: ['submit'],
+    emits: ['submit', 'update:content'],
     props: {
         content: { type: String as PropType<string>, default: '' },
         label: { type: String as PropType<string> },
-        placeholder: { type: String as PropType<string> }
+        placeholder: { type: String as PropType<string> },
+        maxlength: { type: Number, default: 32 },
+        autosize: { type: Object, default: () => ({ minRows: 1, maxRows: 3 }) },
+        loading: { type: Boolean, default: false },
+        disabled: { type: Boolean, default: false },
+        formProps: { type: Object as PropType<FormItemProps>, default: () => ({}) }
     },
     setup(props, { emit }) {
-        const { state, setState } = useState({
-            loading: false,
-            disabled: true,
-            content: props.content ?? ''
-        })
+        const { content } = useVModels(props, emit)
+        const { state, setState } = useState({ loading: props.loading, disabled: props.disabled })
 
         async function fetchUpdate() {
             if (state.disabled) {
                 return await setState({ disabled: false })
             } else if (!state.loading) {
                 return await setState({ loading: true, disabled: true }).then(() => {
-                    emit('submit', { ...state, done: setState })
+                    emit('submit', { content: content.value, done: setState })
                 })
             }
         }
 
         return () => (
-            <n-form-item class={{ 'common-revise': true, 'chunk-start': !state.disabled || state.loading }} label={props.label}>
+            <n-form-item
+                class={{ 'common-revise': true, 'chunk-start': !state.disabled || state.loading }}
+                label={props.label}
+                {...props.formProps}
+            >
                 <n-input
                     disabled={state.disabled || state.loading}
                     placeholder={props.placeholder}
+                    autosize={props.autosize}
+                    maxlength={props.maxlength}
                     type="textarea"
-                    maxlength={32}
-                    autosize={{ minRows: 1, maxRows: 3 }}
-                    v-model:value={state.content}
+                    v-model:value={content.value}
                     v-slots={{
                         suffix: () => (
                             <n-button
-                                disabled={state.loading || !state.content}
+                                disabled={state.loading || !content.value}
                                 text
                                 focusable={false}
                                 onClick={(evt: Event) => stop(evt, fetchUpdate)}
@@ -89,6 +97,9 @@ export default defineComponent({
         right: 0;
         top: 0;
     }
+    :deep(.n-input__textarea-el) {
+        word-break: break-all;
+    }
     :deep(.n-input) {
         --n-border: none;
         --n-border-disabled: none;
@@ -104,7 +115,6 @@ export default defineComponent({
         --n-border-radius: 0;
         --n-line-height-textarea: 28px;
         --n-text-color-disabled: var(--text-color-2);
-        word-break: break-all;
         font-size: 16px;
         padding-bottom: 5px;
         border-bottom: 2px solid #0000;
