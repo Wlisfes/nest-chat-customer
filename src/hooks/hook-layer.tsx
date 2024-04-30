@@ -1,5 +1,6 @@
-import { ref, Ref, computed, onBeforeUnmount, CSSProperties } from 'vue'
+import { ref, Ref, toRefs, computed, onBeforeUnmount, CSSProperties } from 'vue'
 import { Observer } from '@/utils/utils-observer'
+import { useState } from '@/hooks/hook-state'
 import { divineHandler, divineWherer } from '@/utils/utils-common'
 
 /**左侧挂载容器**/
@@ -7,9 +8,8 @@ export const element = ref<HTMLElement>() as Ref<HTMLElement>
 
 /**抽屉组件使用实例**/
 export function useDrawer(initialize: boolean = false) {
+    const { state, setState } = useState({ visible: false, loading: false })
     const observer = new Observer()
-    const visible = ref<boolean>(false)
-    const loading = ref<boolean>(false)
     const chunkContent = computed<CSSProperties>(() => ({
         overflow: 'hidden',
         userSelect: 'none',
@@ -35,21 +35,12 @@ export function useDrawer(initialize: boolean = false) {
         })
     })
 
-    async function setVisible(value: boolean) {
-        return (visible.value = value)
-    }
-
-    async function setLoading(value: boolean) {
-        return (loading.value = value)
-    }
-
-    return { element, chunkContent, observer, setVisible, setLoading, divineUnmounted, divineLayerUnmounted }
+    return { state, element, chunkContent, observer, ...toRefs(state), setState, divineUnmounted, divineLayerUnmounted }
 }
 
 /**模态框组件使用实例**/
 export function useModal(option: { width: number; closable?: boolean }) {
-    const visible = ref<boolean>(false)
-    const loading = ref<boolean>(false)
+    const { state, setState } = useState({ visible: false, loading: false })
     const chunkContent = computed<CSSProperties>(() => ({
         width: option.width + 'px',
         '--n-padding': '20px 20px',
@@ -60,13 +51,5 @@ export function useModal(option: { width: number; closable?: boolean }) {
         flexDirection: 'column'
     }))
 
-    async function setVisible(value: boolean) {
-        return (visible.value = value)
-    }
-
-    async function setLoading(value: boolean) {
-        return (loading.value = value)
-    }
-
-    return { visible, loading, chunkContent, setVisible, setLoading }
+    return { state, chunkContent, ...toRefs(state), setState }
 }

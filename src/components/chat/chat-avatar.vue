@@ -25,12 +25,14 @@ export default defineComponent({
 
         /**文件上传前拦截**/
         async function onBeforeUpload({ file }: { file: UploadFileInfo }) {
-            const { unmount } = await fetchCropper({
+            return await fetchCropper({
                 fileName: file.name,
                 src: window.URL.createObjectURL(file.file as File),
-                onClose: () => unmount(300)
+                onClose: (scope: Omix<{ unmount: Function }>) => scope.unmount(300),
+                onSubmit: async (scope: Omix<{ done: Function }>) => {
+                    return await scope.done({ visible: false })
+                }
             })
-            return false
         }
 
         const ChunkUploader = (ctx: Omix<{ button: boolean }>) => {

@@ -3,7 +3,7 @@ import { DialogOptions, DialogReactive, NotificationOptions, NotificationReactiv
 import { setupI18n } from '@/i18n'
 import { setupStore } from '@/store'
 import { isEmpty } from 'class-validator'
-import { divineWherer, divineHandler } from '@/utils/utils-common'
+import { divineWherer, divineHandler, divineDelay } from '@/utils/utils-common'
 import { divineTransfer } from '@/utils/utils-transfer'
 
 export interface ComponentResolver {
@@ -16,7 +16,7 @@ export interface ComponentResolver {
 /**创建组件实例**/
 export async function createComponent<T extends Omix>(Component: Parameters<typeof createApp>['0'], props: T): Promise<ComponentResolver> {
     const element = document.createElement('div')
-    const app = createApp(<common-provider>{createVNode(Component, props)}</common-provider>)
+    const app = createApp(<common-provider>{createVNode(Component, { ...props, onSubmit, onClose })}</common-provider>)
 
     /**组件挂载**/
     async function mounte(): Promise<any> {
@@ -24,12 +24,28 @@ export async function createComponent<T extends Omix>(Component: Parameters<type
     }
 
     /**组件销毁**/
-    function unmount(delay: number = 0): Promise<any> {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                app.unmount()
-                return resolve(element.remove())
-            }, delay ?? 0)
+    async function unmount(delay: number = 0): Promise<any> {
+        return await divineDelay(delay, () => {
+            app.unmount()
+            return element.remove()
+        })
+    }
+
+    /**组件关闭事件**/
+    async function onClose(scope: Omix) {
+        return await divineHandler(Boolean(props.onClose), {
+            handler: () => {
+                return props.onClose!({ ...scope, unmount })
+            }
+        })
+    }
+
+    /**组件提交表单事件**/
+    async function onSubmit(scope: Omix) {
+        return await divineHandler(Boolean(props.onSubmit), {
+            handler: () => {
+                return props.onSubmit!({ ...scope, unmount })
+            }
         })
     }
 

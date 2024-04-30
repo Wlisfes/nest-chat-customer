@@ -20,12 +20,12 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { state, setState } = useState({ src: props.src })
-        const { visible, loading, chunkContent, setVisible, setLoading } = useModal({ width: 500 })
+        const { visible, loading, chunkContent, setState: fetchUpdate } = useModal({ width: 500 })
         const image = ref<HTMLImageElement>() as Ref<HTMLImageElement>
         const cropper = ref<Cropper>() as Ref<Cropper>
 
         onMounted(async () => {
-            await setVisible(true)
+            await fetchUpdate({ visible: true })
             await nextTick()
             return await divineHandler(Boolean(state.src), {
                 handler: divineCropper
@@ -66,22 +66,23 @@ export default defineComponent({
             })
         }
 
+        /**文件上传**/
         async function fetchStreamUploader() {
             return cropper.value.getCroppedCanvas().toBlob(async blob => {
                 try {
-                    await setLoading(true)
+                    await fetchUpdate({ loading: true })
                     const formData = new FormData()
                     formData.append('file', blob as Blob, props.fileName)
                     formData.append('source', env.EnumMediaEntierSource.image)
-                    const { data } = await api.httpStreamUploader(formData)
-
-                    console.log(data)
+                    return await api.httpStreamUploader(formData).then(async ({ data }) => {
+                        return await emit('submit', { ...data, done: fetchUpdate })
+                    })
                 } catch (e) {
                     return await divineNotice({ type: 'error', title: e.message }).then(async () => {
-                        return await setLoading(false)
+                        return await fetchUpdate({ loading: false })
                     })
                 }
-            }, 'image/jpeg')
+            }, 'image/webp')
         }
 
         return () => (
