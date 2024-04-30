@@ -123,9 +123,10 @@ export default defineComponent({
     user-select: none;
     padding: 10px 16px;
     column-gap: 10px;
+    background-color: var(--chat-column-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     &:hover {
-        background-color: var(--divider-color);
+        background-color: var(--chat-column-hover-color);
     }
 }
 .chunk-block {
@@ -133,9 +134,10 @@ export default defineComponent({
     height: 60px;
     font-size: 16px;
     padding-right: 16px;
+    background-color: var(--chat-column-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     &:hover {
-        background-color: var(--divider-color);
+        background-color: var(--chat-column-hover-color);
     }
     &::before {
         content: '';

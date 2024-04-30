@@ -18,7 +18,7 @@ export default defineComponent({
             <div class="chat-sessioner n-chunk n-column n-auto n-disover">
                 <chat-compose title={user.nickname}></chat-compose>
                 <chat-searcher></chat-searcher>
-                <div class="n-chunk n-column n-auto" style={{ overflow: 'hidden' }}>
+                <div class="n-chunk n-column n-auto n-disover">
                     <n-scrollbar class="is-customize" trigger="none" size={60} on-scroll={onScroller}>
                         <n-element class="n-chunk n-column">
                             {session.loading && session.total === 0 && (

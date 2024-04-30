@@ -1,9 +1,8 @@
 <script lang="tsx">
-import { defineComponent, computed, onMounted, Fragment, PropType } from 'vue'
+import { defineComponent, onMounted, Fragment, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
 import { useUser, useMessenger, useSession, useComment } from '@/store'
 import { instance } from '@/store/messenger'
-import { useProvider } from '@/hooks/hook-provider'
 import { useMoment } from '@/hooks/hook-common'
 import { socket } from '@/utils/utils-websocket'
 import { divineWherer, divineHandler } from '@/utils/utils-common'
@@ -20,12 +19,8 @@ export default defineComponent({
         const session = useSession()
         const message = useMessenger()
         const comment = useComment()
-        const { inverted } = useProvider()
+
         const { divineDateMomentTransfor } = useMoment()
-        const chunk = computed(() => ({
-            '--chat-hover-node-sessioner': divineWherer(inverted.value, '#202c33', '#f0f2f5'),
-            '--chat-active-node-sessioner': divineWherer(message.sid === node.value.sid, 'var(--chat-hover-node-sessioner)', '#0000')
-        }))
 
         onMounted(() => {
             socket.value.on('server-customize-messager', async (data: Omix<env.SchemaMessager>) => {
@@ -82,7 +77,7 @@ export default defineComponent({
         }
 
         return () => (
-            <div class="chat-node-sessioner n-chunk n-pointer" style={chunk.value} onClick={fetchSessionSelector}>
+            <div class="chat-node-sessioner n-chunk n-pointer" onClick={fetchSessionSelector}>
                 {node.value.source === 'communit' ? (
                     <chat-avatar size={46} src={node.value.communit.poster.fileURL}></chat-avatar>
                 ) : (
@@ -150,10 +145,10 @@ export default defineComponent({
     overflow: hidden;
     padding: 14px;
     column-gap: 14px;
-    background-color: var(--chat-active-node-sessioner);
+    background-color: var(--chat-column-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     &:hover {
-        background-color: var(--chat-hover-node-sessioner);
+        background-color: var(--chat-column-hover-color);
     }
     &::before {
         content: '';
