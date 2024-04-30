@@ -8,7 +8,7 @@ export const element = ref<HTMLElement>() as Ref<HTMLElement>
 
 /**抽屉组件使用实例**/
 export function useDrawer(initialize: boolean = false) {
-    const { state, setState } = useState({ visible: false, loading: false })
+    const { state, setState: fetchState } = useState({ visible: false, loading: false })
     const observer = new Observer()
     const chunkContent = computed<CSSProperties>(() => ({
         overflow: 'hidden',
@@ -35,12 +35,12 @@ export function useDrawer(initialize: boolean = false) {
         })
     })
 
-    return { state, element, chunkContent, observer, ...toRefs(state), setState, divineUnmounted, divineLayerUnmounted }
+    return { state, element, chunkContent, observer, ...toRefs(state), fetchState, divineUnmounted, divineLayerUnmounted }
 }
 
 /**模态框组件使用实例**/
 export function useModal(option: { width: number; closable?: boolean }) {
-    const { state, setState } = useState({ visible: false, loading: false })
+    const { state, setState: fetchState } = useState({ visible: false, loading: false })
     const chunkContent = computed<CSSProperties>(() => ({
         width: option.width + 'px',
         '--n-padding': '20px 20px',
@@ -51,5 +51,5 @@ export function useModal(option: { width: number; closable?: boolean }) {
         flexDirection: 'column'
     }))
 
-    return { state, chunkContent, ...toRefs(state), setState }
+    return { state, chunkContent, ...toRefs(state), fetchState }
 }

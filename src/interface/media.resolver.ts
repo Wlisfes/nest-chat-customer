@@ -24,7 +24,7 @@ export interface SchemaMedia extends env.CommonSchema {
 }
 
 /**文件上传**/
-export interface ResultStreamUploader {
+export interface RestStreamUploader {
     fieldName: string
     fileId: string
     fileName: string

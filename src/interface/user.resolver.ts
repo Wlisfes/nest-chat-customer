@@ -18,12 +18,19 @@ export interface SchemaUser extends env.CommonSchema {
 }
 
 /**注册账号**/
-export interface BodyUserRegister extends Pick<SchemaUser, 'nickname' | 'email' | 'password'> {
+export interface BodyUserRegister {
+    nickname: string
+    email: string
+    password: string
     code: string
 }
 
 /**登录账号**/
-export interface BodyUserAuthorizer extends Pick<BodyUserRegister, 'email' | 'password' | 'code'> {}
+export interface BodyUserAuthorizer {
+    email: string
+    password: string
+    code: string
+}
 
 /**登录账号返回值**/
 export interface RestUserAuthorizer {
@@ -33,3 +40,10 @@ export interface RestUserAuthorizer {
 
 /**账号信息**/
 export interface RestUserResolver extends SchemaUser {}
+
+/**用户基础信息更新**/
+export interface BodyUserUpdate {
+    nickname?: string
+    comment?: string
+    fileId?: string
+}

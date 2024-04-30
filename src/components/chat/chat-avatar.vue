@@ -6,6 +6,7 @@ import { fetchCropper } from '@/components/layer/layer.instance'
 
 export default defineComponent({
     name: 'ChatAvatar',
+    emits: ['submit'],
     props: {
         upload: { type: Boolean, default: false },
         uploadDocument: { type: String, default: '更换头像' },
@@ -15,7 +16,7 @@ export default defineComponent({
         radius: { type: Number, default: 4 },
         customStyle: { type: Object as PropType<CSSProperties>, default: () => ({}) }
     },
-    setup(props) {
+    setup(props, { emit }) {
         const { state, setState } = useState({ failure: false, loading: Boolean(props.src) })
         const elementStyle = computed<CSSProperties>(() => ({
             '--chat-avatar-size': props.size + 'px',
@@ -29,9 +30,7 @@ export default defineComponent({
                 fileName: file.name,
                 src: window.URL.createObjectURL(file.file as File),
                 onClose: (scope: Omix<{ unmount: Function }>) => scope.unmount(300),
-                onSubmit: async (scope: Omix<{ done: Function }>) => {
-                    return await scope.done({ visible: false })
-                }
+                onSubmit: (scope: Omix) => emit('submit', scope)
             })
         }
 

@@ -4,7 +4,10 @@ import { useUser } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
 import { useFormCustomize } from '@/hooks/hook-customize'
 import { stop, divineHandler, divineDelay } from '@/utils/utils-common'
+import { divineNotice } from '@/utils/utils-component'
 import { Observer } from '@/utils/utils-observer'
+import * as env from '@/interface/instance.resolver'
+import * as api from '@/api/instance.service'
 
 export default defineComponent({
     name: 'LayerResolver',
@@ -29,6 +32,21 @@ export default defineComponent({
             })
         })
 
+        /**用户基础信息更新**/
+        async function fetchUserUpdate(scope: Omix<{ done: Function } & env.RestStreamUploader>) {
+            try {
+                return await api.httpUserUpdate({ fileId: scope.fileId }).then(async ({ message }) => {
+                    await user.fetchUserResolver()
+                    await divineNotice({ type: 'success', title: message })
+                    return await scope.done({ visible: false })
+                })
+            } catch (e) {
+                return await divineNotice({ type: 'error', title: e.message }).then(async () => {
+                    return await scope.done({ loading: false })
+                })
+            }
+        }
+
         return () => (
             <n-drawer
                 v-model:show={visible.value}
@@ -44,7 +62,7 @@ export default defineComponent({
                 <n-element class="layer-resolver n-chunk n-column n-auto n-disover">
                     <chat-header title="个人信息" onClose={(evt: Event) => setVisible(false)}></chat-header>
                     <div class="n-chunk n-center n-middle" style={{ padding: '24px' }}>
-                        <chat-avatar upload={true} src={user.avatar} size={200} radius={100}></chat-avatar>
+                        <chat-avatar upload={true} src={user.avatar} size={200} radius={100} onSubmit={fetchUserUpdate}></chat-avatar>
                     </div>
                 </n-element>
             </n-drawer>
