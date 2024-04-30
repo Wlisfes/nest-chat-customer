@@ -28,7 +28,7 @@ export default defineComponent({
                             )}
                             {session.total > 0 && (
                                 <div style={{ position: 'relative', paddingRight: '14px' }}>
-                                    {session.dataSource.map((item: Omix) => (
+                                    {session.dataSource.map(item => (
                                         <chat-node-sessioner key={item.keyId} v-model:node={item}></chat-node-sessioner>
                                     ))}
                                 </div>

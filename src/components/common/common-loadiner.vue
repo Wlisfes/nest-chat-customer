@@ -9,7 +9,7 @@ export default defineComponent({
         sizeBorder: { type: Number, default: 3 },
         circle: { type: Number, default: 2 },
         circleColor: { type: String, default: 'var(--primary-color)' },
-        circleLowColor: { type: String, default: 'var(--text-color-3)' }
+        circleLowColor: { type: String, default: 'rgba(212, 212, 212, 0.6)' }
     },
     setup(props) {
         const compute = computed<CSSProperties>(() => {

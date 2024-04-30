@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, onMounted, Fragment, PropType } from 'vue'
+import { defineComponent, onMounted, onBeforeUnmount, Fragment, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
 import { useUser, useMessenger, useSession, useComment } from '@/store'
 import { instance } from '@/store/messenger'
@@ -15,35 +15,36 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { node } = useVModels(props, emit)
+        const { divineDateMomentTransfor } = useMoment()
         const user = useUser()
         const session = useSession()
         const message = useMessenger()
         const comment = useComment()
 
-        const { divineDateMomentTransfor } = useMoment()
-
         onMounted(() => {
-            socket.value.on('server-customize-messager', async (data: Omix<env.SchemaMessager>) => {
-                return await divineHandler(node.value.sid === data.sessionId, {
-                    handler: async function () {
-                        return await fetchUpdateNodeMessager(data)
-                    }
-                })
-            })
+            socket.value.on('server-customize-messager', fetchUpdateNodeMessager)
+        })
+
+        onBeforeUnmount(() => {
+            socket.value.off('server-customize-messager', fetchUpdateNodeMessager)
         })
 
         /**更新最新消息数据**/
         async function fetchUpdateNodeMessager(scope: Omix<env.SchemaMessager>) {
-            node.value.message.keyId = scope.keyId
-            node.value.message.sid = scope.sid
-            node.value.message.createTime = scope.createTime
-            node.value.message.source = scope.source
-            node.value.message.status = scope.status
-            node.value.message.text = scope.text
-            node.value.message.userId = scope.userId
-            return await divineHandler(scope.userId !== user.uid, {
-                handler: async () => {
-                    return (node.value.unread = node.value.unread.concat(scope))
+            return await divineHandler(scope.sessionId === node.value.sid, {
+                handler: async function () {
+                    node.value.message.keyId = scope.keyId
+                    node.value.message.sid = scope.sid
+                    node.value.message.createTime = scope.createTime
+                    node.value.message.source = scope.source
+                    node.value.message.status = scope.status
+                    node.value.message.text = scope.text
+                    node.value.message.userId = scope.userId
+                    return await divineHandler(scope.userId !== user.uid, {
+                        handler: async () => {
+                            return (node.value.unread = node.value.unread.concat(scope))
+                        }
+                    })
                 }
             })
         }
@@ -77,7 +78,10 @@ export default defineComponent({
         }
 
         return () => (
-            <div class="chat-node-sessioner n-chunk n-pointer" onClick={fetchSessionSelector}>
+            <div
+                class={{ 'chat-node-sessioner n-chunk n-pointer': true, 'chunk-present': session.sid === node.value.sid }}
+                onClick={fetchSessionSelector}
+            >
                 {node.value.source === 'communit' ? (
                     <chat-avatar size={46} src={node.value.communit.poster.fileURL}></chat-avatar>
                 ) : (
@@ -89,9 +93,9 @@ export default defineComponent({
                         )}
                     </Fragment>
                 )}
-                <div class="chat-context n-chunk n-column n-auto" style={{ overflow: 'hidden', rowGap: '4px' }}>
+                <div class="chat-context n-chunk n-column n-auto n-disover" style={{ rowGap: '4px' }}>
                     <div class="chat-source n-chunk n-center" style={{ columnGap: '10px' }}>
-                        <div style={{ flex: 1, overflow: 'hidden' }}>
+                        <div class="n-chunk n-column n-auto n-disover">
                             {node.value.source === 'communit' ? (
                                 <n-h2 style={{ fontSize: '16px', lineHeight: '22px', fontWeight: 500, margin: 0 }}>
                                     <n-ellipsis tooltip={false}>{node.value.communit.name}</n-ellipsis>
@@ -113,8 +117,8 @@ export default defineComponent({
                         )}
                     </div>
                     {node.value.message && (
-                        <div class="chat-message n-chunk n-center" style={{ columnGap: '10px', overflow: 'hidden' }}>
-                            <div style={{ flex: 1, overflow: 'hidden', lineHeight: '20px', fontSize: '14px' }}>
+                        <div class="chat-message n-chunk n-center n-disover" style={{ columnGap: '10px' }}>
+                            <div class="n-chunk n-column n-auto n-disover" style={{ lineHeight: '20px', fontSize: '14px' }}>
                                 {node.value.message.source === env.EnumMessagerSource.text ? (
                                     <n-text depth={3}>
                                         <n-ellipsis tooltip={false}>{node.value.message.text}</n-ellipsis>
@@ -147,6 +151,9 @@ export default defineComponent({
     column-gap: 14px;
     background-color: var(--chat-column-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
+    &.chunk-present {
+        background-color: var(--chat-column-hover-color);
+    }
     &:hover {
         background-color: var(--chat-column-hover-color);
     }

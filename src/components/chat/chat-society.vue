@@ -1,29 +1,12 @@
 <script lang="tsx">
-import { defineComponent, onMounted } from 'vue'
-import { useState } from '@/hooks/hook-state'
+import { defineComponent } from 'vue'
+import { useSession } from '@/store'
 import * as env from '@/interface/instance.resolver'
-import * as api from '@/api/instance.service'
 
 export default defineComponent({
     name: 'ChatSociety',
     setup() {
-        const { state, setState } = useState({
-            dataSource: [] as Array<env.SchemaSession>,
-            total: 0,
-            loading: true
-        })
-
-        onMounted(() => fetchSessionInitColumn())
-
-        /**会话列表**/
-        async function fetchSessionInitColumn() {
-            try {
-                const { data } = await api.httpSessionColumn()
-                return await setState({ loading: false, total: data.total ?? 0, dataSource: data.list ?? [] })
-            } catch (e) {
-                return await setState({ loading: false, total: 0, dataSource: [] })
-            }
-        }
+        const session = useSession()
 
         return () => (
             <div class="chat-society n-chunk n-column n-auto n-disover n-pointer">
@@ -39,16 +22,19 @@ export default defineComponent({
                 <div class="n-chunk n-column n-auto n-disover">
                     <n-scrollbar class="is-customize" trigger="none" size={60}>
                         <n-element class="n-chunk n-column">
-                            {state.loading && state.total === 0 && (
+                            {session.loading && session.total === 0 && (
                                 <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
                                     <common-loadiner size={32} size-border={4}></common-loadiner>
                                 </div>
                             )}
-                            {state.total > 0 && (
+                            {session.total > 0 && (
                                 <div style={{ position: 'relative', paddingRight: '14px' }}>
-                                    {state.dataSource.map((item: Omix) => (
-                                        <chat-node-society key={item.keyId} v-model:node={item}></chat-node-society>
-                                    ))}
+                                    {session.dataSource.map(item => {
+                                        if (item.source === env.EnumSessionSource.communit) {
+                                            return <chat-node-sessioner key={item.keyId} v-model:node={item}></chat-node-sessioner>
+                                        }
+                                        return null
+                                    })}
                                 </div>
                             )}
                         </n-element>
