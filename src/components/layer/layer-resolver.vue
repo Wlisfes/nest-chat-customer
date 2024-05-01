@@ -76,12 +76,14 @@ export default defineComponent({
                     <common-revise
                         label="昵称"
                         placeholder="昵称"
+                        suffix={['controller']}
                         v-model:content={state.nickname}
                         onSubmit={({ done, content }: Omix) => fetchUserUpdate({ done, nickname: content })}
                     ></common-revise>
                     <common-revise
                         label="状态"
                         placeholder="状态"
+                        suffix={['controller']}
                         v-model:content={state.comment}
                         onSubmit={({ done, content }: Omix) => fetchUserUpdate({ done, comment: content })}
                     ></common-revise>

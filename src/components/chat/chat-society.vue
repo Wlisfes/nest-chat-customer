@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue'
 import { useSession } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
+import { divineNotice } from '@/utils/utils-component'
 import { fetchSociety } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
@@ -13,9 +14,16 @@ export default defineComponent({
 
         /**新建社群**/
         async function fetchUseSociety() {
-            const { unmount } = await fetchSociety({
+            return await fetchSociety({
                 observer,
-                onClose: () => unmount(300)
+                onClose: async ({ unmount }: Omix<{ unmount: Function }>) => {
+                    return await unmount(300)
+                },
+                onSubmit: async ({ done, message }: Omix<{ message: string; done: Function }>) => {
+                    await session.fetchSessionInitColumn()
+                    await divineNotice({ type: 'success', title: message })
+                    return await done({ visible: false })
+                }
             })
         }
 

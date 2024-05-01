@@ -43,4 +43,8 @@ export interface SchemaCommunit extends env.CommonSchema {
 }
 
 /**新建社群**/
-export interface BodyCommunitCreater extends Pick<SchemaCommunit, 'name'> {}
+export interface BodyCommunitCreater {
+    name: string
+    comment: string
+    poster: string
+}

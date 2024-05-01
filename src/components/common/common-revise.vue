@@ -1,9 +1,9 @@
 <script lang="tsx">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, computed, PropType, CSSProperties } from 'vue'
 import { FormItemProps } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
 import { useState } from '@/hooks/hook-state'
-import { stop } from '@/utils/utils-common'
+import { stop, divineWherer, divineHandler } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'CommonRevise',
@@ -14,14 +14,22 @@ export default defineComponent({
         placeholder: { type: String as PropType<string> },
         maxlength: { type: Number, default: 32 },
         autosize: { type: Object, default: () => ({ minRows: 1, maxRows: 3 }) },
+        suffix: { type: Array as PropType<Array<'controller' | 'enoji' | 'show-count'>>, default: () => [] },
         loading: { type: Boolean, default: false },
         disabled: { type: Boolean, default: false },
         formProps: { type: Object as PropType<FormItemProps>, default: () => ({}) }
     },
     setup(props, { emit }) {
         const { content } = useVModels(props, emit)
-        const { state, setState } = useState({ loading: props.loading, disabled: props.disabled })
+        const { state, setState } = useState({
+            loading: props.loading,
+            disabled: props.disabled
+        })
+        const chunkInputStyle = computed<CSSProperties>(() => ({
+            '--n-input-padding-right': divineWherer(props.suffix.length === 0, '0px', 14 + 26 * props.suffix.length + 'px')
+        }))
 
+        /**开启、提交操作事件**/
         async function fetchUpdate() {
             if (state.disabled) {
                 return await setState({ disabled: false })
@@ -32,6 +40,13 @@ export default defineComponent({
             }
         }
 
+        /**回车事件拦截**/
+        async function divineEnterHandler(evt: KeyboardEvent) {
+            return await divineHandler(evt.key === 'Enter', {
+                handler: () => stop(evt)
+            })
+        }
+
         return () => (
             <n-form-item
                 class={{ 'common-revise': true, 'chunk-start': !state.disabled || state.loading }}
@@ -39,29 +54,36 @@ export default defineComponent({
                 {...props.formProps}
             >
                 <n-input
+                    type="textarea"
                     disabled={state.disabled || state.loading}
                     placeholder={props.placeholder}
                     autosize={props.autosize}
                     maxlength={props.maxlength}
-                    type="textarea"
+                    style={chunkInputStyle.value}
                     v-model:value={content.value}
+                    onKeydown={divineEnterHandler}
                     v-slots={{
-                        suffix: () => (
-                            <n-button
-                                disabled={state.loading || !content.value}
-                                text
-                                focusable={false}
-                                onClick={(evt: Event) => stop(evt, fetchUpdate)}
-                            >
-                                {state.loading ? (
-                                    <common-loadiner size={22} size-iner={3}></common-loadiner>
-                                ) : state.disabled ? (
-                                    <n-icon size={24} color="var(--text-color-2)" component={<Iv-BsEdit />}></n-icon>
-                                ) : (
-                                    <n-icon size={26} color="var(--text-color-2)" component={<Iv-BsCheck />}></n-icon>
-                                )}
-                            </n-button>
-                        )
+                        suffix: () => {
+                            if (props.suffix.length === 0) {
+                                return null
+                            }
+                            return (
+                                <n-button
+                                    disabled={state.loading || !content.value}
+                                    text
+                                    focusable={false}
+                                    onClick={(evt: Event) => stop(evt, fetchUpdate)}
+                                >
+                                    {state.loading ? (
+                                        <common-loadiner size={22} size-iner={3}></common-loadiner>
+                                    ) : state.disabled ? (
+                                        <n-icon size={24} color="var(--text-color-2)" component={<Iv-BsEdit />}></n-icon>
+                                    ) : (
+                                        <n-icon size={26} color="var(--text-color-2)" component={<Iv-BsCheck />}></n-icon>
+                                    )}
+                                </n-button>
+                            )
+                        }
                     }}
                 ></n-input>
             </n-form-item>
@@ -108,7 +130,7 @@ export default defineComponent({
         --n-box-shadow-focus: none;
         --n-color: transparent;
         --n-padding-left: 0;
-        --n-padding-right: 40px;
+        --n-padding-right: var(--n-input-padding-right);
         --n-color-focus: transparent;
         --n-color-disabled: transparent;
         --n-padding-vertical: 0;
