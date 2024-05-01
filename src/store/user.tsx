@@ -3,8 +3,8 @@ import { defineStore } from 'pinia'
 import { useChat, useMessenger, useSession, useComment, useConfiger } from '@/store'
 import { useState } from '@/hooks/hook-state'
 import { APP_STORE, APP_COMMON, getStore, setStore, delStore } from '@/utils/utils-storage'
-import { divineHandler, divineDelay } from '@/utils/utils-common'
-import { divineDiscover } from '@/utils/utils-component'
+import { divineWherer, divineHandler, divineDelay } from '@/utils/utils-common'
+import { divineDiscover, divineNotice } from '@/utils/utils-component'
 import * as env from '@/interface/instance.resolver'
 import * as api from '@/api/instance.service'
 
@@ -68,6 +68,47 @@ export const useUser = defineStore(APP_STORE.STORE_USER, () => {
         })
     }
 
+    /**切换主题模式**/
+    async function fetchThemeUpdate(scope: Omix<{ message?: string; notice?: boolean }> = {}) {
+        try {
+            const theme = divineWherer(configer.theme === 'light', env.EnumUserTheme.dark, env.EnumUserTheme.light)
+            await configer.setTheme(theme)
+            return await api.httpUserUpdate({ theme }).then(async ({ message }) => {
+                await fetchUserResolver()
+                return await divineHandler(Boolean(scope.notice), {
+                    handler: async () => {
+                        return await divineNotice({ type: 'success', title: scope.message ?? message })
+                    }
+                })
+            })
+        } catch (e) {
+            return await divineNotice({ type: 'error', title: e.message })
+        }
+    }
+
+    /**更新基础信息**/
+    async function fetchUserUpdate(scope: env.BodyUserUpdate, option: Omix<{ message?: string; notice?: boolean; done?: Function }> = {}) {
+        try {
+            return await api.httpUserUpdate(scope).then(async ({ message }) => {
+                await fetchUserResolver()
+                await divineHandler(option.notice ?? true, {
+                    handler: async () => {
+                        return await divineNotice({ type: 'success', title: option.message ?? message })
+                    }
+                })
+                return await divineHandler(Boolean(option.done), {
+                    handler: () => option.done!()
+                })
+            })
+        } catch (e) {
+            return await divineNotice({ type: 'error', title: e.message }).then(async () => {
+                return await divineHandler(Boolean(option.done), {
+                    handler: () => option.done!()
+                })
+            })
+        }
+    }
+
     /**退出登录**/
     async function fetchUserSignout(scope?: Omix<{ onAfterEnter?: Function; onPositiveClick?: Function }>) {
         return await divineDiscover({
@@ -97,5 +138,15 @@ export const useUser = defineStore(APP_STORE.STORE_USER, () => {
         })
     }
 
-    return { state, ...toRefs(state), setState, setToken, fetchReset, fetchUserResolver, fetchUserSignout }
+    return {
+        state,
+        ...toRefs(state),
+        setState,
+        setToken,
+        fetchReset,
+        fetchUserResolver,
+        fetchThemeUpdate,
+        fetchUserUpdate,
+        fetchUserSignout
+    }
 })

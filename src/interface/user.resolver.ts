@@ -56,4 +56,9 @@ export interface BodyUserUpdate {
     nickname?: string
     comment?: string
     fileId?: string
+    theme?: EnumUserTheme
+    color?: number
+    paint?: boolean
+    sound?: boolean
+    notify?: boolean
 }
