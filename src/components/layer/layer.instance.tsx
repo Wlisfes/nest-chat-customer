@@ -14,3 +14,10 @@ export async function fetchCropper(props: Omix<{ src?: string; fileName?: string
         return await createComponent(component.default, props)
     })
 }
+
+/**新建社群**/
+export async function fetchSociety(props: Omix<{ observer: Observer<Omix> }>) {
+    return await import('@/components/layer/layer-society.vue').then(async component => {
+        return await createComponent(component.default, props)
+    })
+}

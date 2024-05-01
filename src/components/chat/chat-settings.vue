@@ -17,6 +17,7 @@ export default defineComponent({
             return await user.fetchUserSignout()
         }
 
+        /**基本用户信息抽屉组件**/
         async function fetchUseResolver() {
             const { unmount } = await fetchResolver({
                 observer,

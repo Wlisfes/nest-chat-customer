@@ -1,47 +1,43 @@
 <script lang="tsx">
 import { defineComponent, onMounted, PropType } from 'vue'
 import { useUser } from '@/store'
-import { useFormCustomize } from '@/hooks/hook-customize'
+import { useState } from '@/hooks/hook-state'
+import { useDrawer } from '@/hooks/hook-layer'
+import { divineNotice } from '@/utils/utils-component'
+import { Observer } from '@/utils/utils-observer'
+import * as env from '@/interface/instance.resolver'
+import * as api from '@/api/instance.service'
 
 export default defineComponent({
     name: 'LayerSociety',
     emits: ['close', 'submit'],
     props: {
-        element: { type: Object as PropType<HTMLElement> },
-        width: { type: [Number, String], default: 420 }
+        observer: { type: Object as PropType<Observer<Omix>>, required: true }
     },
     setup(props, { emit }) {
-        const user = useUser()
+        const { visible, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
 
-        const { form, visible, setVisible } = useFormCustomize({
-            form: {
-                nickname: user.nickname,
-                comment: user.comment
-            }
-        })
-
-        onMounted(() => {
-            return setVisible(true)
+        onMounted(async () => {
+            await fetchState({ visible: true })
+            return await divineLayerUnmounted(props.observer, () => {
+                return fetchState({ visible: false })
+            })
         })
 
         return () => (
             <n-drawer
                 v-model:show={visible.value}
-                width={props.width}
-                to={props.element ?? document.body}
-                content-style={{ overflow: 'hidden', userSelect: 'none' }}
-                placement="left"
+                width="100%"
+                to={element.value ?? document.body}
+                content-style={chunkContent.value}
+                placement="right"
                 auto-focus={false}
                 mask-closable={false}
                 show-mask={false}
                 on-after-leave={() => emit('close')}
             >
-                <n-element class="layer-society n-chunk n-column">
-                    <chat-header title="新建社群" onClose={(evt: Event) => setVisible(false)}></chat-header>
-                    <chat-avatar url={user.avatar} style={{ padding: '32px' }}></chat-avatar>
-                    <div style={{ flex: 1, overflow: 'hidden' }}>
-                        <n-scrollbar class="is-customize" trigger="none" size={60}></n-scrollbar>
-                    </div>
+                <n-element class="layer-society n-chunk n-column n-auto n-disover">
+                    <chat-header title="新建社群" onClose={(evt: Event) => fetchState({ visible: false })}></chat-header>
                 </n-element>
             </n-drawer>
         )
@@ -49,11 +45,4 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped>
-.layer-society {
-    height: 100%;
-    overflow: hidden;
-    background-color: var(--layer-common-color);
-    transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
-}
-</style>
+<style lang="scss" scoped></style>

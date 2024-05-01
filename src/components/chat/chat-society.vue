@@ -1,17 +1,28 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
 import { useSession } from '@/store'
+import { useDrawer } from '@/hooks/hook-layer'
+import { fetchSociety } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
     name: 'ChatSociety',
     setup() {
         const session = useSession()
+        const { observer } = useDrawer(true)
+
+        /**新建社群**/
+        async function fetchUseSociety() {
+            const { unmount } = await fetchSociety({
+                observer,
+                onClose: () => unmount(300)
+            })
+        }
 
         return () => (
             <div class="chat-society n-chunk n-column n-auto n-disover n-pointer">
                 <chat-compose title="社群"></chat-compose>
-                <div class="chunk-society n-chunk n-center n-disover">
+                <div class="chunk-society n-chunk n-center n-disover" onClick={fetchUseSociety}>
                     <n-icon-wrapper size={46} color="#2aa886" icon-color="#ffffff" border-radius={4}>
                         <n-icon size={28} component={<Iv-NsSociety />}></n-icon>
                     </n-icon-wrapper>
