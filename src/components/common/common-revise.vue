@@ -7,7 +7,7 @@ import { stop, divineWherer, divineHandler } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'CommonRevise',
-    emits: ['submit', 'update:content'],
+    emits: ['submit', 'revise', 'update:content'],
     props: {
         content: { type: String as PropType<string>, default: '' },
         label: { type: String as PropType<string> },
@@ -16,7 +16,8 @@ export default defineComponent({
         autosize: { type: Object, default: () => ({ minRows: 1, maxRows: 3 }) },
         suffix: { type: Array as PropType<Array<'controller' | 'enoji' | 'show-count'>>, default: () => [] },
         loading: { type: Boolean, default: false },
-        disabled: { type: Boolean, default: false },
+        disabled: { type: Boolean, default: true },
+        proxy: { type: Boolean, default: false },
         formProps: { type: Object as PropType<FormItemProps>, default: () => ({}) }
     },
     setup(props, { emit }) {
@@ -31,7 +32,9 @@ export default defineComponent({
 
         /**开启、提交操作事件**/
         async function fetchUpdate() {
-            if (state.disabled) {
+            if (props.proxy) {
+                return emit('revise', { content: content.value, done: setState })
+            } else if (state.disabled) {
                 return await setState({ disabled: false })
             } else if (!state.loading) {
                 return await setState({ loading: true, disabled: true }).then(() => {
