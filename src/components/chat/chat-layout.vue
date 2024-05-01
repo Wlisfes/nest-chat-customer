@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, onMounted } from 'vue'
-import { useUser, useMessenger, useSession, useChat } from '@/store'
+import { useUser, useConfiger, useMessenger, useSession, useChat } from '@/store'
 import { connectClient } from '@/utils/utils-websocket'
 import * as env from '@/interface/instance.resolver'
 
@@ -8,6 +8,7 @@ export default defineComponent({
     name: 'ChatLayout',
     setup() {
         const { setState } = useChat()
+        const { fetchCommonWallpaper } = useConfiger()
         const { fetchSessionInitColumn, fetchNewServerMessager } = useSession()
         const { fetchSocketServerMessager } = useMessenger()
         const { fetchUserResolver } = useUser()
@@ -15,6 +16,7 @@ export default defineComponent({
         onMounted(async () => {
             await fetchUserResolver()
             return await divineConnectSocketClient().then(async failure => {
+                await fetchCommonWallpaper()
                 await fetchSessionInitColumn()
                 return await setState({ failure, loading: false })
             })

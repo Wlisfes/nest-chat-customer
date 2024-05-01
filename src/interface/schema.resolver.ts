@@ -1,5 +1,5 @@
 export interface CommonSchema {
-    keyId: string
+    keyId: number
     createTime: string
     updateTime: string
 }

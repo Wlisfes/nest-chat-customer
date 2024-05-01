@@ -21,7 +21,7 @@ export interface SchemaUser extends env.CommonSchema {
     comment: string
     password: string
     theme: EnumUserTheme
-    color: { light: string; dark: string }
+    color: { light: string; dark: string; keyId: number }
     paint: boolean
     sound: boolean
     notify: boolean

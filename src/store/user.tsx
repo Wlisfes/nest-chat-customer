@@ -5,8 +5,8 @@ import { useState } from '@/hooks/hook-state'
 import { APP_STORE, APP_COMMON, getStore, setStore, delStore } from '@/utils/utils-storage'
 import { divineWherer, divineHandler, divineDelay } from '@/utils/utils-common'
 import { divineDiscover, divineNotice } from '@/utils/utils-component'
+import { httpUserResolver, httpUserUpdate } from '@/api/instance.service'
 import * as env from '@/interface/instance.resolver'
-import * as api from '@/api/instance.service'
 
 /**初始化user store字段**/
 export function initState(state: Omix<Partial<env.SchemaUser>> = {}) {
@@ -20,6 +20,7 @@ export function initState(state: Omix<Partial<env.SchemaUser>> = {}) {
         comment: '',
         lightColor: '#efeae2',
         darkColor: '#0c141a',
+        keyIdColor: -1,
         paint: true,
         sound: true,
         notify: true,
@@ -37,7 +38,7 @@ export const useUser = defineStore(APP_STORE.STORE_USER, () => {
 
     /**拉取账号信息**/
     async function fetchUserResolver() {
-        return await api.httpUserResolver().then(async ({ data }) => {
+        return await httpUserResolver().then(async ({ data }) => {
             await configer.setTheme(data.theme)
             return await setState({
                 uid: data.uid,
@@ -48,6 +49,7 @@ export const useUser = defineStore(APP_STORE.STORE_USER, () => {
                 comment: data.comment,
                 lightColor: data.color.light,
                 darkColor: data.color.dark,
+                keyIdColor: data.color.keyId,
                 paint: data.paint,
                 sound: data.sound,
                 notify: data.notify
@@ -73,7 +75,7 @@ export const useUser = defineStore(APP_STORE.STORE_USER, () => {
         try {
             const theme = divineWherer(configer.theme === 'light', env.EnumUserTheme.dark, env.EnumUserTheme.light)
             await configer.setTheme(theme)
-            return await api.httpUserUpdate({ theme }).then(async ({ message }) => {
+            return await httpUserUpdate({ theme }).then(async ({ message }) => {
                 await divineHandler(Boolean(scope.notice), {
                     handler: async () => {
                         return await divineNotice({ type: 'success', title: scope.message ?? message })
@@ -95,11 +97,11 @@ export const useUser = defineStore(APP_STORE.STORE_USER, () => {
         done: Function = Function
     ) {
         try {
-            return await api.httpUserUpdate(scope).then(async ({ message }) => {
-                await divineHandler(option.refresh ?? true, {
+            return await httpUserUpdate(scope).then(async ({ message }) => {
+                await divineHandler(Boolean(option.refresh), {
                     handler: fetchUserResolver
                 })
-                await divineHandler(option.notice ?? true, {
+                await divineHandler(Boolean(option.notice), {
                     handler: async () => {
                         return await divineNotice({ type: 'success', title: option.message ?? message })
                     }

@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, onMounted, PropType } from 'vue'
-import { useState } from '@/hooks/hook-state'
 import { useUser } from '@/store'
+import { useState } from '@/hooks/hook-state'
 import { useDrawer } from '@/hooks/hook-layer'
 import { Observer } from '@/utils/utils-observer'
 
@@ -50,10 +50,9 @@ export default defineComponent({
                                 </div>
                                 <n-checkbox
                                     size="large"
+                                    focusable={false}
                                     v-model:checked={state.notify}
-                                    onUpdateChecked={(checked: boolean) => {
-                                        return fetchUserUpdate({ notify: checked }, { refresh: false, notice: false })
-                                    }}
+                                    onUpdateChecked={(checked: boolean) => fetchUserUpdate({ notify: checked })}
                                 />
                             </div>
                             <div class="chunk-block n-chunk n-center n-disover n-pointer">
@@ -67,10 +66,9 @@ export default defineComponent({
                                 </div>
                                 <n-checkbox
                                     size="large"
+                                    focusable={false}
                                     v-model:checked={state.sound}
-                                    onUpdateChecked={(checked: boolean) => {
-                                        return fetchUserUpdate({ sound: checked }, { refresh: false, notice: false })
-                                    }}
+                                    onUpdateChecked={(checked: boolean) => fetchUserUpdate({ sound: checked })}
                                 />
                             </div>
                         </n-scrollbar>
