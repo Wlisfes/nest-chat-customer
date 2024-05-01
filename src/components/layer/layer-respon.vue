@@ -8,7 +8,7 @@ import * as env from '@/interface/instance.resolver'
 import * as api from '@/api/instance.service'
 
 export default defineComponent({
-    name: 'LayerNotice',
+    name: 'LayerRespon',
     emits: ['close', 'submit'],
     props: {
         observer: { type: Object as PropType<Observer<Omix>>, required: true }
@@ -34,11 +34,7 @@ export default defineComponent({
                 mask-closable={false}
                 show-mask={false}
                 on-after-leave={() => emit('close')}
-            >
-                <n-element class="layer-notice n-chunk n-column n-auto n-disover">
-                    <chat-header title="通知" onClose={(evt: Event) => fetchState({ visible: false })}></chat-header>
-                </n-element>
-            </n-drawer>
+            ></n-drawer>
         )
     }
 })

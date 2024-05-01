@@ -69,16 +69,18 @@ export const useUser = defineStore(APP_STORE.STORE_USER, () => {
     }
 
     /**切换主题模式**/
-    async function fetchThemeUpdate(scope: Omix<{ message?: string; notice?: boolean }> = {}) {
+    async function fetchThemeUpdate(scope: Omix<{ message?: string; notice?: boolean }> = {}, done: Function = Function) {
         try {
             const theme = divineWherer(configer.theme === 'light', env.EnumUserTheme.dark, env.EnumUserTheme.light)
             await configer.setTheme(theme)
             return await api.httpUserUpdate({ theme }).then(async ({ message }) => {
-                await fetchUserResolver()
-                return await divineHandler(Boolean(scope.notice), {
+                await divineHandler(Boolean(scope.notice), {
                     handler: async () => {
                         return await divineNotice({ type: 'success', title: scope.message ?? message })
                     }
+                })
+                return await divineHandler(Boolean(done), {
+                    handler: done
                 })
             })
         } catch (e) {
@@ -87,24 +89,29 @@ export const useUser = defineStore(APP_STORE.STORE_USER, () => {
     }
 
     /**更新基础信息**/
-    async function fetchUserUpdate(scope: env.BodyUserUpdate, option: Omix<{ message?: string; notice?: boolean; done?: Function }> = {}) {
+    async function fetchUserUpdate(
+        scope: env.BodyUserUpdate,
+        option: Omix<{ refresh?: boolean; message?: string; notice?: boolean }> = {},
+        done: Function = Function
+    ) {
         try {
             return await api.httpUserUpdate(scope).then(async ({ message }) => {
-                await fetchUserResolver()
+                await divineHandler(option.refresh ?? true, {
+                    handler: fetchUserResolver
+                })
                 await divineHandler(option.notice ?? true, {
                     handler: async () => {
                         return await divineNotice({ type: 'success', title: option.message ?? message })
                     }
                 })
-                return await divineHandler(Boolean(option.done), {
-                    handler: () => option.done!()
+                return await divineHandler(Boolean(done), {
+                    handler: done
                 })
             })
         } catch (e) {
-            return await divineNotice({ type: 'error', title: e.message }).then(async () => {
-                return await divineHandler(Boolean(option.done), {
-                    handler: () => option.done!()
-                })
+            await divineNotice({ type: 'error', title: e.message })
+            return await divineHandler(Boolean(done), {
+                handler: done
             })
         }
     }

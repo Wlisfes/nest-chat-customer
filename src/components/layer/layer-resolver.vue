@@ -3,10 +3,8 @@ import { defineComponent, onMounted, PropType } from 'vue'
 import { useUser } from '@/store'
 import { useState } from '@/hooks/hook-state'
 import { useDrawer } from '@/hooks/hook-layer'
-import { divineNotice } from '@/utils/utils-component'
 import { Observer } from '@/utils/utils-observer'
 import * as env from '@/interface/instance.resolver'
-import * as api from '@/api/instance.service'
 
 export default defineComponent({
     name: 'LayerResolver',
@@ -15,9 +13,9 @@ export default defineComponent({
         observer: { type: Object as PropType<Observer<Omix>>, required: true }
     },
     setup(props, { emit }) {
-        const user = useUser()
-        const { state } = useState({ nickname: user.nickname, comment: user.comment })
         const { visible, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
+        const { nickname, comment, avatar, fetchUserUpdate } = useUser()
+        const { state, setState } = useState({ nickname, comment, avatar })
 
         onMounted(async () => {
             await fetchState({ visible: true })
@@ -27,33 +25,16 @@ export default defineComponent({
         })
 
         /**更新头像**/
-        async function fetchUserUpdateAvatar(scope: Omix<{ done: Function } & env.RestStreamUploader>) {
-            try {
-                return await api.httpUserUpdate({ fileId: scope.fileId }).then(async ({ message }) => {
-                    await user.fetchUserResolver()
-                    await divineNotice({ type: 'success', title: message })
-                    return await scope.done({ visible: false })
-                })
-            } catch (e) {
-                return await divineNotice({ type: 'error', title: e.message }).then(async () => {
-                    return await scope.done({ loading: false })
-                })
-            }
+        async function fetchUpdateAvatar({ url, fileId, done }: Omix<{ done: Function } & env.RestStreamUploader>) {
+            return await fetchUserUpdate({ fileId }, {}, () => done({ loading: false })).then(async () => {
+                await setState({ avatar: url })
+                return await done({ visible: false })
+            })
         }
 
         /**更新昵称、状态**/
-        async function fetchUserUpdate({ done, comment, nickname }: Omix<{ done: Function; nickname?: string; comment?: string }>) {
-            try {
-                return await api.httpUserUpdate({ nickname, comment }).then(async ({ message }) => {
-                    await user.fetchUserResolver()
-                    await divineNotice({ type: 'success', title: message })
-                    return await done({ loading: false })
-                })
-            } catch (e) {
-                return await divineNotice({ type: 'error', title: e.message }).then(async () => {
-                    return await done({ loading: false })
-                })
-            }
+        async function fetchBasicUpdate({ done, comment, nickname }: Omix) {
+            return await fetchUserUpdate({ comment, nickname }, {}, () => done({ loading: false }))
         }
 
         return () => (
@@ -71,21 +52,21 @@ export default defineComponent({
                 <n-element class="layer-resolver n-chunk n-column n-auto n-disover">
                     <chat-header title="个人信息" onClose={(evt: Event) => fetchState({ visible: false })}></chat-header>
                     <div class="n-chunk n-center n-middle" style={{ padding: '24px' }}>
-                        <chat-avatar upload={true} src={user.avatar} size={200} radius={100} onSubmit={fetchUserUpdateAvatar}></chat-avatar>
+                        <chat-avatar upload={true} src={state.avatar} size={200} radius={100} onSubmit={fetchUpdateAvatar}></chat-avatar>
                     </div>
                     <common-revise
                         label="昵称"
                         placeholder="昵称"
                         suffix={['controller']}
                         v-model:content={state.nickname}
-                        onSubmit={({ done, content }: Omix) => fetchUserUpdate({ done, nickname: content })}
+                        onSubmit={(scope: Omix) => fetchBasicUpdate({ ...scope, nickname: scope.content })}
                     ></common-revise>
                     <common-revise
                         label="状态"
                         placeholder="状态"
                         suffix={['controller']}
                         v-model:content={state.comment}
-                        onSubmit={({ done, content }: Omix) => fetchUserUpdate({ done, comment: content })}
+                        onSubmit={(scope: Omix) => fetchBasicUpdate({ ...scope, comment: scope.content })}
                     ></common-revise>
                 </n-element>
             </n-drawer>

@@ -3,7 +3,7 @@ import { defineComponent } from 'vue'
 import { useUser } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
 import { useProvider } from '@/hooks/hook-provider'
-import { fetchResolver } from '@/components/layer/layer.instance'
+import { fetchResolver, fetchRespon, fetchNotice } from '@/components/layer/layer.instance'
 
 export default defineComponent({
     name: 'ChatSettings',
@@ -19,9 +19,25 @@ export default defineComponent({
 
         /**基本用户信息抽屉组件**/
         async function fetchUseResolver() {
-            const { unmount } = await fetchResolver({
+            return await fetchResolver({
                 observer,
-                onClose: () => unmount(300)
+                onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount(300)
+            })
+        }
+
+        /**对话设置**/
+        async function fetchUseRespon() {
+            return await fetchRespon({
+                observer,
+                onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount(300)
+            })
+        }
+
+        /**通知设置**/
+        async function fetchUseNotice() {
+            return await fetchNotice({
+                observer,
+                onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount(300)
             })
         }
 
@@ -62,7 +78,7 @@ export default defineComponent({
                                     </n-text>
                                 </div>
                             </div>
-                            <div class="chunk-block n-chunk n-disover n-pointer">
+                            <div class="chunk-block n-chunk n-disover n-pointer" onClick={fetchUseRespon}>
                                 <div class="n-chunk n-center n-middle" style={{ width: '70px' }}>
                                     <n-icon size={26} color="var(--text-color-1)" component={<Iv-BsSession />}></n-icon>
                                 </div>
@@ -72,7 +88,7 @@ export default defineComponent({
                                     </n-text>
                                 </div>
                             </div>
-                            <div class="chunk-block n-chunk n-disover n-pointer">
+                            <div class="chunk-block n-chunk n-disover n-pointer" onClick={fetchUseNotice}>
                                 <div class="n-chunk n-center n-middle" style={{ width: '70px' }}>
                                     <n-icon size={26} color="var(--text-color-1)" component={<Iv-BsAlert />}></n-icon>
                                 </div>
