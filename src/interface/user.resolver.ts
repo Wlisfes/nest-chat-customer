@@ -5,6 +5,11 @@ export enum EnumUserStatus {
     disable = 'disable',
     enable = 'enable'
 }
+/**用户表: 主题**/
+export enum EnumUserTheme {
+    light = 'light',
+    dark = 'dark'
+}
 
 /**用户表**/
 export interface SchemaUser extends env.CommonSchema {
@@ -15,6 +20,11 @@ export interface SchemaUser extends env.CommonSchema {
     email: string
     comment: string
     password: string
+    theme: EnumUserTheme
+    color: { light: string; dark: string }
+    paint: boolean
+    sound: boolean
+    notify: boolean
 }
 
 /**注册账号**/

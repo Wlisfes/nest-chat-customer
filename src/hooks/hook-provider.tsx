@@ -1,6 +1,6 @@
 import { computed, ComputedRef } from 'vue'
 import { useThemeVars, darkTheme, lightTheme, GlobalThemeOverrides, ThemeCommonVars } from 'naive-ui'
-import { useConfiger } from '@/store/configer'
+import { useConfiger, useUser } from '@/store'
 import { divineHandler } from '@/utils/utils-common'
 
 export interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
@@ -37,6 +37,7 @@ export interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
 
 export function useProvider() {
     const configer = useConfiger()
+    const user = useUser()
     const vars = useThemeVars() as ComputedRef<CustomThemeCommonVars>
     const inverted = computed(() => {
         return configer.theme === 'dark'
@@ -65,7 +66,7 @@ export function useProvider() {
             '--chat-border-color': 'rgba(134, 150, 160, 0.15)',
             '--chat-connect-color': '#ffffff',
             '--chat-comment-color': '#ffffff',
-            '--chat-messenger-color': '#efeae2',
+            '--chat-messenger-color': user.lightColor,
             '--chat-messenger-opacity': 0.6,
             '--chat-context-color': '#f0f2f5',
             '--chat-column-color': '#ffffff',
@@ -100,7 +101,7 @@ export function useProvider() {
             '--chat-border-color': 'rgba(134, 150, 160, 0.15)',
             '--chat-connect-color': '#202c33',
             '--chat-comment-color': '#202c33',
-            '--chat-messenger-color': '#0b141a',
+            '--chat-messenger-color': user.darkColor,
             '--chat-messenger-opacity': 0.1,
             '--chat-context-color': '#0b141a',
             '--chat-column-color': '#111b21',

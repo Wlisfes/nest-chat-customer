@@ -1,37 +1,56 @@
 import { toRefs } from 'vue'
 import { defineStore } from 'pinia'
-import { useChat, useMessenger, useSession, useComment } from '@/store'
+import { useChat, useMessenger, useSession, useComment, useConfiger } from '@/store'
 import { useState } from '@/hooks/hook-state'
 import { APP_STORE, APP_COMMON, getStore, setStore, delStore } from '@/utils/utils-storage'
 import { divineHandler, divineDelay } from '@/utils/utils-common'
 import { divineDiscover } from '@/utils/utils-component'
+import * as env from '@/interface/instance.resolver'
 import * as api from '@/api/instance.service'
 
-export const useUser = defineStore(APP_STORE.STORE_USER, () => {
-    const chat = useChat()
-    const session = useSession()
-    const message = useMessenger()
-    const comment = useComment()
-    const { state, setState } = useState({
+/**初始化user store字段**/
+export function initState(state: Omix<Partial<env.SchemaUser>> = {}) {
+    return {
         token: getStore(APP_COMMON.CHAT_TOKEN, ''),
         uid: '',
         nickname: '',
         avatar: '',
         email: '',
         status: '',
-        comment: ''
-    })
+        comment: '',
+        lightColor: '#efeae2',
+        darkColor: '#0c141a',
+        paint: true,
+        sound: true,
+        notify: true,
+        ...state
+    }
+}
+
+export const useUser = defineStore(APP_STORE.STORE_USER, () => {
+    const configer = useConfiger()
+    const chat = useChat()
+    const session = useSession()
+    const message = useMessenger()
+    const comment = useComment()
+    const { state, setState } = useState(initState())
 
     /**拉取账号信息**/
     async function fetchUserResolver() {
         return await api.httpUserResolver().then(async ({ data }) => {
-            return setState({
+            await configer.setTheme(data.theme)
+            return await setState({
                 uid: data.uid,
                 nickname: data.nickname,
                 avatar: data.avatar,
                 email: data.email,
                 status: data.status,
-                comment: data.comment
+                comment: data.comment,
+                lightColor: data.color.light,
+                darkColor: data.color.dark,
+                paint: data.paint,
+                sound: data.sound,
+                notify: data.notify
             })
         })
     }
@@ -39,7 +58,7 @@ export const useUser = defineStore(APP_STORE.STORE_USER, () => {
     /**重置store**/
     async function fetchReset() {
         await delStore(APP_COMMON.CHAT_TOKEN)
-        return await setState({ token: '', uid: '', nickname: '', avatar: '', email: '', status: '', comment: '' })
+        return await setState(initState())
     }
 
     /**存储token**/
