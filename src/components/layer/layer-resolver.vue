@@ -54,20 +54,24 @@ export default defineComponent({
                     <div class="n-chunk n-center n-middle" style={{ padding: '24px' }}>
                         <chat-avatar upload={true} src={state.avatar} size={200} radius={100} onSubmit={fetchUpdateAvatar}></chat-avatar>
                     </div>
-                    <common-revise
-                        label="昵称"
-                        placeholder="昵称"
-                        suffix={['controller']}
-                        v-model:content={state.nickname}
-                        onSubmit={(scope: Omix) => fetchBasicUpdate({ ...scope, nickname: scope.content })}
-                    ></common-revise>
-                    <common-revise
-                        label="状态"
-                        placeholder="状态"
-                        suffix={['controller']}
-                        v-model:content={state.comment}
-                        onSubmit={(scope: Omix) => fetchBasicUpdate({ ...scope, comment: scope.content })}
-                    ></common-revise>
+                    <div class="n-chunk n-column n-auto n-disover">
+                        <n-scrollbar class="is-customize" trigger="none" size={60}>
+                            <common-revise
+                                label="昵称"
+                                placeholder="昵称"
+                                suffix={['controller']}
+                                v-model:content={state.nickname}
+                                onSubmit={(scope: Omix) => fetchBasicUpdate({ ...scope, nickname: scope.content })}
+                            ></common-revise>
+                            <common-revise
+                                label="状态"
+                                placeholder="状态"
+                                suffix={['controller']}
+                                v-model:content={state.comment}
+                                onSubmit={(scope: Omix) => fetchBasicUpdate({ ...scope, comment: scope.content })}
+                            ></common-revise>
+                        </n-scrollbar>
+                    </div>
                 </n-element>
             </n-drawer>
         )

@@ -1,11 +1,9 @@
 <script lang="tsx">
-import { defineComponent, computed, onMounted, PropType } from 'vue'
+import { defineComponent, onMounted, PropType } from 'vue'
 import { useState } from '@/hooks/hook-state'
+import { useUser } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
-import { divineNotice } from '@/utils/utils-component'
 import { Observer } from '@/utils/utils-observer'
-import * as env from '@/interface/instance.resolver'
-import * as api from '@/api/instance.service'
 
 export default defineComponent({
     name: 'LayerNotice',
@@ -14,7 +12,9 @@ export default defineComponent({
         observer: { type: Object as PropType<Observer<Omix>>, required: true }
     },
     setup(props, { emit }) {
-        const { visible, loading, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
+        const { visible, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
+        const { sound, notify, fetchUserUpdate } = useUser()
+        const { state } = useState({ sound, notify })
 
         onMounted(async () => {
             await fetchState({ visible: true })
@@ -37,9 +37,65 @@ export default defineComponent({
             >
                 <n-element class="layer-notice n-chunk n-column n-auto n-disover">
                     <chat-header title="通知" onClose={(evt: Event) => fetchState({ visible: false })}></chat-header>
+                    <div class="n-chunk n-column n-auto n-disover">
+                        <n-scrollbar class="is-customize" trigger="none" size={60}>
+                            <div class="chunk-block n-chunk n-center n-disover n-pointer">
+                                <div class="n-chunk n-column n-auto n-disover">
+                                    <n-text depth={1} style={{ fontSize: '16px', lineHeight: '28px' }}>
+                                        消息通知
+                                    </n-text>
+                                    <n-text depth={3} style={{ lineHeight: '20px' }}>
+                                        有新消息时显示相关通知
+                                    </n-text>
+                                </div>
+                                <n-checkbox
+                                    size="large"
+                                    v-model:checked={state.notify}
+                                    onUpdateChecked={(checked: boolean) => {
+                                        return fetchUserUpdate({ notify: checked }, { refresh: false, notice: false })
+                                    }}
+                                />
+                            </div>
+                            <div class="chunk-block n-chunk n-center n-disover n-pointer">
+                                <div class="n-chunk n-column n-auto n-disover">
+                                    <n-text depth={1} style={{ fontSize: '16px', lineHeight: '28px' }}>
+                                        声音
+                                    </n-text>
+                                    <n-text depth={3} style={{ lineHeight: '20px' }}>
+                                        在接收消息时播放铃声
+                                    </n-text>
+                                </div>
+                                <n-checkbox
+                                    size="large"
+                                    v-model:checked={state.sound}
+                                    onUpdateChecked={(checked: boolean) => {
+                                        return fetchUserUpdate({ sound: checked }, { refresh: false, notice: false })
+                                    }}
+                                />
+                            </div>
+                        </n-scrollbar>
+                    </div>
                 </n-element>
             </n-drawer>
         )
     }
 })
 </script>
+
+<style lang="scss" scoped>
+.chunk-block {
+    user-select: none;
+    height: 60px;
+    padding: 10px 24px;
+    &:not(:last-child)::before {
+        content: '';
+        position: absolute;
+        left: 20px;
+        right: 20px;
+        bottom: 0;
+        height: 1px;
+        background-color: var(--chat-border-color);
+        transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
+    }
+}
+</style>

@@ -14,7 +14,7 @@ export default defineComponent({
         observer: { type: Object as PropType<Observer<Omix>>, required: true }
     },
     setup(props, { emit }) {
-        const { visible, loading, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
+        const { visible, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
 
         onMounted(async () => {
             await fetchState({ visible: true })
@@ -34,7 +34,14 @@ export default defineComponent({
                 mask-closable={false}
                 show-mask={false}
                 on-after-leave={() => emit('close')}
-            ></n-drawer>
+            >
+                <n-element class="layer-respon n-chunk n-column n-auto n-disover">
+                    <chat-header title="对话" onClose={(evt: Event) => fetchState({ visible: false })}></chat-header>
+                    <div class="n-chunk n-column n-auto n-disover">
+                        <n-scrollbar class="is-customize" trigger="none" size={60}></n-scrollbar>
+                    </div>
+                </n-element>
+            </n-drawer>
         )
     }
 })
