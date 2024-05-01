@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, onMounted, onBeforeUnmount, Fragment, PropType } from 'vue'
+import { defineComponent, onMounted, Fragment, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
 import { useUser, useMessenger, useSession, useComment } from '@/store'
 import { instance } from '@/store/messenger'
@@ -21,12 +21,13 @@ export default defineComponent({
         const message = useMessenger()
         const comment = useComment()
 
-        onMounted(() => {
-            socket.value.on('server-customize-messager', fetchUpdateNodeMessager)
-        })
-
-        onBeforeUnmount(() => {
-            socket.value.off('server-customize-messager', fetchUpdateNodeMessager)
+        onMounted(async () => {
+            return await divineHandler(!node.value.mounted, {
+                handler: async () => {
+                    socket.value.on('server-customize-messager', fetchUpdateNodeMessager)
+                    node.value.mounted = true
+                }
+            })
         })
 
         /**更新最新消息数据**/

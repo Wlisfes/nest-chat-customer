@@ -76,7 +76,7 @@ export default defineComponent({
                         nickname: form.value.nickname,
                         email: form.value.email,
                         code: form.value.code,
-                        password: window.btoa(form.value.password)
+                        password: window.btoa(encodeURIComponent(form.value.password))
                     }).then(async ({ data }) => {
                         await divineNotice({ content: setupNotice(data.message) })
                         await setLoading(false)

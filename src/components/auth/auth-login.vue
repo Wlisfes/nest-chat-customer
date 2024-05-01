@@ -49,7 +49,7 @@ export default defineComponent({
                     return await httpUserAuthorizer({
                         email: form.value.email,
                         code: form.value.code,
-                        password: window.btoa(form.value.password)
+                        password: window.btoa(encodeURIComponent(form.value.password))
                     }).then(async ({ data, message }) => {
                         await setToken(data.token, data.expire * 1000)
                         await fetchUserResolver()
