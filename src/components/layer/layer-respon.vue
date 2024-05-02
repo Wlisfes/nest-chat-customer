@@ -39,7 +39,7 @@ export default defineComponent({
         /**样式变量聚合**/
         function divineChunkStyle(scope: env.RestCommonWallpaper): CSSProperties {
             return {
-                '--chat-respon-border-color': divineWherer(inverted.value, '#667781', '#009de2'),
+                '--chat-respon-border-color': divineWherer(inverted.value, '#009de2', '#667781'),
                 '--chat-respon-color': divineWherer(inverted.value, scope.light, scope.dark)
             }
         }
