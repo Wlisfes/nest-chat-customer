@@ -17,7 +17,7 @@ export default defineComponent({
     setup(props, { emit }) {
         const configer = useConfiger()
         const { visible, loading, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
-        const { paint, keyIdColor, lightColor, darkColor, setState: setUserState, fetchUserUpdate } = useUser()
+        const { paint, keyIdColor, lightColor, darkColor, setState: setUser, fetchUserUpdate } = useUser()
         const { state, setState } = useState({ paint, keyIdColor, lightColor, darkColor })
         const inverted = computed(() => configer.theme === env.EnumUserTheme.light)
 
@@ -48,7 +48,7 @@ export default defineComponent({
         async function onMouseover(scope: env.RestCommonWallpaper) {
             return await divineHandler(!loading.value, {
                 handler: async () => {
-                    return await setUserState({ lightColor: scope.light, darkColor: scope.dark })
+                    return await setUser({ lightColor: scope.light, darkColor: scope.dark })
                 }
             })
         }
@@ -57,8 +57,15 @@ export default defineComponent({
         async function onMouseout(scope: env.RestCommonWallpaper) {
             return await divineHandler(!loading.value, {
                 handler: async () => {
-                    return await setUserState({ lightColor: state.lightColor, darkColor: state.darkColor })
+                    return await setUser({ lightColor: state.lightColor, darkColor: state.darkColor })
                 }
+            })
+        }
+
+        /**涂鸦设置切换**/
+        async function fetchPaintUpdate(paint: boolean) {
+            return await setUser({ paint }).then(async () => {
+                return await fetchUserUpdate({ paint })
             })
         }
 
@@ -94,7 +101,14 @@ export default defineComponent({
                     <div class="n-chunk n-column n-auto n-disover">
                         <n-scrollbar class="is-customize" trigger="none" size={60}>
                             <div class="n-chunk n-column n-center n-middle n-disover" style={{ padding: '10px 24px 24px' }}>
-                                <n-checkbox size="large" label="新增 Chat 涂鸦背景" focusable={false} v-model:checked={state.paint} />
+                                <n-checkbox
+                                    size="large"
+                                    label="新增 Chat 涂鸦背景"
+                                    focusable={false}
+                                    disabled={loading.value}
+                                    v-model:checked={state.paint}
+                                    onUpdateChecked={(checked: boolean) => fetchPaintUpdate(checked)}
+                                />
                             </div>
                             {configer.wallpaper.length > 0 && (
                                 <div class="n-chunk n-column n-disover" style={{ padding: '0 24px 24px' }}>

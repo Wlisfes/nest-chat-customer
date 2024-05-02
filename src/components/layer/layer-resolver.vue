@@ -14,7 +14,7 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { visible, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
-        const { nickname, comment, avatar, fetchUserUpdate } = useUser()
+        const { nickname, comment, avatar, setState: setUser, fetchUserUpdate } = useUser()
         const { state, setState } = useState({ nickname, comment, avatar })
 
         onMounted(async () => {
@@ -28,13 +28,17 @@ export default defineComponent({
         async function fetchUpdateAvatar({ url, fileId, done }: Omix<{ done: Function } & env.RestStreamUploader>) {
             return await fetchUserUpdate({ fileId }, {}, () => done({ loading: false })).then(async () => {
                 await setState({ avatar: url })
+                await setUser({ avatar: url })
                 return await done({ visible: false })
             })
         }
 
         /**更新昵称、状态**/
-        async function fetchBasicUpdate({ done, comment, nickname }: Omix) {
-            return await fetchUserUpdate({ comment, nickname }, {}, () => done({ loading: false }))
+        async function fetchBasicUpdate(scope: { nickname?: string; comment?: string }, done: Function) {
+            return await fetchUserUpdate(scope, {}, async () => {
+                await setUser(scope)
+                return await done({ loading: false })
+            })
         }
 
         return () => (
@@ -61,14 +65,14 @@ export default defineComponent({
                                 placeholder="昵称"
                                 suffix={['controller']}
                                 v-model:content={state.nickname}
-                                onSubmit={(scope: Omix) => fetchBasicUpdate({ ...scope, nickname: scope.content })}
+                                onSubmit={(scope: Omix) => fetchBasicUpdate({ nickname: scope.content }, scope.done)}
                             ></common-revise>
                             <common-revise
                                 label="状态"
                                 placeholder="状态"
                                 suffix={['controller']}
                                 v-model:content={state.comment}
-                                onSubmit={(scope: Omix) => fetchBasicUpdate({ ...scope, comment: scope.content })}
+                                onSubmit={(scope: Omix) => fetchBasicUpdate({ comment: scope.content }, scope.done)}
                             ></common-revise>
                         </n-scrollbar>
                     </div>

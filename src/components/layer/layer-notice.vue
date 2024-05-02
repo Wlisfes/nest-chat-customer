@@ -13,7 +13,7 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { visible, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
-        const { sound, notify, fetchUserUpdate } = useUser()
+        const { sound, notify, setState: setUser, fetchUserUpdate } = useUser()
         const { state } = useState({ sound, notify })
 
         onMounted(async () => {
@@ -22,6 +22,13 @@ export default defineComponent({
                 return fetchState({ visible: false })
             })
         })
+
+        /**更新声音、消息通知**/
+        async function fetchBasicUpdate(scope: { notify?: boolean; sound?: boolean }) {
+            return await setUser(scope).then(async () => {
+                return await fetchUserUpdate(scope)
+            })
+        }
 
         return () => (
             <n-drawer
@@ -52,7 +59,7 @@ export default defineComponent({
                                     size="large"
                                     focusable={false}
                                     v-model:checked={state.notify}
-                                    onUpdateChecked={(checked: boolean) => fetchUserUpdate({ notify: checked })}
+                                    onUpdateChecked={(checked: boolean) => fetchBasicUpdate({ notify: checked })}
                                 />
                             </div>
                             <div class="chunk-block n-chunk n-center n-disover n-pointer">
@@ -68,7 +75,7 @@ export default defineComponent({
                                     size="large"
                                     focusable={false}
                                     v-model:checked={state.sound}
-                                    onUpdateChecked={(checked: boolean) => fetchUserUpdate({ sound: checked })}
+                                    onUpdateChecked={(checked: boolean) => fetchBasicUpdate({ sound: checked })}
                                 />
                             </div>
                         </n-scrollbar>
