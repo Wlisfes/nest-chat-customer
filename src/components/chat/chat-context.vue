@@ -13,7 +13,7 @@ export default defineComponent({
                 {message.sid ? (
                     <div class="n-chunk n-column n-auto n-disover">
                         <chat-connect></chat-connect>
-                        <div class={{ 'chunk-messenger n-chunk n-column n-auto n-disover': true, 'chunk-paint': user.paint }}>
+                        <div class={{ 'chunk-messenger n-chunk n-column n-auto n-disover': true, 'chunk-paint': !user.paint }}>
                             <chat-messenger></chat-messenger>
                         </div>
                         <chat-comment></chat-comment>
