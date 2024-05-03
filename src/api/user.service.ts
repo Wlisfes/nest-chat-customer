@@ -2,7 +2,7 @@ import { request } from '@/utils/utils-request'
 import * as env from '@/interface/instance.resolver'
 
 /**注册账号**/
-export function httpUserRegister(data: Omix<env.BodyUserRegister>) {
+export function httpUserRegister(data: Omix<{ nickname: string; email: string; password: string; code: string }>) {
     return request<env.NoticeResolver>({
         url: `/user/register`,
         method: 'POST',
@@ -10,8 +10,17 @@ export function httpUserRegister(data: Omix<env.BodyUserRegister>) {
     })
 }
 
+/**发送注册验证码**/
+export function httpUserRegisterSender(data: Omix<{ email: string }>) {
+    return request<env.NoticeResolver>({
+        url: `/user/register/sender`,
+        method: 'POST',
+        data
+    })
+}
+
 /**登录账号**/
-export function httpUserAuthorizer(data: Omix<env.BodyUserAuthorizer>) {
+export function httpUserAuthorizer(data: Omix<{ email: string; password: string; code: string }>) {
     return request<env.RestUserAuthorizer>({
         url: `/user/authorizer`,
         method: 'POST',
@@ -19,12 +28,29 @@ export function httpUserAuthorizer(data: Omix<env.BodyUserAuthorizer>) {
     })
 }
 
+/**双因子认证**/
+export function httpUserfactor(data: Omix<{ uid: string; code: string }>) {
+    return request<env.RestUserAuthorizer>({
+        url: `/user/factor/authorizer`,
+        method: 'POST',
+        data
+    })
+}
+
+/**发送双因子认证验证码**/
+export function httpUserfactorSender(data: Omix<{ uid: string }>) {
+    return request<env.RestUserAuthorizer>({
+        url: `/user/factor/sender`,
+        method: 'POST',
+        data
+    })
+}
+
 /**账号信息**/
-export function httpUserResolver(params: Omix = {}) {
+export function httpUserResolver() {
     return request<env.RestUserResolver>({
         url: `/user/resolver`,
-        method: 'GET',
-        params
+        method: 'GET'
     })
 }
 

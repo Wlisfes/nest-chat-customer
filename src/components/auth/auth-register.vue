@@ -8,7 +8,7 @@ import { useFormCustomize } from '@/hooks/hook-customize'
 import { useTiminer } from '@/hooks/hook-common'
 import { enter } from '@/utils/utils-common'
 import { divineNotice } from '@/utils/utils-component'
-import { httpUserRegister, httpNodemailerSender } from '@/api/instance.service'
+import { httpUserRegister, httpUserRegisterSender } from '@/api/instance.service'
 
 export default defineComponent({
     name: 'AuthRegister',
@@ -52,7 +52,7 @@ export default defineComponent({
                 }
                 try {
                     await done({ loading: true })
-                    return await httpNodemailerSender({ email: form.value.email, source: 'register' }).then(async ({ data }) => {
+                    return await httpUserRegisterSender({ email: form.value.email }).then(async ({ data }) => {
                         await setDuration(60)
                         await divineNotice({ content: setupNotice(data.message) })
                         return await done({ loading: false })

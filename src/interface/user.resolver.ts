@@ -27,25 +27,13 @@ export interface SchemaUser extends env.CommonSchema {
     notify: boolean
 }
 
-/**注册账号**/
-export interface BodyUserRegister {
-    nickname: string
-    email: string
-    password: string
-    code: string
-}
-
-/**登录账号**/
-export interface BodyUserAuthorizer {
-    email: string
-    password: string
-    code: string
-}
-
 /**登录账号返回值**/
 export interface RestUserAuthorizer {
     token: string
     expire: number
+    factor: boolean
+    email: string
+    uid: string
 }
 
 /**账号信息**/
@@ -61,4 +49,6 @@ export interface BodyUserUpdate {
     paint?: boolean
     sound?: boolean
     notify?: boolean
+    factor?: number
+    limit?: number
 }

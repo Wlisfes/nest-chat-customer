@@ -1,26 +1,22 @@
 <script lang="tsx">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, Ref } from 'vue'
 import { isEmpty, isEmail } from 'class-validator'
 import { useConfiger, useUser } from '@/store'
 import { useLocale } from '@/hooks/hook-locale'
 import { useFormCustomize } from '@/hooks/hook-customize'
-import { enter } from '@/utils/utils-common'
+import { enter, divineHandler } from '@/utils/utils-common'
 import { divineNotice } from '@/utils/utils-component'
 import { httpUserAuthorizer } from '@/api/instance.service'
 
 export default defineComponent({
     name: 'AuthLogin',
     setup(props) {
-        const grapher = ref<Omix<{ done: Function }>>()
+        const refresh = ref() as Ref<Omix<{ done: Function }>>
         const { setAuthorize } = useConfiger()
         const { setToken, fetchUserResolver } = useUser()
         const { setupNotice } = useLocale()
         const { formRef, form, rules, loading, setLoading, divineFormValidater } = useFormCustomize({
-            form: {
-                email: '',
-                password: '',
-                code: ''
-            },
+            form: { email: '', password: '', code: '' },
             rules: {
                 password: { required: true, trigger: 'blur', min: 6, max: 32, message: '请输入登录密码 (密码必须保持6~32位)' },
                 code: { required: true, trigger: 'blur', message: '请输入验证码' },
@@ -39,30 +35,59 @@ export default defineComponent({
             }
         })
 
-        function onSubmit() {
-            divineFormValidater().then(async valid => {
-                if (!valid) {
-                    return false
-                }
-                try {
-                    await setLoading(true)
-                    return await httpUserAuthorizer({
-                        email: form.value.email,
-                        code: form.value.code,
-                        password: window.btoa(encodeURIComponent(form.value.password))
-                    }).then(async ({ data, message }) => {
-                        await setToken(data.token, data.expire * 1000)
-                        await fetchUserResolver()
-                        return await divineNotice({ content: setupNotice(message) }).then(() => {
-                            return setLoading(false)
+        async function onSubmit() {
+            return await divineHandler(await divineFormValidater(), {
+                handler: async () => {
+                    try {
+                        await setLoading(true)
+                        const { data, message } = await httpUserAuthorizer({
+                            email: form.value.email,
+                            code: form.value.code,
+                            password: window.btoa(encodeURIComponent(form.value.password))
                         })
-                    })
-                } catch (e) {
-                    await divineNotice({ type: 'error', content: setupNotice(e) })
-                    await setLoading(false)
-                    return grapher.value?.done(true)
+                        if (data.factor) {
+                            /**开启双因子认证**/
+                            return false
+                        } else {
+                            await setToken(data.token, data.expire * 1000)
+                            await fetchUserResolver()
+                            return await divineNotice({ content: setupNotice(message) }).then(() => {
+                                return setLoading(false)
+                            })
+                        }
+                    } catch (e) {
+                        return await divineNotice({ type: 'error', content: setupNotice(e) }).then(async () => {
+                            await setLoading(false)
+                            return await refresh.value.done(true)
+                        })
+                    }
                 }
             })
+
+            // divineFormValidater().then(async valid => {
+            //     if (!valid) {
+            //         return false
+            //     }
+            //     try {
+            //         await setLoading(true)
+            //         return await httpUserAuthorizer({
+            //             email: form.value.email,
+            //             code: form.value.code,
+            //             password: window.btoa(encodeURIComponent(form.value.password))
+            //         }).then(async ({ data, message }) => {
+            //             await setToken(data.token, data.expire * 1000)
+            //             await fetchUserResolver()
+            //             return await divineNotice({ content: setupNotice(message) }).then(() => {
+            //                 return setLoading(false)
+            //             })
+            //         })
+            //     } catch (e) {
+            //         await divineNotice({ type: 'error', content: setupNotice(e) })
+            //         return await setLoading(false).then(() => {
+            //             return grapher.value?.done(true)
+            //         })
+            //     }
+            // })
         }
 
         return () => (
@@ -127,7 +152,7 @@ export default defineComponent({
                             onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
                             v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuCodex />}></n-icon> }}
                         ></n-input>
-                        <common-grapher ref={grapher} disabled={loading.value}></common-grapher>
+                        <common-grapher ref={refresh} disabled={loading.value}></common-grapher>
                     </n-space>
                 </n-form-item>
                 <n-form-item>
