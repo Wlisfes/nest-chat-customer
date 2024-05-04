@@ -77,7 +77,10 @@ export function divineRender(Component: Parameters<typeof createApp>['0']) {
 
 /**对话弹窗二次封装**/
 export function divineDiscover(
-    option: Pick<DialogOptions, 'type' | 'closable' | 'negativeText' | 'positiveText' | 'negativeButtonProps' | 'positiveButtonProps'> & {
+    option: Pick<
+        DialogOptions,
+        'type' | 'style' | 'closable' | 'negativeText' | 'positiveText' | 'negativeButtonProps' | 'positiveButtonProps'
+    > & {
         title?: string | VNode
         content?: string | VNode
         icon?: 'BsMistake' | 'BsCorrect' | VNode
@@ -123,7 +126,8 @@ export function divineDiscover(
                 '--n-close-size': divineWherer(option.closable ?? true, '22px', '-6px'),
                 display: 'flex',
                 flexDirection: 'column',
-                rowGap: '10px'
+                rowGap: '10px',
+                ...((option.style ?? {}) as Omix<CSSProperties>)
             },
             negativeButtonProps: {
                 size: 'medium',

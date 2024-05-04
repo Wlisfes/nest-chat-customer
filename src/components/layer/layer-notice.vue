@@ -90,8 +90,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .chunk-block {
     user-select: none;
-    height: 60px;
-    padding: 10px 24px;
+    padding: 20px 24px;
     &:not(:last-child)::before {
         content: '';
         position: absolute;
