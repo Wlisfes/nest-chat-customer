@@ -55,14 +55,12 @@ export default defineComponent({
                                     await refresh.value.done(true)
                                     return await unmount(300)
                                 },
-                                onSubmit: async (scope: Omix<{ token: string; expire: number; message: string }>) => {
-                                    await setToken(scope.token, scope.expire * 1000)
-                                    return await fetchUserResolver()
+                                onSubmit: async (scope: Omix<{ token: string; expire: number }>) => {
+                                    return await setToken(scope.token, scope.expire * 1000)
                                 }
                             })
                         } else {
                             await setToken(data.token, data.expire * 1000)
-                            await fetchUserResolver()
                             return await divineNotice({ content: setupNotice(message) }).then(() => {
                                 return setLoading(false)
                             })

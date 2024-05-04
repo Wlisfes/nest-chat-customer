@@ -1,16 +1,13 @@
 <script lang="tsx">
 import { defineComponent, Fragment } from 'vue'
-import { useConfiger } from '@/store/configer'
 import { useUser } from '@/store/user'
 
 export default defineComponent({
     name: 'App',
-    setup(props) {
-        const configer = useConfiger()
+    setup() {
         const user = useUser()
-
         return () => (
-            <n-element id="app-element">
+            <n-element class="n-chunk n-column n-disover" style={{ height: '100%' }}>
                 {user.token ? (
                     <Fragment>
                         <chat-layout></chat-layout>
@@ -23,12 +20,3 @@ export default defineComponent({
     }
 })
 </script>
-
-<style lang="scss" scoped>
-#app-element {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
-</style>
