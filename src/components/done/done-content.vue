@@ -14,7 +14,7 @@ export default defineComponent({
                 {slots.default ? (
                     slots.default()
                 ) : (
-                    <div class="n-chunk n-column" style={{ padding: divineWherer(props.showIcon, '10px 0 20px 0px', '10px 0 20px') }}>
+                    <div class="n-chunk n-column" style={{ padding: divineWherer(props.showIcon, '10px 0 30px 0px', '10px 0 30px') }}>
                         <n-text depth={2} style={{ fontSize: '16px', lineHeight: '22px' }}>
                             {props.content}
                         </n-text>

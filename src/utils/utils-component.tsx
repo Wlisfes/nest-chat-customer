@@ -117,7 +117,7 @@ export function divineDiscover(
                 return <done-content show-icon={Boolean(option.icon)}>{option.content}</done-content>
             },
             style: {
-                '--n-padding': '20px 20px',
+                '--n-padding': '20px 24px 24px',
                 '--n-close-margin': '16px 16px 0 0',
                 '--n-content-margin': '0px',
                 '--n-close-size': divineWherer(option.closable ?? true, '22px', '-6px'),
@@ -129,13 +129,13 @@ export function divineDiscover(
                 size: 'medium',
                 ghost: false,
                 secondary: true,
-                style: { '--n-height': '30px', '--n-padding': '0 10px' },
+                style: { '--n-height': '32px', '--n-padding': '0 10px', 'min-width': '80px' },
                 ...option.negativeButtonProps
             },
             positiveButtonProps: {
                 size: 'medium',
                 type: 'error',
-                style: { '--n-height': '30px', '--n-padding': '0 10px' },
+                style: { '--n-height': '32px', '--n-padding': '0 10px', 'min-width': '80px' },
                 ...option.positiveButtonProps
             },
             onAfterEnter: async (e: HTMLElement) => {

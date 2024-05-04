@@ -62,7 +62,7 @@ export function useMoment() {
 }
 
 /**倒计时处理**/
-export function useTiminer(scope: Partial<Omix<{ seconds: number }>> = {}) {
+export function useTimine(scope: Partial<Omix<{ seconds: number }>> = {}) {
     const complete = ref<boolean>(true)
     const duration = ref<number>(scope.seconds ?? 0)
     const run = ref<NodeJS.Timeout>()

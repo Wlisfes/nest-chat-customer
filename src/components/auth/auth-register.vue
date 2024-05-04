@@ -5,7 +5,7 @@ import { useConfiger } from '@/store/configer'
 import { useProvider } from '@/hooks/hook-provider'
 import { useLocale } from '@/hooks/hook-locale'
 import { useFormCustomize } from '@/hooks/hook-customize'
-import { useTiminer } from '@/hooks/hook-common'
+import { useTimine } from '@/hooks/hook-common'
 import { enter } from '@/utils/utils-common'
 import { divineNotice } from '@/utils/utils-component'
 import { httpUserRegister, httpUserRegisterSender } from '@/api/instance.service'
@@ -16,7 +16,7 @@ export default defineComponent({
         const { setAuthorize } = useConfiger()
         const { inverted } = useProvider()
         const { setupNotice } = useLocale()
-        const { duration, complete, setDuration } = useTiminer()
+        const { duration, complete, setDuration } = useTimine()
         const { formRef, form, rules, loading, setLoading, divineFormValidater } = useFormCustomize({
             form: {
                 nickname: '',

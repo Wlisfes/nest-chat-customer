@@ -2,19 +2,19 @@
 import { defineComponent, ref, Ref } from 'vue'
 import { isEmpty, isEmail } from 'class-validator'
 import { useConfiger, useUser } from '@/store'
-import { useLocale } from '@/hooks/hook-locale'
+import { setupNotice } from '@/i18n'
 import { useFormCustomize } from '@/hooks/hook-customize'
 import { enter, divineHandler } from '@/utils/utils-common'
 import { divineNotice } from '@/utils/utils-component'
 import { httpUserAuthorizer } from '@/api/instance.service'
+import { fetchFactor } from '@/components/layer/layer.instance'
 
 export default defineComponent({
     name: 'AuthLogin',
     setup(props) {
         const refresh = ref() as Ref<Omix<{ done: Function }>>
         const { setAuthorize } = useConfiger()
-        const { setToken, fetchUserResolver } = useUser()
-        const { setupNotice } = useLocale()
+        const { setToken } = useUser()
         const { formRef, form, rules, loading, setLoading, divineFormValidater } = useFormCustomize({
             form: { email: '', password: '', code: '' },
             rules: {
@@ -47,10 +47,23 @@ export default defineComponent({
                         })
                         if (data.factor) {
                             /**开启双因子认证**/
-                            return false
+                            return await fetchFactor({
+                                uid: data.uid,
+                                email: data.email,
+                                onClose: async ({ unmount }: Omix<{ unmount: Function }>) => {
+                                    await setLoading(false)
+                                    await refresh.value.done(true)
+                                    return await unmount(300)
+                                },
+                                onSubmit: async (scope: Omix<{ token: string; expire: number; message: string; unmount: Function }>) => {
+                                    await setToken(data.token, data.expire * 1000)
+                                    return await divineNotice({ content: setupNotice(scope.message) }).then(() => {
+                                        return setLoading(false)
+                                    })
+                                }
+                            })
                         } else {
                             await setToken(data.token, data.expire * 1000)
-                            await fetchUserResolver()
                             return await divineNotice({ content: setupNotice(message) }).then(() => {
                                 return setLoading(false)
                             })
@@ -63,31 +76,6 @@ export default defineComponent({
                     }
                 }
             })
-
-            // divineFormValidater().then(async valid => {
-            //     if (!valid) {
-            //         return false
-            //     }
-            //     try {
-            //         await setLoading(true)
-            //         return await httpUserAuthorizer({
-            //             email: form.value.email,
-            //             code: form.value.code,
-            //             password: window.btoa(encodeURIComponent(form.value.password))
-            //         }).then(async ({ data, message }) => {
-            //             await setToken(data.token, data.expire * 1000)
-            //             await fetchUserResolver()
-            //             return await divineNotice({ content: setupNotice(message) }).then(() => {
-            //                 return setLoading(false)
-            //             })
-            //         })
-            //     } catch (e) {
-            //         await divineNotice({ type: 'error', content: setupNotice(e) })
-            //         return await setLoading(false).then(() => {
-            //             return grapher.value?.done(true)
-            //         })
-            //     }
-            // })
         }
 
         return () => (

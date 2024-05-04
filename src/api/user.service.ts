@@ -39,7 +39,7 @@ export function httpUserfactor(data: Omix<{ uid: string; code: string }>) {
 
 /**发送双因子认证验证码**/
 export function httpUserfactorSender(data: Omix<{ uid: string }>) {
-    return request<env.RestUserAuthorizer>({
+    return request<env.NoticeResolver>({
         url: `/user/factor/sender`,
         method: 'POST',
         data
