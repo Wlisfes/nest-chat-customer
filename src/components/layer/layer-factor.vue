@@ -8,7 +8,7 @@ import { useFormCustomize } from '@/hooks/hook-customize'
 import { divineRender, divineNotice } from '@/utils/utils-component'
 import { divineHandler } from '@/utils/utils-common'
 import { divineTransfer } from '@/utils/utils-transfer'
-import { httpUserfactorSender } from '@/api/instance.service'
+import { httpUserfactorSender, httpUserfactor } from '@/api/instance.service'
 
 export default defineComponent({
     name: 'LayerFactor',
@@ -19,7 +19,7 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { inverted } = useProvider()
-        const { state, setState, setDuration } = useTimine()
+        const { state, execute, setState, setDuration } = useTimine()
         const { visible, loading, chunkContent, chunkNegative, chunkPositive, fetchState } = useModal({ width: 500 })
         const { formRef, form, rules, divineFormValidater } = useFormCustomize({
             form: { email: props.email, code: '' },
@@ -31,12 +31,12 @@ export default defineComponent({
         onMounted(async () => {
             await fetchState({ visible: true })
             return await divineHandler(Boolean(props.uid), {
-                handler: () => setDuration(60)
+                handler: fetchUserSender
             })
         })
 
-        /**发送邮件验证码**/
-        async function fetchNodemailerSender() {
+        /**发送双因子验证码**/
+        async function fetchUserSender() {
             return await divineHandler(Boolean(props.uid), {
                 handler: async () => {
                     try {
@@ -47,8 +47,36 @@ export default defineComponent({
                             return await setState({ loading: false })
                         })
                     } catch (e) {
-                        await divineNotice({ type: 'error', content: setupNotice(e) })
-                        return await setState({ loading: false })
+                        return await divineNotice({
+                            type: 'error',
+                            content: setupNotice(e),
+                            onAfterEnter: () => setState({ loading: false })
+                        })
+                    }
+                }
+            })
+        }
+
+        /**双因子认证**/
+        async function onSubmit() {
+            const valid = await divineFormValidater()
+            return await divineHandler(Boolean(valid), {
+                failure: () => false,
+                handler: async function () {
+                    try {
+                        await fetchState({ loading: true, disabled: true })
+                        return await httpUserfactor({ uid: props.uid, code: form.value.code }).then(async ({ data }) => {
+                            await fetchState({ visible: false })
+                            return await divineNotice({
+                                content: setupNotice(data.message),
+                                onAfterEnter: () => emit('submit', { ...data, done: fetchState })
+                            })
+                        })
+                    } catch (e) {
+                        return await divineNotice({ type: 'error', content: setupNotice(e) }).then(async () => {
+                            await fetchState({ loading: false, disabled: false })
+                            return false
+                        })
                     }
                 }
             })
@@ -69,6 +97,7 @@ export default defineComponent({
                 positive-text="登录"
                 negative-button-props={chunkNegative.value}
                 positive-button-props={{ ...chunkPositive.value, type: 'success' }}
+                on-positive-click={onSubmit}
             >
                 <n-form
                     size="large"
@@ -101,12 +130,12 @@ export default defineComponent({
                                 focusable={false}
                                 secondary={inverted.value}
                                 loading={state.loading}
-                                disabled={state.duration > 0 || state.loading || !form.value.email || loading.value}
-                                onClick={fetchNodemailerSender}
+                                disabled={state.duration > 0 || state.loading || execute.value || loading.value}
+                                onClick={fetchUserSender}
                             >
-                                {state.duration === 0 && state.complete ? (
+                                {state.duration === 0 && !state.initialize ? (
                                     <span>发送验证码</span>
-                                ) : state.duration === 0 && !state.complete ? (
+                                ) : state.duration === 0 && state.initialize ? (
                                     <span>重新发送</span>
                                 ) : (
                                     <span>{`${state.duration} 秒后重新发送`}</span>

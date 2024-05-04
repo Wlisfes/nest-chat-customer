@@ -1,3 +1,5 @@
+import { isNotEmpty } from 'class-validator'
+
 export enum APP_STORE {
     STORE_CONFIGER = 'APP_STORE_CONFIGER',
     STORE_USER = 'APP_STORE_USER',
@@ -19,14 +21,13 @@ export function getStore<T = any>(key: string, defaultValue?: T): T {
         const jsonStr = window.localStorage.getItem(key)
         if (jsonStr) {
             const { expire, value } = JSON.parse(jsonStr)
-            if (expire === 0 || expire > Date.now()) {
+            if ((expire === 0 || expire > Date.now()) && isNotEmpty(value)) {
                 return JSON.parse(value)
             }
             window.localStorage.removeItem(key)
         }
         return defaultValue as T
     } catch (err) {
-        console.error(err)
         return defaultValue as T
     }
 }

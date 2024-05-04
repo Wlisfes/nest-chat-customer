@@ -1,9 +1,9 @@
-import { ref, toRefs } from 'vue'
+import { toRefs } from 'vue'
 import { useIntervalFn } from '@vueuse/core'
 import { isNotEmpty } from 'class-validator'
 import { zh_CN, en, Faker } from '@faker-js/faker'
 import { useState } from '@/hooks/hook-state'
-import { divineWherer } from '@/utils/utils-common'
+import { divineWherer, divineHandler } from '@/utils/utils-common'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
@@ -64,46 +64,26 @@ export function useMoment() {
 }
 
 /**倒计时处理**/
-export function useTimine(scope: Partial<Omix<{ seconds: number; loading: boolean }>> = {}) {
-    const {} = useIntervalFn(() => {
-        console.log(123131)
-    }, 1000)
-
-    const run = ref<NodeJS.Timeout>()
-    const { state, setState } = useState({
-        complete: true,
-        loading: scope.loading ?? false,
-        duration: scope.seconds ?? 0
-    })
-
-    function pause() {
-        if (run.value) {
-            clearInterval(run.value)
-            run.value = undefined
-        }
-    }
-
-    function resume() {
-        run.value = setInterval(async () => {
-            await setState({ duration: state.duration-- })
-            if (state.duration <= 0) {
-                pause()
-            }
-        }, 1000)
-    }
+export function useTimine() {
+    const { state, setState } = useState({ initialize: false, loading: false, duration: 0 })
+    const { resume, pause, isActive } = useIntervalFn(
+        async function handler() {
+            await setState({ duration: state.duration - 1 })
+            return await divineHandler(state.duration <= 0, {
+                handler: pause
+            })
+        },
+        1000,
+        { immediate: state.duration > 0 }
+    )
 
     async function setDuration(seconds: number) {
-        if (state.duration > 0 || seconds <= 0) {
-            return
-        } else {
-            await setState({ duration: seconds, complete: false })
-            if (seconds > 0) {
-                return resume()
-            } else {
-                return pause()
-            }
-        }
+        await setState({ duration: seconds, initialize: true })
+        return await divineHandler(seconds > 0, {
+            handler: resume,
+            failure: pause
+        })
     }
 
-    return { state, ...toRefs(state), setState, setDuration }
+    return { state, execute: isActive, ...toRefs(state), resume, pause, setState, setDuration }
 }

@@ -28,7 +28,7 @@ export interface SchemaUser extends env.CommonSchema {
 }
 
 /**登录账号返回值**/
-export interface RestUserAuthorizer {
+export interface RestUserAuthorizer extends env.NoticeResolver {
     token: string
     expire: number
     factor: boolean

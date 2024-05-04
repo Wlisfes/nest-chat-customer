@@ -14,7 +14,7 @@ export default defineComponent({
     setup(props) {
         const refresh = ref() as Ref<Omix<{ done: Function }>>
         const { setAuthorize } = useConfiger()
-        const { setToken } = useUser()
+        const { setToken, fetchUserResolver } = useUser()
         const { formRef, form, rules, loading, setLoading, divineFormValidater } = useFormCustomize({
             form: { email: '', password: '', code: '' },
             rules: {
@@ -55,15 +55,14 @@ export default defineComponent({
                                     await refresh.value.done(true)
                                     return await unmount(300)
                                 },
-                                onSubmit: async (scope: Omix<{ token: string; expire: number; message: string; unmount: Function }>) => {
-                                    await setToken(data.token, data.expire * 1000)
-                                    return await divineNotice({ content: setupNotice(scope.message) }).then(() => {
-                                        return setLoading(false)
-                                    })
+                                onSubmit: async (scope: Omix<{ token: string; expire: number; message: string }>) => {
+                                    await setToken(scope.token, scope.expire * 1000)
+                                    return await fetchUserResolver()
                                 }
                             })
                         } else {
                             await setToken(data.token, data.expire * 1000)
+                            await fetchUserResolver()
                             return await divineNotice({ content: setupNotice(message) }).then(() => {
                                 return setLoading(false)
                             })
