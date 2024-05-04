@@ -19,7 +19,7 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { inverted } = useProvider()
-        const { duration, complete, setDuration } = useTimine()
+        const { state, setState, setDuration } = useTimine()
         const { visible, loading, chunkContent, chunkNegative, chunkPositive, fetchState } = useModal({ width: 500 })
         const { formRef, form, rules, divineFormValidater } = useFormCustomize({
             form: { email: props.email, code: '' },
@@ -31,26 +31,25 @@ export default defineComponent({
         onMounted(async () => {
             await fetchState({ visible: true })
             return await divineHandler(Boolean(props.uid), {
-                handler: Function
+                handler: () => setDuration(60)
             })
         })
 
         /**发送邮件验证码**/
-        function fetchNodemailerSender(done: Function) {
-            divineFormValidater(rule => rule.key === 'email').then(async valid => {
-                if (!valid) {
-                    return false
-                }
-                try {
-                    await done({ loading: true })
-                    return await httpUserfactorSender({ uid: props.uid }).then(async ({ data }) => {
-                        await setDuration(60)
-                        await divineNotice({ content: setupNotice(data.message) })
-                        return await done({ loading: false })
-                    })
-                } catch (e) {
-                    await divineNotice({ type: 'error', content: setupNotice(e) })
-                    return await done({ loading: false })
+        async function fetchNodemailerSender() {
+            return await divineHandler(Boolean(props.uid), {
+                handler: async () => {
+                    try {
+                        await setState({ loading: true })
+                        return await httpUserfactorSender({ uid: props.uid }).then(async ({ data }) => {
+                            await setDuration(60)
+                            await divineNotice({ content: setupNotice(data.message) })
+                            return await setState({ loading: false })
+                        })
+                    } catch (e) {
+                        await divineNotice({ type: 'error', content: setupNotice(e) })
+                        return await setState({ loading: false })
+                    }
                 }
             })
         }
@@ -98,25 +97,21 @@ export default defineComponent({
                                 v-model:value={form.value.code}
                                 v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuCodex />}></n-icon> }}
                             ></n-input>
-                            <common-state
-                                data-render={(scope: Omix<{ loading: boolean }>, done: Function) => (
-                                    <n-button
-                                        focusable={false}
-                                        secondary={inverted.value}
-                                        loading={scope.loading}
-                                        disabled={duration.value > 0 || scope.loading || !form.value.email || loading.value}
-                                        onClick={(evt: Event) => fetchNodemailerSender(done)}
-                                    >
-                                        {duration.value === 0 && complete.value ? (
-                                            <span>发送验证码</span>
-                                        ) : duration.value === 0 && !complete.value ? (
-                                            <span>重新发送</span>
-                                        ) : (
-                                            <span>{`${duration.value} 秒后重新发送`}</span>
-                                        )}
-                                    </n-button>
+                            <n-button
+                                focusable={false}
+                                secondary={inverted.value}
+                                loading={state.loading}
+                                disabled={state.duration > 0 || state.loading || !form.value.email || loading.value}
+                                onClick={fetchNodemailerSender}
+                            >
+                                {state.duration === 0 && state.complete ? (
+                                    <span>发送验证码</span>
+                                ) : state.duration === 0 && !state.complete ? (
+                                    <span>重新发送</span>
+                                ) : (
+                                    <span>{`${state.duration} 秒后重新发送`}</span>
                                 )}
-                            ></common-state>
+                            </n-button>
                         </n-space>
                     </n-form-item>
                 </n-form>

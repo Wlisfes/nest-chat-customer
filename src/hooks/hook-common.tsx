@@ -1,6 +1,8 @@
-import { ref } from 'vue'
+import { ref, toRefs } from 'vue'
+import { useIntervalFn } from '@vueuse/core'
 import { isNotEmpty } from 'class-validator'
 import { zh_CN, en, Faker } from '@faker-js/faker'
+import { useState } from '@/hooks/hook-state'
 import { divineWherer } from '@/utils/utils-common'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -62,10 +64,17 @@ export function useMoment() {
 }
 
 /**倒计时处理**/
-export function useTimine(scope: Partial<Omix<{ seconds: number }>> = {}) {
-    const complete = ref<boolean>(true)
-    const duration = ref<number>(scope.seconds ?? 0)
+export function useTimine(scope: Partial<Omix<{ seconds: number; loading: boolean }>> = {}) {
+    const {} = useIntervalFn(() => {
+        console.log(123131)
+    }, 1000)
+
     const run = ref<NodeJS.Timeout>()
+    const { state, setState } = useState({
+        complete: true,
+        loading: scope.loading ?? false,
+        duration: scope.seconds ?? 0
+    })
 
     function pause() {
         if (run.value) {
@@ -75,20 +84,19 @@ export function useTimine(scope: Partial<Omix<{ seconds: number }>> = {}) {
     }
 
     function resume() {
-        run.value = setInterval(() => {
-            duration.value--
-            if (duration.value <= 0) {
+        run.value = setInterval(async () => {
+            await setState({ duration: state.duration-- })
+            if (state.duration <= 0) {
                 pause()
             }
         }, 1000)
     }
 
     async function setDuration(seconds: number) {
-        if (duration.value > 0 || seconds <= 0) {
+        if (state.duration > 0 || seconds <= 0) {
             return
         } else {
-            duration.value = seconds
-            complete.value = false
+            await setState({ duration: seconds, complete: false })
             if (seconds > 0) {
                 return resume()
             } else {
@@ -97,5 +105,5 @@ export function useTimine(scope: Partial<Omix<{ seconds: number }>> = {}) {
         }
     }
 
-    return { complete, duration, setDuration }
+    return { state, ...toRefs(state), setState, setDuration }
 }
