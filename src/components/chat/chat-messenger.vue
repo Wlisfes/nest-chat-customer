@@ -23,7 +23,7 @@ export default defineComponent({
         async function onScroller(evt: { target: HTMLElement }) {
             await message.setState({ distance: evt.target.scrollTop })
             const scrollHeight = evt.target.scrollHeight
-            if (evt.target.scrollTop <= evt.target.clientHeight * 2 && !message.loading && message.next) {
+            if (evt.target.scrollTop <= evt.target.clientHeight * 1.5 && !message.loading && message.next) {
                 await message.fetchSessionColumnNextMessager(true)
                 const target = await divineElementMomente()
                 nextTick(async () => {

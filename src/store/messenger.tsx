@@ -56,12 +56,17 @@ export const useMessenger = defineStore(APP_STORE.STORE_MESSANGER, () => {
 
     /**分页加载**/
     async function fetchSessionColumnNextMessager(closure: boolean = false) {
+        const sid = state.sid
         return await setState({ loading: true }).then(async () => {
             const { list, total } = await fetchSessionColumnMessager()
-            return await setState({
-                dataSource: state.dataSource.concat(list),
-                total: total,
-                loading: closure
+            return await divineHandler(state.sid === sid, {
+                handler: async () => {
+                    return await setState({
+                        dataSource: state.dataSource.concat(list),
+                        total: total,
+                        loading: closure
+                    })
+                }
             })
         })
     }

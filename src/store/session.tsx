@@ -26,16 +26,22 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
     async function fetchSessionOneResolver() {
         if (schema.value.source === env.EnumSessionSource.contact) {
             try {
-                return await api.httpContactResolver({ uid: schema.value.contactId }).then(({ data }) => {
-                    return (contact.value = data)
+                const contactId = schema.value.contactId
+                return await api.httpContactResolver({ uid: contactId }).then(async ({ data }) => {
+                    return await divineHandler(contactId === state.sid, {
+                        handler: () => (contact.value = data)
+                    })
                 })
             } catch (e) {
                 return (contact.value = undefined as never)
             }
         } else if (schema.value.source === env.EnumSessionSource.communit) {
             try {
-                return await api.httpCommunitResolver({ uid: schema.value.communitId }).then(({ data }) => {
-                    return (communit.value = data)
+                const communitId = schema.value.communitId
+                return await api.httpCommunitResolver({ uid: schema.value.communitId }).then(async ({ data }) => {
+                    return await divineHandler(communitId === state.sid, {
+                        handler: () => (communit.value = data)
+                    })
                 })
             } catch (e) {
                 return (communit.value = undefined as never)
