@@ -25,6 +25,8 @@ export interface SchemaUser extends env.CommonSchema {
     paint: boolean
     sound: boolean
     notify: boolean
+    factor: boolean
+    limit: number
 }
 
 /**登录账号返回值**/
@@ -49,6 +51,6 @@ export interface BodyUserUpdate {
     paint?: boolean
     sound?: boolean
     notify?: boolean
-    factor?: number
+    factor?: boolean
     limit?: number
 }

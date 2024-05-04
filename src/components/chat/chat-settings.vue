@@ -3,7 +3,7 @@ import { defineComponent } from 'vue'
 import { useUser } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
 import { useProvider } from '@/hooks/hook-provider'
-import { fetchResolver, fetchRespon, fetchNotice } from '@/components/layer/layer.instance'
+import { fetchResolver, fetchRespon, fetchNotice, fetchSafety } from '@/components/layer/layer.instance'
 
 export default defineComponent({
     name: 'ChatSettings',
@@ -17,9 +17,17 @@ export default defineComponent({
             return await user.fetchUserSignout()
         }
 
-        /**基本用户信息抽屉组件**/
+        /**基本用户信息**/
         async function fetchUseResolver() {
             return await fetchResolver({
+                observer,
+                onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount(300)
+            })
+        }
+
+        /**安全设置**/
+        async function fetchUseSafety() {
+            return await fetchSafety({
                 observer,
                 onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount(300)
             })
@@ -68,7 +76,7 @@ export default defineComponent({
                                     </n-text>
                                 </div>
                             </div>
-                            <div class="chunk-block n-chunk n-disover n-pointer">
+                            <div class="chunk-block n-chunk n-disover n-pointer" onClick={fetchUseSafety}>
                                 <div class="n-chunk n-center n-middle" style={{ width: '70px' }}>
                                     <n-icon size={25} color="var(--text-color-1)" component={<Iv-BsOckes />}></n-icon>
                                 </div>

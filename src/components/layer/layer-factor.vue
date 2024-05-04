@@ -6,7 +6,7 @@ import { useProvider } from '@/hooks/hook-provider'
 import { useTimine } from '@/hooks/hook-common'
 import { useFormCustomize } from '@/hooks/hook-customize'
 import { divineRender, divineNotice } from '@/utils/utils-component'
-import { divineHandler } from '@/utils/utils-common'
+import { enter, divineHandler } from '@/utils/utils-common'
 import { divineTransfer } from '@/utils/utils-transfer'
 import { httpUserfactorSender, httpUserfactor } from '@/api/instance.service'
 
@@ -124,6 +124,7 @@ export default defineComponent({
                                 maxlength={6}
                                 style={{ flex: 1 }}
                                 v-model:value={form.value.code}
+                                onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
                                 v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuCodex />}></n-icon> }}
                             ></n-input>
                             <n-button

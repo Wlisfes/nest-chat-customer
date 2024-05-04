@@ -24,6 +24,8 @@ export function initState(state: Omix<Partial<env.SchemaUser>> = {}) {
         paint: true,
         sound: true,
         notify: true,
+        factor: true,
+        limit: 7,
         ...state
     }
 }
@@ -52,7 +54,9 @@ export const useUser = defineStore(APP_STORE.STORE_USER, () => {
                 keyIdColor: data.color.keyId,
                 paint: data.paint,
                 sound: data.sound,
-                notify: data.notify
+                notify: data.notify,
+                factor: data.factor,
+                limit: data.limit
             })
         })
     }

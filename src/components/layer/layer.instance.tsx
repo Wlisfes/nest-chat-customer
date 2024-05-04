@@ -22,6 +22,13 @@ export async function fetchResolver(props: Omix<{ observer: Observer<Omix> }>) {
     })
 }
 
+/**安全设置**/
+export async function fetchSafety(props: Omix<{ observer: Observer<Omix> }>) {
+    return await import('@/components/layer/layer-safety.vue').then(async component => {
+        return await createComponent(component.default, props)
+    })
+}
+
 /**新建社群**/
 export async function fetchSociety(props: Omix<{ observer: Observer<Omix> }>) {
     return await import('@/components/layer/layer-society.vue').then(async component => {
