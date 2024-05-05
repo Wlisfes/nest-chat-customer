@@ -4,7 +4,7 @@ import { useUser } from '@/store'
 import { useFormCustomize } from '@/hooks/hook-customize'
 
 export default defineComponent({
-    name: 'LayerSettings',
+    name: 'LayerProfile',
     emits: ['close', 'submit'],
     props: {
         element: { type: Object as PropType<HTMLElement> },
@@ -36,8 +36,8 @@ export default defineComponent({
                 show-mask={false}
                 on-after-leave={() => emit('close')}
             >
-                <n-element class="layer-settings n-chunk n-column">
-                    <chat-header title="设置" onClose={(evt: Event) => setVisible(false)}></chat-header>
+                <n-element class="layer-profile n-chunk n-column">
+                    <chat-header title="新对话" onClose={(evt: Event) => setVisible(false)}></chat-header>
                     <chat-avatar url={user.avatar} style={{ padding: '32px' }}></chat-avatar>
                     <div style={{ flex: 1, overflow: 'hidden' }}>
                         <n-scrollbar class="is-customize" trigger="none" size={60}></n-scrollbar>
@@ -48,12 +48,3 @@ export default defineComponent({
     }
 })
 </script>
-
-<style lang="scss" scoped>
-.layer-settings {
-    height: 100%;
-    overflow: hidden;
-    background-color: var(--layer-common-color);
-    transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
-}
-</style>
