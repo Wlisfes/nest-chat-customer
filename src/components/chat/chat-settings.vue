@@ -17,17 +17,17 @@ export default defineComponent({
             return await user.fetchUserSignout()
         }
 
-        /**基本用户信息**/
-        async function fetchUseResolver() {
-            return await fetchResolver({
+        /**用户信息**/
+        async function fetchUseProfile() {
+            return await fetchProfile({
                 observer,
                 onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount(300)
             })
         }
 
         /**账号设置**/
-        async function fetchUseProfile() {
-            return await fetchProfile({
+        async function fetchUseResolver() {
+            return await fetchResolver({
                 observer,
                 onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount(300)
             })
@@ -62,7 +62,7 @@ export default defineComponent({
                 <chat-compose title="设置"></chat-compose>
                 <div class="n-chunk n-column n-auto n-disover">
                     <n-scrollbar class="is-customize">
-                        <div class="chunk-user n-chunk n-center n-disover n-pointer" onClick={fetchUseResolver}>
+                        <div class="chunk-user n-chunk n-center n-disover n-pointer" onClick={fetchUseProfile}>
                             <chat-avatar size={80} radius={40} src={user.avatar}></chat-avatar>
                             <div class="n-chunk n-column n-auto">
                                 <n-text depth={1} style={{ fontSize: '20px', lineHeight: '28px' }}>
@@ -74,7 +74,7 @@ export default defineComponent({
                             </div>
                         </div>
                         <div class="n-chunk n-column n-auto n-disover">
-                            <div class="chunk-block n-chunk n-disover n-pointer" onClick={fetchUseProfile}>
+                            <div class="chunk-block n-chunk n-disover n-pointer" onClick={fetchUseResolver}>
                                 <div class="n-chunk n-center n-middle" style={{ width: '70px' }}>
                                     <n-icon size={26} color="var(--text-color-1)" component={<Iv-BsUser />}></n-icon>
                                 </div>

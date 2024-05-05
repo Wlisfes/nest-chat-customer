@@ -15,14 +15,14 @@ export async function fetchCropper(props: Omix<{ src?: string; fileName?: string
     })
 }
 
-/**用户信息展示**/
+/**账号设置**/
 export async function fetchResolver(props: Omix<{ observer: Observer<Omix> }>) {
     return await import('@/components/layer/layer-resolver.vue').then(async component => {
         return await createComponent(component.default, props)
     })
 }
 
-/**账号设置**/
+/**用户信息**/
 export async function fetchProfile(props: Omix<{ observer: Observer<Omix> }>) {
     return await import('@/components/layer/layer-profile.vue').then(async component => {
         return await createComponent(component.default, props)

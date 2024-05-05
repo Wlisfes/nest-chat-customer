@@ -97,7 +97,7 @@ export default defineComponent({
                 on-after-leave={() => emit('close')}
             >
                 <n-element class="layer-respon n-chunk n-column n-auto n-disover">
-                    <chat-header title="对话壁纸" onClose={(evt: MouseEvent) => fetchState({ visible: false })}></chat-header>
+                    <chat-header title="对话" onClose={(evt: MouseEvent) => fetchState({ visible: false })}></chat-header>
                     <div class="n-chunk n-column n-auto n-disover">
                         <n-scrollbar class="is-customize" trigger="none" size={60}>
                             <div class="n-chunk n-column n-center n-middle n-disover" style={{ padding: '10px 24px 24px' }}>
