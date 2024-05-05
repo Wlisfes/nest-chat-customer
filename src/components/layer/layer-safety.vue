@@ -118,7 +118,7 @@ export default defineComponent({
                                 </div>
                                 <div class="n-chunk n-center n-end" style={{ width: '38px' }}>
                                     <n-button text focusable={false} disabled={!state.factor} onClick={fetchBasicDiscover}>
-                                        <n-icon size={22} color="var(--text-color-2)" component={<Iv-BsEdit />}></n-icon>
+                                        <n-icon size={22} component={<Iv-BsEdit />}></n-icon>
                                     </n-button>
                                 </div>
                             </div>

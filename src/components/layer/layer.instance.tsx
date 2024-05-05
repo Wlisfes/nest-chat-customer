@@ -22,6 +22,13 @@ export async function fetchResolver(props: Omix<{ observer: Observer<Omix> }>) {
     })
 }
 
+/**账号设置**/
+export async function fetchProfile(props: Omix<{ observer: Observer<Omix> }>) {
+    return await import('@/components/layer/layer-profile.vue').then(async component => {
+        return await createComponent(component.default, props)
+    })
+}
+
 /**安全设置**/
 export async function fetchSafety(props: Omix<{ observer: Observer<Omix> }>) {
     return await import('@/components/layer/layer-safety.vue').then(async component => {
