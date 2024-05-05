@@ -22,10 +22,7 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { content } = useVModels(props, emit)
-        const { state, setState } = useState({
-            loading: props.loading,
-            disabled: props.disabled
-        })
+        const { state, setState } = useState({ loading: props.loading, disabled: props.disabled })
         const chunkInputStyle = computed<CSSProperties>(() => ({
             '--n-input-padding-right': divineWherer(props.suffix.length === 0, '0px', 14 + 26 * props.suffix.length + 'px')
         }))
@@ -67,10 +64,7 @@ export default defineComponent({
                     onKeydown={divineEnterHandler}
                     v-slots={{
                         suffix: () => {
-                            if (props.suffix.length === 0) {
-                                return null
-                            }
-                            return (
+                            return props.suffix.length === 0 ? null : (
                                 <n-button
                                     disabled={state.loading || !content.value}
                                     text
@@ -80,9 +74,9 @@ export default defineComponent({
                                     {state.loading ? (
                                         <common-loadiner size={22} size-iner={3}></common-loadiner>
                                     ) : state.disabled ? (
-                                        <n-icon size={24} color="var(--text-color-2)" component={<Iv-BsEdit />}></n-icon>
+                                        <n-icon size={24} component={<Iv-BsEdit />}></n-icon>
                                     ) : (
-                                        <n-icon size={26} color="var(--text-color-2)" component={<Iv-BsCheck />}></n-icon>
+                                        <n-icon size={26} color="var(--n-text-color-hover)" component={<Iv-BsCheck />}></n-icon>
                                     )}
                                 </n-button>
                             )
@@ -116,11 +110,20 @@ export default defineComponent({
         padding-bottom: 5px;
         padding-left: 0;
     }
+    :deep(.n-button):not(.n-button--disabled) .n-icon {
+        color: var(--n-text-color);
+        &:hover {
+            color: var(--n-text-color-hover);
+        }
+    }
     :deep(.n-input__suffix) {
         position: absolute;
         margin: 0;
         right: 0;
         top: 0;
+        .n-icon {
+            transition: color 0.3s var(--cubic-bezier-ease-in-out);
+        }
     }
     :deep(.n-input__textarea-el) {
         word-break: break-all;

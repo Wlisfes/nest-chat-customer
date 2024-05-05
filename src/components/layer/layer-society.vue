@@ -22,7 +22,10 @@ export default defineComponent({
             fileURL: ''
         })
         const disabled = computed(() => {
-            return !([state.name, state.comment, state.poster].every(Boolean) && state.name.length >= 2)
+            if (!state.name || !state.comment || !state.poster || state.name.length < 3) {
+                return true
+            }
+            return false
         })
 
         onMounted(async () => {
@@ -88,11 +91,13 @@ export default defineComponent({
                                     </n-form-item>
                                     <common-revise
                                         form-props={{ showLabel: false }}
+                                        disabled={false}
                                         placeholder="社群名称"
                                         v-model:content={state.name}
                                     ></common-revise>
                                     <common-revise
                                         maxlength={128}
+                                        disabled={false}
                                         autosize={{ minRows: 2, maxRows: 5 }}
                                         label="社群描述"
                                         placeholder="大家好！本社群可供成员在话题群组中交流，还可以及时获取重要公告。"
