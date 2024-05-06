@@ -1,4 +1,4 @@
-import { ref, computed, Ref } from 'vue'
+import { ref, Ref } from 'vue'
 import { io } from 'socket.io-client'
 import { APP_COMMON, getStore } from '@/utils/utils-storage'
 import * as env from '@/interface/instance.resolver'
@@ -9,7 +9,12 @@ export const socket = ref<SocketClient>() as Ref<SocketClient>
 
 /**开启连接**/
 export async function connectClient(option: Omix<env.WebSocketConnectOption> = {}) {
-    const client = io(`ws://localhost:34571`, {
+    const IS_MODE = import.meta.env.MODE === 'development'
+    const PROTOCOL = IS_MODE ? 'ws' : 'wss'
+    const DEV_URL = `${PROTOCOL}://localhost:34571`
+    const PROD_URL = `${PROTOCOL}://chat.lisfes.cn`
+    const client = io(IS_MODE ? DEV_URL : PROD_URL, {
+        path: '/web-socket',
         extraHeaders: {
             authorization: getStore(APP_COMMON.CHAT_TOKEN)
         }
