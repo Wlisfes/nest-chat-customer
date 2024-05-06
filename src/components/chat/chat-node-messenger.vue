@@ -2,8 +2,8 @@
 import { defineComponent, computed, onMounted, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
 import { useUser, useSession } from '@/store'
+import { useWebSocket } from '@/hooks/hook-websocket'
 import { divineHandler } from '@/utils/utils-common'
-import { socket, divineSocketCustomizeMessager, divineSocketChangeMessager } from '@/utils/utils-websocket'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -14,6 +14,7 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { node } = useVModels(props, emit)
+        const { socket, divineSocketChangeMessager, divineSocketCustomizeMessager } = useWebSocket()
         const user = useUser()
         const session = useSession()
         const current = computed<boolean>(() => user.uid === node.value.userId)

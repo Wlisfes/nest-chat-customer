@@ -4,7 +4,7 @@ import { useVModels } from '@vueuse/core'
 import { useUser, useMessenger, useSession, useComment } from '@/store'
 import { instance } from '@/store/messenger'
 import { useMoment } from '@/hooks/hook-common'
-import { socket } from '@/utils/utils-websocket'
+import { useWebSocket } from '@/hooks/hook-websocket'
 import { divineWherer, divineHandler } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 
@@ -15,6 +15,7 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { node } = useVModels(props, emit)
+        const { socket } = useWebSocket()
         const { divineDateMomentTransfor } = useMoment()
         const user = useUser()
         const session = useSession()

@@ -1,12 +1,13 @@
 <script lang="tsx">
 import { defineComponent, onMounted } from 'vue'
 import { useUser, useConfiger, useMessenger, useSession, useChat } from '@/store'
-import { connectClient } from '@/utils/utils-websocket'
+import { useWebSocket } from '@/hooks/hook-websocket'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
     name: 'ChatLayout',
     setup() {
+        const { connectClient } = useWebSocket({ unmounted: true })
         const { setState } = useChat()
         const { fetchCommonWallpaper } = useConfiger()
         const { fetchSessionInitColumn, fetchNewServerMessager } = useSession()
