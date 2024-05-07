@@ -26,7 +26,7 @@ export default defineComponent({
 
         /**更新头像**/
         async function fetchUpdateAvatar({ url, fileId, done }: Omix<{ done: Function } & env.RestStreamUploader>) {
-            return await fetchUserUpdate({ fileId }, {}, () => done({ loading: false })).then(async () => {
+            return await fetchUserUpdate({ fileId }, { refresh: true }, () => done({ loading: false })).then(async () => {
                 await setState({ avatar: url })
                 await setUser({ avatar: url })
                 return await done({ visible: false })

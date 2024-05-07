@@ -26,7 +26,7 @@ export default defineComponent({
 
         return () => (
             <n-element class="chat-layer" style={compute.value}>
-                {chat.loading || chat.failure ? (
+                {chat.loading ? (
                     <div class="chat-loadiner n-chunk n-center n-middle">
                         <div class="chat-loadiner__container n-chunk n-column n-center n-middle">
                             <n-icon size={56} color="var(--text-color-3)" style={{ opacity: 0.2 }} component={<Iv-BsChat />}></n-icon>

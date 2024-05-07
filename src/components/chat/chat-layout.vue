@@ -16,10 +16,10 @@ export default defineComponent({
 
         onMounted(async () => {
             await fetchUserResolver()
-            return await divineConnectSocketClient().then(async failure => {
+            return await divineConnectSocketClient().then(async online => {
                 await fetchCommonWallpaper()
                 await fetchSessionInitColumn()
-                return await setState({ failure, loading: false })
+                return await setState({ online, loading: false })
             })
         })
 
@@ -28,11 +28,11 @@ export default defineComponent({
             return new Promise(resolve => {
                 connectClient().then(client => {
                     /**监听socket连接**/
-                    client.on('connect', () => resolve(false))
+                    client.on('connect', () => resolve(true))
                     /**监听socket断开连接**/
-                    client.on('disconnect', reason => resolve(true))
+                    client.on('disconnect', reason => resolve(false))
                     /**监听socket错误**/
-                    client.on('connect_error', err => resolve(true))
+                    client.on('connect_error', err => resolve(false))
                     /**监听消息推送**/
                     client.on('server-customize-messager', async (data: Omix<env.SchemaMessager>) => {
                         /**消息列表处理**/

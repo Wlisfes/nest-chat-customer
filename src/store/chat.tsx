@@ -7,7 +7,7 @@ export const useChat = defineStore(APP_STORE.STORE_CHAT, () => {
     const { state, setState } = useState({
         current: 'session',
         loading: true,
-        failure: false,
+        online: false,
         width: 1600
     })
 

@@ -90,7 +90,13 @@ export default defineComponent({
                                     circle
                                     size={40}
                                     icon-size={30}
-                                    component={<n-image preview-disabled src={user.avatar} />}
+                                    component={
+                                        <n-image
+                                            preview-disabled
+                                            src={user.avatar}
+                                            fallback-src="https://chat-oss.lisfes.cn/chat/image/2161418838745382965.jpeg"
+                                        />
+                                    }
                                     common-style={divineCommonStyleWherer('resolver')}
                                     onClick={fetchOpenCollapse}
                                 ></common-icon>
@@ -99,7 +105,7 @@ export default defineComponent({
                     >
                         <n-element class="chat-resolver n-chunk n-column n-disover">
                             <div class="chunk-user n-chunk n-center n-disover">
-                                <chat-avatar size={40} radius={20} src={user.avatar}></chat-avatar>
+                                <chat-avatar size={40} radius={20} icon-size={20} src={user.avatar}></chat-avatar>
                                 <div class="n-chunk n-column n-auto">
                                     <n-text depth={1} style={{ fontSize: '16px', lineHeight: '22px' }}>
                                         <n-ellipsis tooltip={false}>{user.nickname}</n-ellipsis>
