@@ -1,11 +1,10 @@
 <script lang="tsx">
 import { defineComponent, ref, PropType } from 'vue'
-import { useUser, useChat } from '@/store'
+import { useUser, useChat, useStore } from '@/store'
 import { useState } from '@/hooks/hook-state'
 import { useProvider } from '@/hooks/hook-provider'
 import { Observer } from '@/utils/utils-observer'
 import { stop, divineWherer, divineHandler, divineDelay } from '@/utils/utils-common'
-import { fetchProfile } from '@/components/layer/layer.instance'
 
 export default defineComponent({
     name: 'ChatCarte',
@@ -15,8 +14,8 @@ export default defineComponent({
     setup(props) {
         const { state, setState } = useState({ visible: false, switch: false })
         const { inverted, fetchThemeUpdate } = useProvider()
-        const chat = useChat()
-        const user = useUser()
+        const { current, setState: setUpdate } = useStore(useChat)
+        const { avatar, nickname, email, fetchUserSignout } = useStore(useUser)
         const dataSource = ref([
             { title: '', value: 'session', iconSize: 24, icon: <Iv-BsSession />, select: <Iv-RsSession /> },
             { title: '', value: 'society', iconSize: 24, icon: <Iv-BsSociety />, select: <Iv-RsSociety /> },
@@ -25,19 +24,11 @@ export default defineComponent({
         ])
 
         function divineCommonStyler(value: string) {
-            return divineWherer(value === chat.current, {
+            return divineWherer(value === current.value, {
                 '--n-color': 'var(--n-color-hover)',
                 '--n-text-color': 'var(--primary-color)',
                 '--n-text-color-hover': 'var(--primary-color)',
                 '--n-text-color-pressed': 'var(--primary-color)'
-            })
-        }
-
-        /**用户信息**/
-        async function fetchUseProfile() {
-            return await fetchProfile({
-                observer: props.observer,
-                onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount(300)
             })
         }
 
@@ -59,15 +50,8 @@ export default defineComponent({
 
         /**切换左侧组件显示**/
         async function fetchUpdateCurrent(current: string) {
-            await chat.setState({ current })
+            await setUpdate({ current })
             return await fetchClickoutside()
-        }
-
-        /**登出**/
-        async function fetchUserSignout() {
-            return await fetchClickoutside().then(async () => {
-                return await user.fetchUserSignout()
-            })
         }
 
         return () => (
@@ -112,7 +96,7 @@ export default defineComponent({
                                     component={
                                         <n-image
                                             preview-disabled
-                                            src={user.avatar}
+                                            src={avatar.value}
                                             fallback-src="https://chat-oss.lisfes.cn/chat/image/2161418838745382965.jpeg"
                                         />
                                     }
@@ -123,14 +107,14 @@ export default defineComponent({
                         }}
                     >
                         <n-element class="chat-resolver n-chunk n-column n-disover">
-                            <div class="chunk-user n-chunk n-center n-disover n-pointer" onClick={fetchUseProfile}>
-                                <chat-avatar size={40} radius={20} icon-size={20} src={user.avatar}></chat-avatar>
+                            <div class="chunk-user n-chunk n-center n-disover n-pointer">
+                                <chat-avatar size={40} radius={20} icon-size={20} src={avatar.value}></chat-avatar>
                                 <div class="n-chunk n-column n-auto">
                                     <n-text depth={1} style={{ fontSize: '16px', lineHeight: '22px' }}>
-                                        <n-ellipsis tooltip={false}>{user.nickname}</n-ellipsis>
+                                        <n-ellipsis tooltip={false}>{nickname.value}</n-ellipsis>
                                     </n-text>
                                     <n-text depth={3} style={{ lineHeight: '18px' }}>
-                                        <n-ellipsis tooltip={false}>{user.email}</n-ellipsis>
+                                        <n-ellipsis tooltip={false}>{email.value}</n-ellipsis>
                                     </n-text>
                                 </div>
                             </div>
