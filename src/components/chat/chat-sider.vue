@@ -6,25 +6,25 @@ import { useDrawer } from '@/hooks/hook-layer'
 export default defineComponent({
     name: 'ChatSider',
     setup() {
-        const { element } = useDrawer()
         const chat = useChat()
+        const { element, observer } = useDrawer({ mount: true, unmount: true })
 
         return () => (
             <div class="chat-sider n-chunk n-auto n-disover">
                 <div class="n-chunk n-column n-disover" style={{ width: '60px' }}>
-                    <chat-carte></chat-carte>
+                    <chat-carte observer={observer}></chat-carte>
                 </div>
                 <div ref={element} class="n-chunk n-column n-auto n-disover">
                     {chat.current === 'session' ? (
-                        <chat-sessioner></chat-sessioner>
+                        <chat-sessioner observer={observer}></chat-sessioner>
                     ) : chat.current === 'society' ? (
-                        <chat-society></chat-society>
+                        <chat-society observer={observer}></chat-society>
                     ) : chat.current === 'chane' ? (
-                        <chat-chane></chat-chane>
+                        <chat-chane observer={observer}></chat-chane>
                     ) : chat.current === 'dynamic' ? (
-                        <chat-dynamic></chat-dynamic>
+                        <chat-dynamic observer={observer}></chat-dynamic>
                     ) : chat.current === 'settings' ? (
-                        <chat-settings></chat-settings>
+                        <chat-settings observer={observer}></chat-settings>
                     ) : null}
                 </div>
             </div>

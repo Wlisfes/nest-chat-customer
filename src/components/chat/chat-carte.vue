@@ -1,31 +1,43 @@
 <script lang="tsx">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, PropType } from 'vue'
 import { useUser, useChat } from '@/store'
 import { useState } from '@/hooks/hook-state'
 import { useProvider } from '@/hooks/hook-provider'
+import { Observer } from '@/utils/utils-observer'
 import { stop, divineWherer, divineHandler, divineDelay } from '@/utils/utils-common'
+import { fetchProfile } from '@/components/layer/layer.instance'
 
 export default defineComponent({
     name: 'ChatCarte',
-    setup() {
+    props: {
+        observer: { type: Object as PropType<Observer<Omix>>, required: true }
+    },
+    setup(props) {
         const { state, setState } = useState({ visible: false, switch: false })
         const { inverted, fetchThemeUpdate } = useProvider()
         const chat = useChat()
         const user = useUser()
         const dataSource = ref([
             { title: '', value: 'session', iconSize: 24, icon: <Iv-BsSession />, select: <Iv-RsSession /> },
-            // { title: '', value: 'contact', iconSize: 26, icon: <Iv-BsContact />, select: <Iv-BsContact /> },
             { title: '', value: 'society', iconSize: 24, icon: <Iv-BsSociety />, select: <Iv-RsSociety /> },
             { title: '', value: 'chane', iconSize: 24, icon: <Iv-BsChane />, select: <Iv-RsChane /> },
             { title: '', value: 'dynamic', iconSize: 24, icon: <Iv-BsDynamic />, select: <Iv-RsDynamic /> }
         ])
 
-        function divineCommonStyleWherer(value: string) {
+        function divineCommonStyler(value: string) {
             return divineWherer(value === chat.current, {
                 '--n-color': 'var(--n-color-hover)',
                 '--n-text-color': 'var(--primary-color)',
                 '--n-text-color-hover': 'var(--primary-color)',
                 '--n-text-color-pressed': 'var(--primary-color)'
+            })
+        }
+
+        /**用户信息**/
+        async function fetchUseProfile() {
+            return await fetchProfile({
+                observer: props.observer,
+                onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount(300)
             })
         }
 
@@ -68,7 +80,7 @@ export default defineComponent({
                             size={40}
                             icon-size={item.iconSize ?? 24}
                             component={item.icon}
-                            common-style={divineCommonStyleWherer(item.value)}
+                            common-style={divineCommonStyler(item.value)}
                             onClick={(evt: Event) => fetchUpdateCurrent(item.value)}
                         ></common-icon>
                     ))}
@@ -79,7 +91,7 @@ export default defineComponent({
                         size={40}
                         icon-size={22}
                         component={<Iv-RsSettings />}
-                        common-style={divineCommonStyleWherer('settings')}
+                        common-style={divineCommonStyler('settings')}
                         onClick={(evt: MouseEvent) => fetchUpdateCurrent('settings')}
                     ></common-icon>
                     <n-popover
@@ -87,6 +99,7 @@ export default defineComponent({
                         trigger="click"
                         style={{ '--n-space': '16px', '--n-padding': '0px' }}
                         width={260}
+                        z-index={3000}
                         show-arrow={false}
                         show={state.visible}
                         onClickoutside={fetchClickoutside}
@@ -103,14 +116,14 @@ export default defineComponent({
                                             fallback-src="https://chat-oss.lisfes.cn/chat/image/2161418838745382965.jpeg"
                                         />
                                     }
-                                    common-style={divineCommonStyleWherer('resolver')}
+                                    common-style={divineCommonStyler('resolver')}
                                     onClick={fetchOpenCollapse}
                                 ></common-icon>
                             )
                         }}
                     >
                         <n-element class="chat-resolver n-chunk n-column n-disover">
-                            <div class="chunk-user n-chunk n-center n-disover">
+                            <div class="chunk-user n-chunk n-center n-disover n-pointer" onClick={fetchUseProfile}>
                                 <chat-avatar size={40} radius={20} icon-size={20} src={user.avatar}></chat-avatar>
                                 <div class="n-chunk n-column n-auto">
                                     <n-text depth={1} style={{ fontSize: '16px', lineHeight: '22px' }}>
@@ -204,6 +217,7 @@ export default defineComponent({
     .chunk-user {
         column-gap: 10px;
         padding: 16px;
+        user-select: none;
         &::before {
             content: '';
             position: absolute;

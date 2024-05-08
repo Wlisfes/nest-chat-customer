@@ -1,10 +1,17 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { useUser, useSession } from '@/store'
+import { useDrawer } from '@/hooks/hook-layer'
+import { Observer } from '@/utils/utils-observer'
+import { divineHandler } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'ChatSessioner',
+    props: {
+        observer: { type: Object as PropType<Observer<Omix>>, required: true }
+    },
     setup(props) {
+        const { observer } = useDrawer({ observer: props.observer, mount: true, unmount: true })
         const user = useUser()
         const session = useSession()
 

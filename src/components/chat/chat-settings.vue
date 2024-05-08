@@ -1,15 +1,19 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { useUser } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
 import { useProvider } from '@/hooks/hook-provider'
+import { Observer } from '@/utils/utils-observer'
 import { fetchResolver, fetchProfile, fetchRespon, fetchNotice, fetchSafety } from '@/components/layer/layer.instance'
 
 export default defineComponent({
     name: 'ChatSettings',
-    setup() {
+    props: {
+        observer: { type: Object as PropType<Observer<Omix>>, required: true }
+    },
+    setup(props) {
         const user = useUser()
-        const { observer } = useDrawer({ mount: true, unmount: true })
+        const { observer } = useDrawer({ observer: props.observer, mount: true, unmount: true })
         const { inverted, fetchThemeUpdate } = useProvider()
 
         /**登出**/

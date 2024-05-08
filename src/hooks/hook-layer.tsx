@@ -1,4 +1,4 @@
-import { ref, Ref, toRefs, computed, onBeforeMount, onBeforeUnmount, CSSProperties } from 'vue'
+import { ref, Ref, toRefs, computed, onMounted, onUnmounted, CSSProperties } from 'vue'
 import { ButtonProps } from 'naive-ui'
 import { Observer } from '@/utils/utils-observer'
 import { useState } from '@/hooks/hook-state'
@@ -8,7 +8,7 @@ import { divineHandler, divineWherer } from '@/utils/utils-common'
 export const element = ref<HTMLElement>() as Ref<HTMLElement>
 
 /**抽屉组件使用实例**/
-export function useDrawer(scope: Omix<{ mount?: boolean; unmount?: boolean }> = {}) {
+export function useDrawer(scope: { mount?: boolean; unmount?: boolean; observer?: Observer<Omix> } = {}) {
     const { state, setState: fetchState } = useState({ visible: false, loading: false })
     const observer = new Observer()
     const chunkContent = computed<CSSProperties>(() => ({
@@ -21,22 +21,28 @@ export function useDrawer(scope: Omix<{ mount?: boolean; unmount?: boolean }> = 
     }))
 
     /**监听销毁事件**/
-    function divineLayerUnmounted<T>(observer: Observer<Omix<T>>, handler: Function) {
+    async function divineLayerUnmounted<T>(observer: Observer<Omix<T>>, handler: Function) {
+        await divineHandler(Boolean(scope.observer), {
+            handler: () => scope.observer!.once('layer-unmounted', handler as never)
+        })
         return observer.once('layer-unmounted', handler as never)
     }
 
     /**主动发起销毁事件**/
     async function divineUnmounted() {
+        await divineHandler(Boolean(scope.observer), {
+            handler: () => scope.observer!.emit('layer-unmounted')
+        })
         return observer.emit('layer-unmounted')
     }
 
-    onBeforeMount(async () => {
+    onMounted(async () => {
         return await divineHandler(scope.mount ?? false, {
             handler: divineUnmounted
         })
     })
 
-    onBeforeUnmount(async () => {
+    onUnmounted(async () => {
         return await divineHandler(scope.unmount ?? false, {
             handler: divineUnmounted
         })
