@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, onMounted } from 'vue'
-import { useUser, useConfiger, useMessenger, useSession, useChat } from '@/store'
+import { useUser, useConfiger, useMessenger, useSession, useChat, useNotification } from '@/store'
 import { useWebSocket } from '@/hooks/hook-websocket'
 import * as env from '@/interface/instance.resolver'
 
@@ -13,12 +13,14 @@ export default defineComponent({
         const { fetchSessionInitColumn, fetchNewServerMessager } = useSession()
         const { fetchSocketServerMessager } = useMessenger()
         const { fetchUserResolver } = useUser()
+        const { fetchNotificationColumn } = useNotification()
 
         onMounted(async () => {
             await fetchUserResolver()
             return await divineConnectSocketClient().then(async online => {
                 await fetchCommonWallpaper()
                 await fetchSessionInitColumn()
+                await fetchNotificationColumn()
                 return await setState({ online, loading: false })
             })
         })

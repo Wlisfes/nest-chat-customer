@@ -13,7 +13,7 @@ export default defineComponent({
 
         return () => (
             <div class="chat-dynamic n-chunk n-column n-auto n-disover">
-                <chat-compose title="动态"></chat-compose>
+                <chat-compose observer={props.observer} title="动态"></chat-compose>
             </div>
         )
     }

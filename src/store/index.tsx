@@ -7,6 +7,7 @@ export { useSession } from '@/store/session'
 export { useMessenger } from '@/store/messenger'
 export { useChat } from '@/store/chat'
 export { useComment } from '@/store/comment'
+export { useNotification } from '@/store/notification'
 /**挂载持久化缓存**/
 const store = createPinia().use(piniaPluginPersistedstate)
 /**导出解构函数**/

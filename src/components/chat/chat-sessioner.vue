@@ -23,7 +23,7 @@ export default defineComponent({
 
         return () => (
             <div class="chat-sessioner n-chunk n-column n-auto n-disover">
-                <chat-compose title={nickname.value}></chat-compose>
+                <chat-compose observer={props.observer} title={nickname.value}></chat-compose>
                 <chat-searcher></chat-searcher>
                 <div class="n-chunk n-column n-auto n-disover">
                     <n-scrollbar class="is-customize" trigger="none" size={60} on-scroll={onScroller}>

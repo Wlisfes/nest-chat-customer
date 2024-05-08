@@ -63,7 +63,7 @@ export default defineComponent({
 
         return () => (
             <div class="chat-settings n-chunk n-column n-auto n-disover">
-                <chat-compose title="设置"></chat-compose>
+                <chat-compose observer={props.observer} title="设置"></chat-compose>
                 <div class="n-chunk n-column n-auto n-disover">
                     <n-scrollbar class="is-customize">
                         <div class="chunk-user n-chunk n-center n-disover n-pointer" onClick={fetchUseProfile}>

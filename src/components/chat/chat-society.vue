@@ -33,7 +33,7 @@ export default defineComponent({
 
         return () => (
             <div class="chat-society n-chunk n-column n-auto n-disover n-pointer">
-                <chat-compose title="社群"></chat-compose>
+                <chat-compose observer={props.observer} title="社群"></chat-compose>
                 <div class="chunk-society n-chunk n-center n-disover" onClick={fetchUseSociety}>
                     <n-icon-wrapper size={46} color="#2aa886" icon-color="#ffffff" border-radius={4}>
                         <n-icon size={28} component={<Iv-NsSociety />}></n-icon>

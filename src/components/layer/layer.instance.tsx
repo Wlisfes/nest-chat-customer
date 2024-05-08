@@ -50,6 +50,13 @@ export async function fetchNotice(props: Omix<{ observer: Observer<Omix> }>) {
     })
 }
 
+/**通知设置**/
+export async function fetchNotification(props: Omix<{ observer: Observer<Omix> }>) {
+    return await import('@/components/layer/layer-notification.vue').then(async component => {
+        return await createComponent(component.default, props)
+    })
+}
+
 /**对话设置**/
 export async function fetchRespon(props: Omix<{ observer: Observer<Omix> }>) {
     return await import('@/components/layer/layer-respon.vue').then(async component => {
