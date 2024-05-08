@@ -13,14 +13,20 @@ export default defineComponent({
         const chat = useChat()
         const user = useUser()
         const dataSource = ref([
-            { title: '', value: 'session', icon: <Iv-BsSession />, select: <Iv-RsSession /> },
-            { title: '', value: 'society', icon: <Iv-BsSociety />, select: <Iv-RsSociety /> },
-            { title: '', value: 'chane', icon: <Iv-BsChane />, select: <Iv-RsChane /> },
-            { title: '', value: 'dynamic', icon: <Iv-BsDynamic />, select: <Iv-RsDynamic /> }
+            { title: '', value: 'session', iconSize: 24, icon: <Iv-BsSession />, select: <Iv-RsSession /> },
+            { title: '', value: 'contact', iconSize: 26, icon: <Iv-BsContact />, select: <Iv-BsContact /> },
+            { title: '', value: 'society', iconSize: 24, icon: <Iv-BsSociety />, select: <Iv-RsSociety /> },
+            { title: '', value: 'chane', iconSize: 24, icon: <Iv-BsChane />, select: <Iv-RsChane /> },
+            { title: '', value: 'dynamic', iconSize: 24, icon: <Iv-BsDynamic />, select: <Iv-RsDynamic /> }
         ])
 
         function divineCommonStyleWherer(value: string) {
-            return divineWherer(value === chat.current, { '--n-color': 'var(--n-color-hover)' }, {})
+            return divineWherer(value === chat.current, {
+                '--n-color': 'var(--n-color-hover)',
+                '--n-text-color': 'var(--primary-color)',
+                '--n-text-color-hover': 'var(--primary-color)',
+                '--n-text-color-pressed': 'var(--primary-color)'
+            })
         }
 
         /**异步关闭用户信息popover组件**/
@@ -60,7 +66,7 @@ export default defineComponent({
                             key={item.value}
                             circle
                             size={40}
-                            icon-size={24}
+                            icon-size={item.iconSize ?? 24}
                             component={item.icon}
                             common-style={divineCommonStyleWherer(item.value)}
                             onClick={(evt: Event) => fetchUpdateCurrent(item.value)}
