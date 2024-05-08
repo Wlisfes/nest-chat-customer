@@ -12,6 +12,7 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { visible, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
+        const { dataSource, total, loading, fetchNotificationColumn } = useStore(useNotification)
 
         onMounted(async () => {
             await fetchState({ visible: true })
@@ -33,7 +34,7 @@ export default defineComponent({
                 on-after-leave={() => emit('close')}
             >
                 <n-element class="layer-notification n-chunk n-column n-auto n-disover">
-                    <chat-header title="通知" onClose={(evt: Event) => fetchState({ visible: false })}></chat-header>
+                    <chat-header title="新对话" onClose={(evt: Event) => fetchState({ visible: false })}></chat-header>
                     <div class="n-chunk n-column n-auto n-disover">
                         <n-scrollbar class="is-customize" trigger="none" size={60}></n-scrollbar>
                     </div>
