@@ -11,6 +11,7 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
     const contact = ref() as Ref<env.SchemaContact>
     const { state, setState } = useState({
         sid: '',
+        filter: 'entire',
         dataSource: [] as Array<env.SchemaSession>,
         total: 0,
         loading: true

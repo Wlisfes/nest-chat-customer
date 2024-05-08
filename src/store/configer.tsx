@@ -11,6 +11,18 @@ export const useConfiger = defineStore(APP_STORE.STORE_CONFIGER, {
         authorize: 'login',
         wallpaper: [] as Array<env.RestCommonWallpaper>
     }),
+    getters: {
+        isPwa() {
+            if (
+                window.matchMedia('(display-mode: standalone)').matches ||
+                window.matchMedia('(display-mode: standalone)').matches ||
+                (window.navigator as Omix).standalone
+            ) {
+                return true
+            }
+            return false
+        }
+    },
     actions: {
         async setTheme(theme: env.EnumUserTheme) {
             return (this.theme = theme)

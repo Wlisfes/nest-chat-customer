@@ -1,9 +1,18 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
+import { useSession, useStore } from '@/store'
 
 export default defineComponent({
     name: 'ChatSearcher',
     setup(props) {
+        const { filter, setState } = useStore(useSession)
+        const buttons = ref([
+            { name: '所有', value: 'entire' },
+            { name: '未读', value: 'unread' },
+            { name: '好友', value: 'contact' },
+            { name: '群组', value: 'communit' }
+        ])
+
         return () => (
             <div class="chat-searcher n-chunk n-column">
                 <div class="chat-searcher__wrapper">
@@ -14,6 +23,20 @@ export default defineComponent({
                         }}
                     ></n-input>
                 </div>
+                <n-space wrap-item={false} size={[10, 10]}>
+                    {buttons.value.map(item => (
+                        <n-button
+                            size="small"
+                            focusable={false}
+                            round
+                            secondary
+                            type={filter.value === item.value ? 'success' : 'default'}
+                            onClick={(evt: MouseEvent) => setState({ filter: item.value })}
+                        >
+                            {item.name}
+                        </n-button>
+                    ))}
+                </n-space>
             </div>
         )
     }
@@ -24,7 +47,7 @@ export default defineComponent({
 .chat-searcher {
     position: relative;
     overflow: hidden;
-    padding: 8px 14px;
+    padding: 0px 14px 14px;
     row-gap: 8px;
     background-color: var(--chat-searcher-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);

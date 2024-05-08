@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, ref, computed, watch, CSSProperties } from 'vue'
 import { useCurrentElement, useElementSize } from '@vueuse/core'
-import { useChat } from '@/store'
+import { useChat, useConfiger, useStore } from '@/store'
 import { divineWherer } from '@/utils/utils-common'
 
 export default defineComponent({
@@ -9,10 +9,14 @@ export default defineComponent({
     setup() {
         const layer = useCurrentElement<HTMLElement>()
         const element = ref<HTMLElement>()
+        const { isPwa } = useStore(useConfiger)
         const chat = useChat()
         const { width } = useElementSize(layer)
+        const chatWidth = computed(() => {
+            return isPwa.value ? '100%' : divineWherer(width.value > 2000, Math.floor(width.value * 0.8) + 'px', '1600px')
+        })
         const compute = computed<CSSProperties>(() => ({
-            '--chat-layer-width': divineWherer(width.value > 2000, Math.floor(width.value * 0.8) + 'px', '1600px'),
+            '--chat-layer-width': chatWidth.value,
             '--chat-layer-sider-width': divineWherer(width.value > 2000, '520px', '420px'),
             '--chat-layer-sider-shrink': divineWherer(width.value < 860, width.value + 'px', 'var(--chat-layer-sider-width)'),
             '--chat-layer-context': 'calc(100% - var(--chat-layer-sider-shrink)'
@@ -25,7 +29,7 @@ export default defineComponent({
         )
 
         return () => (
-            <n-element class="chat-layer" style={compute.value}>
+            <n-element class={{ 'chat-layer': true, 'chat-pwa': isPwa.value }} style={compute.value}>
                 {chat.loading ? (
                     <div class="chat-loadiner n-chunk n-center n-middle">
                         <div class="chat-loadiner__container n-chunk n-column n-center n-middle">
@@ -68,7 +72,6 @@ export default defineComponent({
     height: 100%;
     overflow: hidden;
     box-sizing: border-box;
-    padding: 24px;
     background-image: url('@/assets/images/auth-layout.jpg');
     background-repeat: no-repeat;
     background-size: cover;
@@ -83,8 +86,11 @@ export default defineComponent({
         background-color: var(--chat-layout-before);
         transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     }
-    @media (max-width: 1440px) {
-        padding: 0;
+    &:not(.chat-pwa) {
+        padding: 24px;
+        @media (max-width: 1440px) {
+            padding: 0;
+        }
     }
 }
 

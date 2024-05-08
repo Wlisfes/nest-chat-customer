@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, PropType } from 'vue'
-import { useUser, useSession } from '@/store'
+import { useUser, useSession, useStore } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
 import { Observer } from '@/utils/utils-observer'
 import { divineHandler } from '@/utils/utils-common'
@@ -12,32 +12,32 @@ export default defineComponent({
     },
     setup(props) {
         const { observer } = useDrawer({ observer: props.observer, mount: true, unmount: true })
-        const user = useUser()
-        const session = useSession()
+        const { nickname } = useStore(useUser)
+        const { filter, loading, total, dataSource } = useStore(useSession)
 
         async function onScroller(evt: { target: HTMLElement }) {
             const { scrollTop, clientHeight, scrollHeight } = evt.target
-            if (scrollTop + clientHeight * 3 >= scrollHeight && !session.loading) {
+            if (scrollTop + clientHeight * 3 >= scrollHeight && !loading.value) {
             }
         }
 
         return () => (
             <div class="chat-sessioner n-chunk n-column n-auto n-disover">
-                <chat-compose title={user.nickname}></chat-compose>
+                <chat-compose title={nickname.value}></chat-compose>
                 <chat-searcher></chat-searcher>
                 <div class="n-chunk n-column n-auto n-disover">
                     <n-scrollbar class="is-customize" trigger="none" size={60} on-scroll={onScroller}>
                         <n-element class="n-chunk n-column">
-                            {session.loading && session.total === 0 && (
+                            {loading.value && total.value === 0 && (
                                 <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
                                     <common-loadiner size={32} size-border={4}></common-loadiner>
                                 </div>
                             )}
-                            {session.total > 0 && (
+                            {total.value > 0 && (
                                 <div style={{ position: 'relative', paddingRight: '14px' }}>
-                                    {session.dataSource.map(item => (
-                                        <chat-node-sessioner key={item.keyId} v-model:node={item}></chat-node-sessioner>
-                                    ))}
+                                    {dataSource.value.map(item => {
+                                        return <chat-node-sessioner key={item.keyId} v-model:node={item}></chat-node-sessioner>
+                                    })}
                                 </div>
                             )}
                         </n-element>

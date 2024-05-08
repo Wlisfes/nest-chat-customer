@@ -8,8 +8,15 @@ export default defineComponent({
     },
     setup(props) {
         return () => (
-            <div class="chat-compose n-chunk n-center n-space">
-                <n-h1>{props.title}</n-h1>
+            <div class="chat-compose n-chunk n-center n-disover">
+                <div class="n-chunk n-column n-auto n-disover">
+                    <n-h1>{props.title}</n-h1>
+                </div>
+                <n-badge dot processing offset={[0, 3]} type="error">
+                    <n-button text focusable={false}>
+                        <n-icon size={24} component={<Iv-BsDialog />}></n-icon>
+                    </n-button>
+                </n-badge>
             </div>
         )
     }
@@ -20,6 +27,7 @@ export default defineComponent({
 .chat-compose {
     height: 60px;
     padding: 10px 14px;
+    column-gap: 10px;
     box-sizing: border-box;
     background-color: var(--chat-compose-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
@@ -29,6 +37,11 @@ export default defineComponent({
         font-weight: 500;
         margin: 0;
         user-select: none;
+    }
+    :deep(.n-badge) > .n-badge-sup {
+        min-width: 6px;
+        width: 6px;
+        height: 6px;
     }
 }
 </style>
