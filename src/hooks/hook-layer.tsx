@@ -1,4 +1,4 @@
-import { ref, Ref, toRefs, computed, onBeforeUnmount, CSSProperties } from 'vue'
+import { ref, Ref, toRefs, computed, onBeforeMount, onBeforeUnmount, CSSProperties } from 'vue'
 import { ButtonProps } from 'naive-ui'
 import { Observer } from '@/utils/utils-observer'
 import { useState } from '@/hooks/hook-state'
@@ -8,7 +8,7 @@ import { divineHandler, divineWherer } from '@/utils/utils-common'
 export const element = ref<HTMLElement>() as Ref<HTMLElement>
 
 /**抽屉组件使用实例**/
-export function useDrawer(initialize: boolean = false) {
+export function useDrawer(scope: Omix<{ mount?: boolean; unmount?: boolean }> = {}) {
     const { state, setState: fetchState } = useState({ visible: false, loading: false })
     const observer = new Observer()
     const chunkContent = computed<CSSProperties>(() => ({
@@ -30,8 +30,14 @@ export function useDrawer(initialize: boolean = false) {
         return observer.emit('layer-unmounted')
     }
 
+    onBeforeMount(async () => {
+        return await divineHandler(scope.mount ?? false, {
+            handler: divineUnmounted
+        })
+    })
+
     onBeforeUnmount(async () => {
-        return await divineHandler(initialize, {
+        return await divineHandler(scope.unmount ?? false, {
             handler: divineUnmounted
         })
     })

@@ -9,7 +9,7 @@ export default defineComponent({
     name: 'ChatSettings',
     setup() {
         const user = useUser()
-        const { observer } = useDrawer(true)
+        const { observer } = useDrawer({ mount: true, unmount: true })
         const { inverted, fetchThemeUpdate } = useProvider()
 
         /**登出**/

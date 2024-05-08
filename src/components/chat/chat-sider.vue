@@ -17,8 +17,6 @@ export default defineComponent({
                 <div ref={element} class="n-chunk n-column n-auto n-disover">
                     {chat.current === 'session' ? (
                         <chat-sessioner></chat-sessioner>
-                    ) : chat.current === 'contact' ? (
-                        <chat-contact></chat-contact>
                     ) : chat.current === 'society' ? (
                         <chat-society></chat-society>
                     ) : chat.current === 'chane' ? (
@@ -27,8 +25,6 @@ export default defineComponent({
                         <chat-dynamic></chat-dynamic>
                     ) : chat.current === 'settings' ? (
                         <chat-settings></chat-settings>
-                    ) : chat.current === 'resolver' ? (
-                        <chat-resolver></chat-resolver>
                     ) : null}
                 </div>
             </div>

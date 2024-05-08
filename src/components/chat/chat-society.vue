@@ -10,7 +10,7 @@ export default defineComponent({
     name: 'ChatSociety',
     setup() {
         const session = useSession()
-        const { observer } = useDrawer(true)
+        const { observer } = useDrawer({ mount: true, unmount: true })
 
         /**新建社群**/
         async function fetchUseSociety() {
