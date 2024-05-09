@@ -60,7 +60,7 @@ export default defineComponent({
                 await done({ loading: true })
                 return await httpNotificationUpdate({ status: status, uid: props.node.uid }).then(async ({ message }) => {
                     await fetchNotificationColumn()
-                    await divineNotice({ type: 'error', content: message })
+                    await divineNotice({ type: 'success', content: message })
                     return await emit('close', { done: fetchState })
                 })
             } catch (e) {
@@ -93,41 +93,49 @@ export default defineComponent({
                     <n-space wrap-item={false} size={16} justify="center" style={{ flex: 1, padding: '10px 20px 0' }}>
                         {props.node.status === env.EnumNotificationStatus.waitze ? (
                             <Fragment>
-                                <common-state
-                                    data-render={(scope: Omix<{ loading: boolean }>, done: Function) => (
-                                        <n-button
-                                            secondary
-                                            type="error"
-                                            style={{ minWidth: '88px' }}
-                                            loading={scope.loading}
-                                            disabled={scope.loading}
-                                            onClick={(evt: MouseEvent) => fetchNotificationUpdateReject(done)}
-                                        >
-                                            拒绝
-                                        </n-button>
-                                    )}
-                                ></common-state>
-                                <common-state
-                                    data-render={(scope: Omix<{ loading: boolean }>, done: Function) => (
-                                        <n-button
-                                            secondary
-                                            type="success"
-                                            style={{ minWidth: '88px' }}
-                                            loading={scope.loading}
-                                            disabled={scope.loading}
-                                            onClick={(evt: MouseEvent) => fetchNotificationUpdateResolve(done)}
-                                        >
-                                            通过验证
-                                        </n-button>
-                                    )}
-                                ></common-state>
+                                {props.node.userId === uid.value ? (
+                                    <n-button secondary type="warning" style={{ minWidth: '88px', cursor: 'not-allowed' }}>
+                                        待验证
+                                    </n-button>
+                                ) : (
+                                    <n-space wrap-item={false} size={16} justify="center">
+                                        <common-state
+                                            data-render={(scope: Omix<{ loading: boolean }>, done: Function) => (
+                                                <n-button
+                                                    secondary
+                                                    type="error"
+                                                    style={{ minWidth: '88px' }}
+                                                    loading={scope.loading}
+                                                    disabled={scope.loading}
+                                                    onClick={(evt: MouseEvent) => fetchNotificationUpdateReject(done)}
+                                                >
+                                                    拒绝
+                                                </n-button>
+                                            )}
+                                        ></common-state>
+                                        <common-state
+                                            data-render={(scope: Omix<{ loading: boolean }>, done: Function) => (
+                                                <n-button
+                                                    secondary
+                                                    type="success"
+                                                    style={{ minWidth: '88px' }}
+                                                    loading={scope.loading}
+                                                    disabled={scope.loading}
+                                                    onClick={(evt: MouseEvent) => fetchNotificationUpdateResolve(done)}
+                                                >
+                                                    通过验证
+                                                </n-button>
+                                            )}
+                                        ></common-state>
+                                    </n-space>
+                                )}
                             </Fragment>
                         ) : props.node.status === env.EnumNotificationStatus.resolve ? (
                             <n-button secondary type="success" style={{ minWidth: '88px', cursor: 'not-allowed' }}>
                                 已验证
                             </n-button>
                         ) : (
-                            <n-button type="error" style={{ minWidth: '88px', cursor: 'not-allowed' }}>
+                            <n-button secondary type="error" style={{ minWidth: '88px', cursor: 'not-allowed' }}>
                                 已拒绝
                             </n-button>
                         )}

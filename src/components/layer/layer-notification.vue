@@ -3,7 +3,6 @@ import { defineComponent, computed, onMounted, Fragment, PropType } from 'vue'
 import { useUser, useNotification, useStore } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
 import { Observer } from '@/utils/utils-observer'
-import { divineWherer } from '@/utils/utils-common'
 import { fetchCompadre } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
@@ -32,9 +31,6 @@ export default defineComponent({
 
         /**联系人申请操作**/
         async function fetchUseCompadre(scope: env.SchemaNotification) {
-            // const own = scope.userId === uid.value
-            // const { uid: userId, nickname } = divineWherer(own, scope.nive, scope.user)
-            // const comment = divineWherer(own, `我：${scope.comment}`, `${nickname}：${scope.comment}`)
             return await fetchCompadre({
                 node: scope,
                 onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount()
@@ -119,9 +115,17 @@ export default defineComponent({
                                                 </div>
                                                 <Fragment>
                                                     {item.status === env.EnumNotificationStatus.waitze ? (
-                                                        <n-button size="small" tertiary focusable={false}>
-                                                            查看
-                                                        </n-button>
+                                                        <Fragment>
+                                                            {item.userId === uid.value ? (
+                                                                <n-button size="small" type="warning" secondary focusable={false}>
+                                                                    待验证
+                                                                </n-button>
+                                                            ) : (
+                                                                <n-button size="small" secondary focusable={false}>
+                                                                    查看
+                                                                </n-button>
+                                                            )}
+                                                        </Fragment>
                                                     ) : item.status === env.EnumNotificationStatus.resolve ? (
                                                         <n-button text size="small" type="success" focusable={false}>
                                                             已添加

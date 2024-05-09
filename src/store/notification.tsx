@@ -13,8 +13,12 @@ export const useNotification = defineStore(APP_STORE.STORE_NOTIFICATION, () => {
     })
     const dot = computed(() => {
         return {
-            contact: state.dataSource.filter(item => item.source === env.EnumNotificationSource.contact).length > 0,
-            communit: state.dataSource.filter(item => item.source === env.EnumNotificationSource.communit).length > 0
+            contact: state.dataSource.some(item => {
+                return item.source === env.EnumNotificationSource.contact && item.status === env.EnumNotificationStatus.waitze
+            }),
+            communit: state.dataSource.some(item => {
+                return item.source === env.EnumNotificationSource.communit && item.status === env.EnumNotificationStatus.waitze
+            })
         }
     })
 
