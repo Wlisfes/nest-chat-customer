@@ -34,18 +34,5 @@ export default defineComponent({
         margin: 0;
         user-select: none;
     }
-    :deep(.n-badge.chat-compose-badge) {
-        .n-badge-sup {
-            box-sizing: border-box;
-            min-width: 10px;
-            width: 10px;
-            height: 10px;
-            border: 2px solid var(--chat-compose-color);
-            transition: border 0.3s var(--cubic-bezier-ease-in-out);
-        }
-        &:hover {
-            --chat-compose-color: var(--button-color-2-hover);
-        }
-    }
 }
 </style>

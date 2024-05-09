@@ -1,10 +1,9 @@
 <script lang="tsx">
 import { defineComponent, Fragment, PropType } from 'vue'
-import { useSession, useNotification, useContact, useUser, useStore } from '@/store'
+import { useNotification, useContact, useUser, useStore } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
 import { Observer } from '@/utils/utils-observer'
-import { divineNotice } from '@/utils/utils-component'
-import { fetchSociety, fetchNotification } from '@/components/layer/layer.instance'
+import { fetchNotification } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -14,7 +13,6 @@ export default defineComponent({
     },
     setup(props) {
         const { observer } = useDrawer({ observer: props.observer, mount: true, unmount: true })
-        const { fetchSessionInitColumn } = useStore(useSession)
         const { state } = useStore(useContact)
         const { dot } = useStore(useNotification)
         const { uid } = useStore(useUser)
@@ -34,7 +32,7 @@ export default defineComponent({
                 <chat-compose observer={observer} title="联系人">
                     <n-badge
                         class="chat-compose-badge"
-                        type="error"
+                        type="success"
                         processing
                         offset={[-12, 16]}
                         dot={dot.value.contact}
