@@ -35,6 +35,16 @@ export default defineComponent({
             >
                 <n-element class="layer-notification n-chunk n-column n-auto n-disover">
                     <chat-header title="新对话" onClose={(evt: Event) => fetchState({ visible: false })}></chat-header>
+                    <div class="chunk-operate n-chunk n-column n-disover">
+                        <div class="column-operate n-chunk n-center n-disover">
+                            <n-icon-wrapper size={46} color="#2aa886" icon-color="#ffffff" border-radius={4}>
+                                <n-icon size={28} component={<Iv-NsSociety />}></n-icon>
+                            </n-icon-wrapper>
+                            <n-text depth={1} style={{ fontSize: '18px' }}>
+                                新建社群
+                            </n-text>
+                        </div>
+                    </div>
                     <div class="n-chunk n-column n-auto n-disover">
                         <n-scrollbar class="is-customize" trigger="none" size={60}></n-scrollbar>
                     </div>
@@ -44,3 +54,19 @@ export default defineComponent({
     }
 })
 </script>
+
+<style lang="scss" scoped>
+.chunk-operate {
+    .column-operate {
+        user-select: none;
+        overflow: hidden;
+        padding: 14px;
+        column-gap: 14px;
+        background-color: var(--chat-column-color);
+        transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
+        &:hover {
+            background-color: var(--chat-column-hover-color);
+        }
+    }
+}
+</style>

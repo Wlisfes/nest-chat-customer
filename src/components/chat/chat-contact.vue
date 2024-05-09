@@ -1,16 +1,20 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { useSession } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
+import { Observer } from '@/utils/utils-observer'
 import { divineNotice } from '@/utils/utils-component'
 import { fetchSociety } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
     name: 'ChatContact',
-    setup() {
+    props: {
+        observer: { type: Object as PropType<Observer<Omix>>, required: true }
+    },
+    setup(props) {
         const session = useSession()
-        const { observer } = useDrawer({ mount: true, unmount: true })
+        const { observer } = useDrawer({ observer: props.observer, mount: true, unmount: true })
 
         /**新建社群**/
         async function fetchUseSociety() {
@@ -29,7 +33,7 @@ export default defineComponent({
 
         return () => (
             <div class="chat-contact n-chunk n-column n-auto n-disover n-pointer">
-                <chat-compose title="联系人"></chat-compose>
+                <chat-compose observer={observer} title="联系人"></chat-compose>
                 <div class="chunk-contact n-chunk n-center n-disover" onClick={fetchUseSociety}>
                     <n-icon-wrapper size={46} color="#2aa886" icon-color="#ffffff" border-radius={4}>
                         <n-icon size={28} component={<Iv-NsSociety />}></n-icon>

@@ -18,6 +18,7 @@ export default defineComponent({
         const { avatar, nickname, email, fetchUserSignout } = useStore(useUser)
         const dataSource = ref([
             { title: '', value: 'session', iconSize: 24, icon: <Iv-BsSession />, select: <Iv-RsSession /> },
+            { title: '', value: 'contact', iconSize: 26, icon: <Iv-BsContact />, select: <Iv-BsContact /> },
             { title: '', value: 'society', iconSize: 24, icon: <Iv-BsSociety />, select: <Iv-RsSociety /> },
             { title: '', value: 'chane', iconSize: 24, icon: <Iv-BsChane />, select: <Iv-RsChane /> },
             { title: '', value: 'dynamic', iconSize: 24, icon: <Iv-BsDynamic />, select: <Iv-RsDynamic /> }

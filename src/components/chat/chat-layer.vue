@@ -48,10 +48,7 @@ export default defineComponent({
                                     <chat-sider></chat-sider>
                                 </div>
                             </div>
-                            <div
-                                class="chunk-context n-chunk n-column n-auto n-disover"
-                                style={{ width: 'var(--chat-layer-context)', transition: 'width 0.3s var(--cubic-bezier-ease-in-out)' }}
-                            >
+                            <div class="chunk-context n-chunk n-column n-auto n-disover">
                                 <div class="n-chunk n-column n-auto n-disover" style={{ minWidth: '540px' }}>
                                     <chat-context></chat-context>
                                 </div>

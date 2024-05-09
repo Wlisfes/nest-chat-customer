@@ -23,7 +23,7 @@ export default defineComponent({
                         }}
                     ></n-input>
                 </div>
-                <n-space wrap-item={false} size={[10, 10]}>
+                <n-space wrap-item={false} size={[10, 8]}>
                     {buttons.value.map(item => (
                         <n-button
                             size="small"
