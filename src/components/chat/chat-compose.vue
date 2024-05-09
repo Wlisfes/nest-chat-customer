@@ -1,19 +1,18 @@
 <script lang="tsx">
-import { defineComponent, PropType } from 'vue'
-import { Observer } from '@/utils/utils-observer'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
     name: 'ChatCompose',
     props: {
-        title: { type: String },
-        observer: { type: Object as PropType<Observer<Omix>>, required: true }
+        title: { type: String }
     },
-    setup(props) {
+    setup(props, { slots }) {
         return () => (
             <div class="chat-compose n-chunk n-center n-disover">
                 <div class="n-chunk n-column n-auto n-disover">
                     <n-h1>{props.title}</n-h1>
                 </div>
+                {slots.notification && slots.notification()}
             </div>
         )
     }
@@ -35,10 +34,18 @@ export default defineComponent({
         margin: 0;
         user-select: none;
     }
-    :deep(.n-badge) > .n-badge-sup {
-        min-width: 6px;
-        width: 6px;
-        height: 6px;
+    :deep(.n-badge.chat-compose-badge) {
+        .n-badge-sup {
+            box-sizing: border-box;
+            min-width: 10px;
+            width: 10px;
+            height: 10px;
+            border: 2px solid var(--chat-compose-color);
+            transition: border 0.3s var(--cubic-bezier-ease-in-out);
+        }
+        &:hover {
+            --chat-compose-color: var(--button-color-2-hover);
+        }
     }
 }
 </style>

@@ -25,11 +25,11 @@ export default defineComponent({
         })
 
         /**更新头像**/
-        async function fetchUpdateAvatar({ url, fileId, done }: Omix<{ done: Function } & env.RestStreamUploader>) {
-            return await fetchUserUpdate({ fileId }, { refresh: true }, () => done({ loading: false })).then(async () => {
-                await setState({ avatar: url })
-                await setUser({ avatar: url })
-                return await done({ visible: false })
+        async function fetchUpdateAvatar(scope: Omix<{ done: Function } & env.RestStreamUploader>) {
+            return await fetchUserUpdate({ fileId: scope.fileId }, {}, () => scope.done({ loading: false })).then(async () => {
+                await setState({ avatar: scope.fileURL })
+                await setUser({ avatar: scope.fileURL })
+                return await scope.done({ visible: false })
             })
         }
 

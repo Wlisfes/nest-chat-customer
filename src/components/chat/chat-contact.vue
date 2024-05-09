@@ -33,14 +33,26 @@ export default defineComponent({
 
         return () => (
             <div class="chat-contact n-chunk n-column n-auto n-disover n-pointer">
-                <chat-compose observer={observer} title="联系人"></chat-compose>
-                <div class="chunk-contact n-chunk n-center n-disover" onClick={fetchUseSociety}>
-                    <n-icon-wrapper size={46} color="#2aa886" icon-color="#ffffff" border-radius={4}>
-                        <n-icon size={28} component={<Iv-NsSociety />}></n-icon>
-                    </n-icon-wrapper>
-                    <n-text depth={1} style={{ fontSize: '18px' }}>
-                        新建社群
-                    </n-text>
+                <chat-compose
+                    observer={observer}
+                    title="联系人"
+                    v-slots={{
+                        notification: () => (
+                            <n-badge class="chat-compose-badge" dot processing offset={[-12, 16]} type="error">
+                                <common-icon circle size={40} icon-size={24} component={<Iv-BsAlert />}></common-icon>
+                            </n-badge>
+                        )
+                    }}
+                ></chat-compose>
+                <div class="n-chunk n-column n-disover">
+                    <div class="chunk-contact n-chunk n-center n-disover" onClick={fetchUseSociety}>
+                        <n-icon-wrapper size={46} color="#2aa886" icon-color="#ffffff" border-radius={4}>
+                            <n-icon size={32} component={<Iv-AsUser />}></n-icon>
+                        </n-icon-wrapper>
+                        <n-text depth={1} style={{ fontSize: '18px' }}>
+                            新增联系人
+                        </n-text>
+                    </div>
                 </div>
                 <div class="n-chunk n-column n-auto n-disover">
                     <n-scrollbar class="is-customize" trigger="none" size={60}>
