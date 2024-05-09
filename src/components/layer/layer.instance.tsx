@@ -64,3 +64,10 @@ export async function fetchRespon(props: Omix<{ observer: Observer<Omix> }>) {
         return await createComponent(component.default, props)
     })
 }
+
+/**联系人申请操作**/
+export async function fetchCompadre(props: Omix<{ node: env.SchemaNotification }>) {
+    return await import('@/components/layer/layer-compadre.vue').then(async component => {
+        return await createComponent(component.default, props)
+    })
+}

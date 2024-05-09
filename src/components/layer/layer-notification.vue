@@ -3,6 +3,8 @@ import { defineComponent, computed, onMounted, Fragment, PropType } from 'vue'
 import { useUser, useNotification, useStore } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
 import { Observer } from '@/utils/utils-observer'
+import { divineWherer } from '@/utils/utils-common'
+import { fetchCompadre } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -27,6 +29,17 @@ export default defineComponent({
                 return fetchState({ visible: false })
             })
         })
+
+        /**联系人申请操作**/
+        async function fetchUseCompadre(scope: env.SchemaNotification) {
+            // const own = scope.userId === uid.value
+            // const { uid: userId, nickname } = divineWherer(own, scope.nive, scope.user)
+            // const comment = divineWherer(own, `我：${scope.comment}`, `${nickname}：${scope.comment}`)
+            return await fetchCompadre({
+                node: scope,
+                onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount()
+            })
+        }
 
         return () => (
             <n-drawer
@@ -76,9 +89,13 @@ export default defineComponent({
                                             )
                                         }
                                         return (
-                                            <div class="chunk-block n-chunk n-center n-pointer" key={item.keyId}>
+                                            <div
+                                                class="chunk-block n-chunk n-center n-pointer"
+                                                key={item.keyId}
+                                                onClick={(evt: MouseEvent) => fetchUseCompadre(item)}
+                                            >
                                                 <Fragment>
-                                                    {item.user.uid === uid.value ? (
+                                                    {item.userId === uid.value ? (
                                                         <chat-avatar size={42} src={item.nive.avatar}></chat-avatar>
                                                     ) : (
                                                         <chat-avatar size={42} src={item.user.avatar}></chat-avatar>
@@ -86,14 +103,14 @@ export default defineComponent({
                                                 </Fragment>
                                                 <div class="n-chunk n-column n-auto n-disover">
                                                     <n-h2 style={{ fontSize: '16px', lineHeight: '22px', fontWeight: 500, margin: 0 }}>
-                                                        {item.user.uid === uid.value ? (
+                                                        {item.userId === uid.value ? (
                                                             <n-ellipsis tooltip={false}>{item.nive.nickname}</n-ellipsis>
                                                         ) : (
                                                             <n-ellipsis tooltip={false}>{item.user.nickname}</n-ellipsis>
                                                         )}
                                                     </n-h2>
-                                                    <n-text style={{ fontSize: '12px', lineHeight: '18px' }}>
-                                                        {item.user.uid === uid.value ? (
+                                                    <n-text style={{ fontSize: '13px', lineHeight: '20px' }}>
+                                                        {item.userId === uid.value ? (
                                                             <n-ellipsis tooltip={false}>{`我：${item.comment}`}</n-ellipsis>
                                                         ) : (
                                                             <n-ellipsis tooltip={false}>{item.nive.comment}</n-ellipsis>

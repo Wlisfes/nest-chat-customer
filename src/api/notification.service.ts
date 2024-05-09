@@ -8,3 +8,12 @@ export function httpNotificationColumn() {
         method: 'GET'
     })
 }
+
+/**更新通知状态**/
+export function httpNotificationUpdate(data: { uid: string; status: env.EnumNotificationStatus }) {
+    return request<env.NoticeResolver>({
+        url: `/notification/update`,
+        method: 'POST',
+        data
+    })
+}

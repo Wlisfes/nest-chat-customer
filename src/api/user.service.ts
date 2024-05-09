@@ -54,6 +54,15 @@ export function httpUserResolver() {
     })
 }
 
+/**查看用户信息**/
+export function httpUserCurrentResolver(params: { uid: string }) {
+    return request<env.RestUserResolver>({
+        url: `/user/current/resolver`,
+        method: 'GET',
+        params
+    })
+}
+
 /**用户基础信息更新**/
 export function httpUserUpdate(data: Omix<env.BodyUserUpdate>) {
     return request<env.NoticeResolver>({

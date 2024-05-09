@@ -33,6 +33,13 @@ export default defineComponent({
             })
         }
 
+        /**登出**/
+        async function fetchUseUserSignout() {
+            return await fetchClickoutside().then(async () => {
+                return await fetchUserSignout()
+            })
+        }
+
         /**异步关闭用户信息popover组件**/
         async function fetchClickoutside() {
             return await setState({ visible: false, switch: true }).then(async () => {
@@ -149,7 +156,7 @@ export default defineComponent({
                                         </n-text>
                                     </div>
                                 </div>
-                                <div class="chunk-block n-chunk n-center n-disover n-pointer" onClick={fetchUserSignout}>
+                                <div class="chunk-block n-chunk n-center n-disover n-pointer" onClick={fetchUseUserSignout}>
                                     <div class="n-chunk n-center n-middle" style={{ width: '40px' }}>
                                         <n-icon size={24} color="var(--error-color)" component={<Iv-BsExit />}></n-icon>
                                     </div>

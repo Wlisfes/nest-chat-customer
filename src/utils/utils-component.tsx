@@ -133,13 +133,13 @@ export function divineDiscover(
                 size: 'medium',
                 ghost: false,
                 secondary: true,
-                style: { '--n-height': '32px', '--n-padding': '0 10px', 'min-width': '80px' },
+                style: { '--n-height': '34px', '--n-padding': '0 10px', 'min-width': '80px' },
                 ...option.negativeButtonProps
             },
             positiveButtonProps: {
                 size: 'medium',
                 type: 'error',
-                style: { '--n-height': '32px', '--n-padding': '0 10px', 'min-width': '80px' },
+                style: { '--n-height': '34px', '--n-padding': '0 10px', 'min-width': '80px' },
                 ...option.positiveButtonProps
             },
             onAfterEnter: async (e: HTMLElement) => {
