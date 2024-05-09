@@ -1,10 +1,10 @@
 <script lang="tsx">
-import { defineComponent, PropType } from 'vue'
-import { useSession } from '@/store'
+import { defineComponent, Fragment, PropType } from 'vue'
+import { useSession, useNotification, useContact, useUser, useStore } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
 import { Observer } from '@/utils/utils-observer'
 import { divineNotice } from '@/utils/utils-component'
-import { fetchSociety } from '@/components/layer/layer.instance'
+import { fetchSociety, fetchNotification } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -13,63 +13,61 @@ export default defineComponent({
         observer: { type: Object as PropType<Observer<Omix>>, required: true }
     },
     setup(props) {
-        const session = useSession()
         const { observer } = useDrawer({ observer: props.observer, mount: true, unmount: true })
+        const { fetchSessionInitColumn } = useStore(useSession)
+        const { state } = useStore(useContact)
+        const { dot } = useStore(useNotification)
+        const { uid } = useStore(useUser)
 
-        /**新建社群**/
-        async function fetchUseSociety() {
-            return await fetchSociety({
+        /**联系人新增、通知组件**/
+        async function fetchUseNotification() {
+            return await fetchNotification({
                 observer,
-                onClose: async ({ unmount }: Omix<{ unmount: Function }>) => {
-                    return await unmount(300)
-                },
-                onSubmit: async ({ done, message }: Omix<{ message: string; done: Function }>) => {
-                    await session.fetchSessionInitColumn()
-                    await divineNotice({ type: 'success', title: message })
-                    return await done({ visible: false })
-                }
+                title: '新对话',
+                source: env.EnumNotificationSource.contact,
+                onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount()
             })
         }
 
         return () => (
             <div class="chat-contact n-chunk n-column n-auto n-disover n-pointer">
-                <chat-compose
-                    observer={observer}
-                    title="联系人"
-                    v-slots={{
-                        notification: () => (
-                            <n-badge class="chat-compose-badge" dot processing offset={[-12, 16]} type="error">
-                                <common-icon circle size={40} icon-size={24} component={<Iv-BsAlert />}></common-icon>
-                            </n-badge>
-                        )
-                    }}
-                ></chat-compose>
-                <div class="n-chunk n-column n-disover">
-                    <div class="chunk-contact n-chunk n-center n-disover" onClick={fetchUseSociety}>
-                        <n-icon-wrapper size={46} color="#2aa886" icon-color="#ffffff" border-radius={4}>
-                            <n-icon size={32} component={<Iv-AsUser />}></n-icon>
-                        </n-icon-wrapper>
-                        <n-text depth={1} style={{ fontSize: '18px' }}>
-                            新增联系人
-                        </n-text>
-                    </div>
-                </div>
+                <chat-compose observer={observer} title="联系人">
+                    <n-badge
+                        class="chat-compose-badge"
+                        type="error"
+                        processing
+                        offset={[-12, 16]}
+                        dot={dot.value.contact}
+                        onClick={fetchUseNotification}
+                    >
+                        <common-icon circle size={40} icon-size={24} component={<Iv-BsAlert />}></common-icon>
+                    </n-badge>
+                </chat-compose>
                 <div class="n-chunk n-column n-auto n-disover">
                     <n-scrollbar class="is-customize" trigger="none" size={60}>
                         <n-element class="n-chunk n-column">
-                            {session.loading && session.total === 0 && (
-                                <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
-                                    <common-loadiner size={32} size-border={4}></common-loadiner>
-                                </div>
-                            )}
-                            {session.total > 0 && (
-                                <div style={{ position: 'relative', paddingRight: '14px' }}>
-                                    {session.dataSource.map(item => {
-                                        if (item.source === env.EnumSessionSource.communit) {
-                                            return <chat-node-sessioner key={item.keyId} v-model:node={item}></chat-node-sessioner>
-                                        }
-                                        return null
-                                    })}
+                            {state.value.total > 0 && (
+                                <div class="n-chunk n-column n-auto n-disover">
+                                    {state.value.dataSource.map(item => (
+                                        <div class="chunk-block n-chunk n-center n-pointer" key={item.keyId}>
+                                            <Fragment>
+                                                {item.user.uid === uid.value ? (
+                                                    <chat-avatar size={42} src={item.nive.avatar}></chat-avatar>
+                                                ) : (
+                                                    <chat-avatar size={42} src={item.user.avatar}></chat-avatar>
+                                                )}
+                                            </Fragment>
+                                            <div class="n-chunk n-column n-auto n-disover">
+                                                <n-h2 style={{ fontSize: '16px', lineHeight: '22px', fontWeight: 500, margin: 0 }}>
+                                                    {item.user.uid === uid.value ? (
+                                                        <n-ellipsis tooltip={false}>{item.nive.nickname}</n-ellipsis>
+                                                    ) : (
+                                                        <n-ellipsis tooltip={false}>{item.user.nickname}</n-ellipsis>
+                                                    )}
+                                                </n-h2>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             )}
                         </n-element>
@@ -82,15 +80,23 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.chunk-contact {
+.chunk-block {
     user-select: none;
-    overflow: hidden;
     padding: 14px;
-    column-gap: 14px;
-    background-color: var(--chat-column-color);
+    column-gap: 10px;
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     &:hover {
         background-color: var(--chat-column-hover-color);
+    }
+    &:not(:last-child)::before {
+        content: '';
+        position: absolute;
+        left: 20px;
+        right: 20px;
+        bottom: 0;
+        height: 1px;
+        background-color: var(--chat-border-color);
+        transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     }
 }
 </style>

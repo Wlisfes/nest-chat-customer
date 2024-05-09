@@ -18,7 +18,9 @@ export interface SchemaNotification extends env.CommonSchema {
     uid: string
     userId: string
     niveId: string
+    comment: string
     communitId: string
+    communit: env.SchemaCommunit
     user: env.SchemaUser
     nive: env.SchemaUser
     source: EnumNotificationSource

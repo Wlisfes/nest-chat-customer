@@ -1,4 +1,4 @@
-import { toRefs } from 'vue'
+import { toRefs, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useState } from '@/hooks/hook-state'
 import { APP_STORE } from '@/utils/utils-storage'
@@ -10,6 +10,12 @@ export const useNotification = defineStore(APP_STORE.STORE_NOTIFICATION, () => {
         dataSource: [] as Array<env.SchemaNotification>,
         total: 0,
         loading: true
+    })
+    const dot = computed(() => {
+        return {
+            contact: state.dataSource.filter(item => item.source === env.EnumNotificationSource.contact).length > 0,
+            communit: state.dataSource.filter(item => item.source === env.EnumNotificationSource.communit).length > 0
+        }
     })
 
     /**通知列表**/
@@ -26,5 +32,5 @@ export const useNotification = defineStore(APP_STORE.STORE_NOTIFICATION, () => {
         }
     }
 
-    return { state, ...toRefs(state), setState, fetchNotificationColumn }
+    return { state, dot, ...toRefs(state), setState, fetchNotificationColumn }
 })

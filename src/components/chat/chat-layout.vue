@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, onMounted } from 'vue'
-import { useUser, useConfiger, useMessenger, useSession, useChat, useNotification } from '@/store'
+import { useUser, useConfiger, useMessenger, useSession, useChat, useNotification, useContact } from '@/store'
 import { useWebSocket } from '@/hooks/hook-websocket'
 import * as env from '@/interface/instance.resolver'
 
@@ -14,6 +14,7 @@ export default defineComponent({
         const { fetchSocketServerMessager } = useMessenger()
         const { fetchUserResolver } = useUser()
         const { fetchNotificationColumn } = useNotification()
+        const { fetchContactColumn } = useContact()
 
         onMounted(async () => {
             await fetchUserResolver()
@@ -21,6 +22,7 @@ export default defineComponent({
                 await fetchCommonWallpaper()
                 await fetchSessionInitColumn()
                 await fetchNotificationColumn()
+                await fetchContactColumn()
                 return await setState({ online, loading: false })
             })
         })

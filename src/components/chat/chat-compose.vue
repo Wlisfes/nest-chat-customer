@@ -12,7 +12,7 @@ export default defineComponent({
                 <div class="n-chunk n-column n-auto n-disover">
                     <n-h1>{props.title}</n-h1>
                 </div>
-                {slots.notification && slots.notification()}
+                {slots.default && slots.default()}
             </div>
         )
     }

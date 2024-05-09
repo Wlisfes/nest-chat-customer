@@ -24,7 +24,10 @@ export default defineComponent({
         return () => (
             <div class="chat-sessioner n-chunk n-column n-auto n-disover">
                 <chat-compose observer={props.observer} title={nickname.value}></chat-compose>
-                <chat-searcher></chat-searcher>
+                <div class="n-chunk n-column" style={{ padding: '0px 14px 14px', rowGap: '8px' }}>
+                    <chat-searcher></chat-searcher>
+                    <chat-filter></chat-filter>
+                </div>
                 <div class="n-chunk n-column n-auto n-disover">
                     <n-scrollbar class="is-customize" trigger="none" size={60} on-scroll={onScroller}>
                         <n-element class="n-chunk n-column">
@@ -34,7 +37,7 @@ export default defineComponent({
                                 </div>
                             )}
                             {total.value > 0 && (
-                                <div style={{ position: 'relative', paddingRight: '14px' }}>
+                                <div class="n-chunk n-column">
                                     {dataSource.value.map(item => {
                                         return <chat-node-sessioner key={item.keyId} v-model:node={item}></chat-node-sessioner>
                                     })}

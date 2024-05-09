@@ -1,5 +1,6 @@
 import { createComponent } from '@/utils/utils-component'
 import { Observer } from '@/utils/utils-observer'
+import * as env from '@/interface/instance.resolver'
 
 /**双因子认证**/
 export async function fetchFactor(props: Omix<{ uid: string; email: string }>) {
@@ -51,7 +52,7 @@ export async function fetchNotice(props: Omix<{ observer: Observer<Omix> }>) {
 }
 
 /**通知设置**/
-export async function fetchNotification(props: Omix<{ observer: Observer<Omix> }>) {
+export async function fetchNotification(props: Omix<{ observer: Observer<Omix>; title: string; source: env.EnumNotificationSource }>) {
     return await import('@/components/layer/layer-notification.vue').then(async component => {
         return await createComponent(component.default, props)
     })

@@ -24,7 +24,7 @@ export async function createComponent<T extends Omix>(Component: Parameters<type
     }
 
     /**组件销毁**/
-    async function unmount(delay: number = 0): Promise<any> {
+    async function unmount(delay: number = 300): Promise<any> {
         return await divineDelay(delay, () => {
             app.unmount()
             return element.remove()
