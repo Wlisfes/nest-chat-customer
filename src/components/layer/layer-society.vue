@@ -36,9 +36,9 @@ export default defineComponent({
         })
 
         /**接收图片上传回调**/
-        async function onSubmitUpdate(scope: Omix<{ done: Function } & env.RestStreamUploader>) {
-            await setState({ poster: scope.fileId, fileURL: scope.url })
-            return await scope.done({ visible: false })
+        async function onSubmitUpdate({ fileId, fileURL, done }: Omix<{ done: Function } & env.RestStreamUploader>) {
+            await setState({ poster: fileId, fileURL })
+            return await done({ visible: false })
         }
 
         /**新建社群**/

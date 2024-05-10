@@ -29,6 +29,6 @@ export interface RestStreamUploader {
     fileId: string
     fileName: string
     folder: string
-    url: string
+    fileURL: string
     message: string
 }
