@@ -19,15 +19,7 @@ export default defineComponent({
     },
     setup(props, { slots, emit }) {
         const { uid } = useStore(useUser)
-        const { state, setState } = useState({
-            loading: false,
-            userId: props.userId,
-            comment: '',
-            avatar: '',
-            nickname: '',
-            signature: '',
-            email: ''
-        })
+        const { state, setState } = useState({ loading: false, userId: props.userId, avatar: '', nickname: '', comment: '', email: '' })
 
         onMounted(async () => {
             return await divineHandler(Boolean(props.userId), {
@@ -40,14 +32,8 @@ export default defineComponent({
             try {
                 await setState({ loading: true })
                 return await httpUserCurrentResolver({ uid: props.userId }).then(async ({ data }) => {
-                    await setState({
-                        userId: data.uid,
-                        // comment: node.comment,
-                        signature: data.comment,
-                        avatar: data.avatar,
-                        nickname: data.nickname,
-                        email: data.email
-                    })
+                    const { uid, comment, avatar, nickname, email } = data
+                    await setState({ userId: uid, comment, avatar, nickname, email })
                     return await emit('ready', data)
                 })
             } catch (e) {
@@ -65,7 +51,7 @@ export default defineComponent({
                         </n-h2>
                         <n-text depth={3} class="n-chunk n-column" style={{ fontSize: '14px', lineHeight: '18px' }}>
                             <n-ellipsis line-clamp={2} tooltip={false}>
-                                {state.signature}
+                                {state.comment}
                             </n-ellipsis>
                         </n-text>
                     </div>

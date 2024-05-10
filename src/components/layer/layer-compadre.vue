@@ -1,18 +1,18 @@
 <script lang="tsx">
-import { defineComponent, onMounted, computed, Fragment, PropType } from 'vue'
+import { defineComponent, onMounted, computed, PropType } from 'vue'
 import { useUser, useNotification, useStore } from '@/store'
 import { useModal } from '@/hooks/hook-layer'
-import { useState } from '@/hooks/hook-state'
 import { divineRender, divineNotice } from '@/utils/utils-component'
 import { divineTransfer } from '@/utils/utils-transfer'
 import { divineWherer } from '@/utils/utils-common'
-import { httpUserCurrentResolver, httpNotificationUpdate } from '@/api/instance.service'
+import { httpNotificationUpdate } from '@/api/instance.service'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
     name: 'LayerCompadre',
     emits: ['close', 'submit'],
     props: {
+        title: { type: String, required: true },
         node: { type: Object as PropType<env.SchemaNotification>, required: true }
     },
     setup(props, { emit }) {
@@ -53,7 +53,7 @@ export default defineComponent({
                 style={chunkContent.value}
                 onAfterEnter={(el: HTMLElement) => divineTransfer(el)}
                 on-after-leave={() => emit('close')}
-                title={divineRender(<done-title content="查看联系人"></done-title>)}
+                title={divineRender(<done-title content={props.title}></done-title>)}
             >
                 <n-element class="layer-compadre n-chunk n-column n-disover">
                     <next-user-resolver
@@ -64,13 +64,32 @@ export default defineComponent({
                         onUpdate={fetchNotificationUpdate}
                     >
                         <div class="n-chunk n-column n-auto n-disover" style={{ paddingTop: '14px' }}>
-                            <n-text depth={3} style={{ lineHeight: '20px' }}>
-                                备注
-                            </n-text>
-                            <n-text depth={2} type="success" style={{ fontSize: '16px', lineHeight: '28px' }}>
-                                <n-ellipsis tooltip={false}>{props.node.comment}</n-ellipsis>
-                            </n-text>
+                            <n-blockquote class="n-chunk n-column" align-text style={{ margin: 0, paddingLeft: '8px' }}>
+                                <n-ellipsis tooltip={false} line-clamp={2} style={{ lineHeight: '24px' }}>
+                                    <n-text type="success" depth={1}>
+                                        备注：
+                                    </n-text>
+                                    <n-text depth={2}>{props.node.comment}</n-text>
+                                </n-ellipsis>
+                            </n-blockquote>
                         </div>
+                        {props.node.source === env.EnumNotificationSource.communit && (
+                            <div class="n-chunk n-column n-disover" style={{ rowGap: '10px', paddingTop: '24px' }}>
+                                <div class="n-chunk n-center n-disover" style={{ columnGap: '10px' }}>
+                                    <chat-avatar size={34} src={props.node.communit.poster.fileURL}></chat-avatar>
+                                    <div class="n-chunk n-column n-auto n-disover">
+                                        <n-h2 style={{ fontSize: '16px', lineHeight: '22px', fontWeight: 500, margin: 0 }}>
+                                            <n-ellipsis tooltip={false}>{props.node.communit.name}</n-ellipsis>
+                                        </n-h2>
+                                    </div>
+                                </div>
+                                <n-text class="n-chunk n-column n-disover" depth={3} style={{ lineHeight: '20px' }}>
+                                    <n-ellipsis expand-trigger="click" tooltip={false} line-clamp={3}>
+                                        {props.node.communit.comment}
+                                    </n-ellipsis>
+                                </n-text>
+                            </div>
+                        )}
                     </next-user-resolver>
                 </n-element>
             </n-modal>

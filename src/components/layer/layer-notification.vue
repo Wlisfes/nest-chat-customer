@@ -46,7 +46,6 @@ export default defineComponent({
                 show-mask="transparent"
                 auto-focus={false}
                 mask-closable={false}
-                on-esc={() => console.log('on-esc')}
                 on-after-leave={() => emit('close')}
             >
                 <n-element class="layer-notification n-chunk n-column n-auto n-disover">

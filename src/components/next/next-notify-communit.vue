@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, Fragment, PropType } from 'vue'
 import { useUser, useStore } from '@/store'
-import { useMoment } from '@/hooks/hook-common'
+import { fetchCompadre } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -11,16 +11,27 @@ export default defineComponent({
     },
     setup(props) {
         const { uid } = useStore(useUser)
-        const { divineDateMomentTransfor } = useMoment()
+
+        /**社群申请验证操作**/
+        async function fetchUseCompadre() {
+            return await fetchCompadre({
+                node: props.node,
+                title: '申请人基本信息',
+                onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount()
+            })
+        }
 
         return () => (
-            <common-element class="n-chunk n-column n-pointer">
+            <common-element y-gap={14} class="n-chunk n-column n-pointer" onClick={fetchUseCompadre}>
                 <div class="n-chunk n-center" style={{ columnGap: '10px' }}>
-                    <chat-avatar size={42} src={props.node.communit.poster.fileURL}></chat-avatar>
+                    <chat-avatar size={46} src={props.node.user.avatar}></chat-avatar>
                     <div class="n-chunk n-column n-auto n-disover">
-                        <n-h2 style={{ fontSize: '16px', lineHeight: '22px', fontWeight: 500, margin: 0 }}>
-                            <n-ellipsis tooltip={false}>{props.node.communit.name}</n-ellipsis>
+                        <n-h2 style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 500, margin: 0 }}>
+                            <n-ellipsis tooltip={false}>{props.node.user.nickname}</n-ellipsis>
                         </n-h2>
+                        <n-text depth={3} style={{ lineHeight: '20px' }}>
+                            {props.node.updateTime}
+                        </n-text>
                     </div>
                     <Fragment>
                         {props.node.status === env.EnumNotificationStatus.waitze && props.node.userId === uid.value ? (
@@ -49,18 +60,27 @@ export default defineComponent({
                         )}
                     </Fragment>
                 </div>
-                <n-text class="n-chunk n-column n-disover" depth={3} style={{ lineHeight: '20px' }}>
-                    <n-ellipsis tooltip={false} line-clamp={3}>
-                        {props.node.communit.comment}
+                <n-blockquote class="n-chunk n-column" align-text style={{ margin: 0, paddingLeft: '8px' }}>
+                    <n-ellipsis tooltip={false} line-clamp={2} style={{ lineHeight: '24px' }}>
+                        <n-text type="success" depth={1}>
+                            备注：
+                        </n-text>
+                        <n-text depth={2}>{props.node.comment}</n-text>
                     </n-ellipsis>
-                </n-text>
-                <div class="n-chunk n-center n-disover" style={{ columnGap: '10px' }}>
-                    <chat-avatar size={28} radius={14} src={props.node.user.avatar}></chat-avatar>
-                    <n-text depth={3} style={{ lineHeight: '20px', maxWidth: '120px' }}>
-                        <n-ellipsis tooltip={false}>{props.node.user.nickname}</n-ellipsis>
-                    </n-text>
-                    <n-text depth={3} style={{ lineHeight: '20px' }}>
-                        {divineDateMomentTransfor(props.node.updateTime)}
+                </n-blockquote>
+                <div class="n-chunk n-column n-disover" style={{ rowGap: '10px' }}>
+                    <div class="n-chunk n-center n-disover" style={{ columnGap: '10px' }}>
+                        <chat-avatar size={34} src={props.node.communit.poster.fileURL}></chat-avatar>
+                        <div class="n-chunk n-column n-auto n-disover">
+                            <n-h2 style={{ fontSize: '16px', lineHeight: '22px', fontWeight: 500, margin: 0 }}>
+                                <n-ellipsis tooltip={false}>{props.node.communit.name}</n-ellipsis>
+                            </n-h2>
+                        </div>
+                    </div>
+                    <n-text class="n-chunk n-column n-disover" depth={3} style={{ lineHeight: '20px' }}>
+                        <n-ellipsis tooltip={false} line-clamp={3}>
+                            {props.node.communit.comment}
+                        </n-ellipsis>
                     </n-text>
                 </div>
             </common-element>
