@@ -3,7 +3,7 @@ import { defineComponent, computed, onMounted, Fragment, PropType } from 'vue'
 import { useUser, useNotification, useStore } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
 import { Observer } from '@/utils/utils-observer'
-import { fetchCompadre } from '@/components/layer/layer.instance'
+import { fetchJoiner, fetchCompadre } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -29,7 +29,15 @@ export default defineComponent({
             })
         })
 
-        /**联系人申请操作**/
+        /**联系人、社群申请操作**/
+        async function fetchUseJoiner() {
+            // return await fetchJoiner({
+            //     observer: props.observer,
+            //     onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount()
+            // })
+        }
+
+        /**联系人申请验证操作**/
         async function fetchUseCompadre(scope: env.SchemaNotification) {
             return await fetchCompadre({
                 node: scope,
@@ -53,7 +61,7 @@ export default defineComponent({
                     <chat-header title={props.title} onClose={(evt: Event) => fetchState({ visible: false })}></chat-header>
                     <div class="chunk-operate n-chunk n-column n-disover">
                         {props.source === env.EnumNotificationSource.contact ? (
-                            <div class="chunk-column n-chunk n-center n-disover n-pointer">
+                            <div class="chunk-column n-chunk n-center n-disover n-pointer" onClick={fetchUseJoiner}>
                                 <n-icon-wrapper size={42} color="#2aa886" icon-color="#ffffff" border-radius={4}>
                                     <n-icon size={28} component={<Iv-AsUser />}></n-icon>
                                 </n-icon-wrapper>
@@ -62,7 +70,7 @@ export default defineComponent({
                                 </n-text>
                             </div>
                         ) : (
-                            <div class="chunk-column n-chunk n-center n-disover n-pointer">
+                            <div class="chunk-column n-chunk n-center n-disover n-pointer" onClick={fetchUseJoiner}>
                                 <n-icon-wrapper size={42} color="#2aa886" icon-color="#ffffff" border-radius={4}>
                                     <n-icon size={28} component={<Iv-AsUser />}></n-icon>
                                 </n-icon-wrapper>
@@ -105,27 +113,30 @@ export default defineComponent({
                                                             <n-ellipsis tooltip={false}>{item.user.nickname}</n-ellipsis>
                                                         )}
                                                     </n-h2>
-                                                    <n-text style={{ fontSize: '13px', lineHeight: '20px' }}>
+                                                    <n-text depth={3} style={{ fontSize: '13px', lineHeight: '20px' }}>
                                                         {item.userId === uid.value ? (
                                                             <n-ellipsis tooltip={false}>{`我：${item.comment}`}</n-ellipsis>
                                                         ) : (
-                                                            <n-ellipsis tooltip={false}>{item.nive.comment}</n-ellipsis>
+                                                            <n-ellipsis tooltip={false}>{item.comment}</n-ellipsis>
                                                         )}
                                                     </n-text>
                                                 </div>
                                                 <Fragment>
-                                                    {item.status === env.EnumNotificationStatus.waitze ? (
-                                                        <Fragment>
-                                                            {item.userId === uid.value ? (
-                                                                <n-button size="small" type="warning" secondary focusable={false}>
-                                                                    待验证
-                                                                </n-button>
-                                                            ) : (
-                                                                <n-button size="small" secondary focusable={false}>
-                                                                    查看
-                                                                </n-button>
-                                                            )}
-                                                        </Fragment>
+                                                    {item.status === env.EnumNotificationStatus.waitze && item.userId === uid.value ? (
+                                                        <n-button size="small" type="warning" secondary focusable={false}>
+                                                            待验证
+                                                        </n-button>
+                                                    ) : item.status === env.EnumNotificationStatus.waitze ? (
+                                                        <n-button size="small" secondary focusable={false}>
+                                                            查看
+                                                        </n-button>
+                                                    ) : item.status === env.EnumNotificationStatus.resolve && item.userId === uid.value ? (
+                                                        <n-button text size="small" type="success" focusable={false}>
+                                                            <div class="n-chunk n-center" style={{ columnGap: '3px' }}>
+                                                                <n-icon size={16} component={<Iv-BsSender />} />
+                                                                <span>已添加</span>
+                                                            </div>
+                                                        </n-button>
                                                     ) : item.status === env.EnumNotificationStatus.resolve ? (
                                                         <n-button text size="small" type="success" focusable={false}>
                                                             已添加

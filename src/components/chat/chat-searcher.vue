@@ -1,12 +1,29 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, ref, Ref, onMounted } from 'vue'
+import { InputInst } from 'naive-ui'
+import { divineDelay, divineHandler } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'ChatSearcher',
-    setup() {
+    props: {
+        autoFocus: { type: Boolean, default: false },
+        delay: { type: Number, default: 300 }
+    },
+    setup(props) {
+        const input = ref<InputInst>() as Ref<InputInst>
+
+        onMounted(async () => {
+            return await divineHandler(props.autoFocus, {
+                handler: async () => {
+                    await divineDelay(props.delay)
+                    return input.value.focus()
+                }
+            })
+        })
+
         return () => (
             <div class="chat-searcher n-chunk n-column n-disover">
-                <n-input placeholder="搜索对话">
+                <n-input ref={input} placeholder="搜索对话">
                     {{
                         prefix: () => <n-icon size={18} component={<Iv-BsSearch />} style={{ marginRight: '10px' }}></n-icon>
                     }}

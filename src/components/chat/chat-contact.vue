@@ -3,7 +3,7 @@ import { defineComponent, Fragment, PropType } from 'vue'
 import { useNotification, useContact, useUser, useStore } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
 import { Observer } from '@/utils/utils-observer'
-import { fetchNotification } from '@/components/layer/layer.instance'
+import { fetchNotification, fetchJoiner } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -16,6 +16,16 @@ export default defineComponent({
         const { state } = useStore(useContact)
         const { dot } = useStore(useNotification)
         const { uid } = useStore(useUser)
+
+        /**联系人、社群申请操作**/
+        async function fetchUseJoiner() {
+            return await fetchJoiner({
+                observer,
+                title: '新增联系人',
+                source: env.EnumNotificationSource.contact,
+                onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount()
+            })
+        }
 
         /**联系人新增、通知组件**/
         async function fetchUseNotification() {
@@ -41,6 +51,14 @@ export default defineComponent({
                         <common-icon circle size={40} icon-size={24} component={<Iv-BsAlert />}></common-icon>
                     </n-badge>
                 </chat-compose>
+                <div class="chunk-operate n-chunk n-center n-disover n-pointer" onClick={fetchUseJoiner}>
+                    <n-icon-wrapper size={42} color="#2aa886" icon-color="#ffffff" border-radius={4}>
+                        <n-icon size={28} component={<Iv-AsUser />}></n-icon>
+                    </n-icon-wrapper>
+                    <n-text depth={1} style={{ fontSize: '18px' }}>
+                        新增联系人
+                    </n-text>
+                </div>
                 <div class="n-chunk n-column n-auto n-disover">
                     <n-scrollbar class="is-customize" trigger="none" size={60}>
                         <n-element class="n-chunk n-column">
@@ -78,6 +96,27 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.chunk-operate {
+    user-select: none;
+    overflow: hidden;
+    padding: 14px;
+    column-gap: 14px;
+    background-color: var(--chat-column-color);
+    transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
+    &:hover {
+        background-color: var(--chat-column-hover-color);
+    }
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 1px;
+        background-color: var(--chat-border-color);
+        transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
+    }
+}
 .chunk-block {
     user-select: none;
     padding: 14px;
