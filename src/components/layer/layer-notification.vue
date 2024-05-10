@@ -1,6 +1,6 @@
 <script lang="tsx">
-import { defineComponent, computed, onMounted, Fragment, PropType } from 'vue'
-import { useUser, useNotification, useStore } from '@/store'
+import { defineComponent, onMounted, Fragment, PropType } from 'vue'
+import { useNotification, useStore } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
 import { Observer } from '@/utils/utils-observer'
 import { fetchJoiner, fetchCompadre } from '@/components/layer/layer.instance'
@@ -15,12 +15,8 @@ export default defineComponent({
         observer: { type: Object as PropType<Observer<Omix>>, required: true }
     },
     setup(props, { emit }) {
-        const { uid } = useStore(useUser)
-        const { state, fetchNotificationColumn } = useStore(useNotification)
+        const { dataContact, dataCommunit } = useStore(useNotification)
         const { visible, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
-        const dataSource = computed(() => {
-            return state.value.dataSource.filter(item => item.source === props.source)
-        })
 
         onMounted(async () => {
             await fetchState({ visible: true })
@@ -58,7 +54,7 @@ export default defineComponent({
                 on-after-leave={() => emit('close')}
             >
                 <n-element class="layer-notification n-chunk n-column n-auto n-disover">
-                    <chat-header title={props.title} onClose={(evt: Event) => fetchState({ visible: false })}></chat-header>
+                    <chat-header title={props.title} onClose={(evt: MouseEvent) => fetchState({ visible: false })}></chat-header>
                     <div class="chunk-operate n-chunk n-column n-disover">
                         {props.source === env.EnumNotificationSource.contact ? (
                             <div class="chunk-column n-chunk n-center n-disover n-pointer" onClick={fetchUseJoiner}>
@@ -72,85 +68,32 @@ export default defineComponent({
                         ) : (
                             <div class="chunk-column n-chunk n-center n-disover n-pointer" onClick={fetchUseJoiner}>
                                 <n-icon-wrapper size={42} color="#2aa886" icon-color="#ffffff" border-radius={4}>
-                                    <n-icon size={28} component={<Iv-AsUser />}></n-icon>
+                                    <n-icon size={28} component={<Iv-AsCommunit />}></n-icon>
                                 </n-icon-wrapper>
                                 <n-text depth={1} style={{ fontSize: '18px' }}>
-                                    新增联系人
+                                    查找社群
                                 </n-text>
                             </div>
                         )}
                     </div>
                     <div class="n-chunk n-column n-auto n-disover">
                         <n-scrollbar class="is-customize" trigger="none" size={60}>
-                            {dataSource.value.length > 0 && (
-                                <div class="n-chunk n-column n-auto n-disover">
-                                    {dataSource.value.map(item => {
-                                        if (item.source === env.EnumNotificationSource.communit) {
-                                            return (
-                                                <div class="chunk-block n-chunk n-pointer" key={item.keyId}>
-                                                    <chat-avatar size={42} src={item.communit.poster.fileURL}></chat-avatar>
-                                                </div>
-                                            )
-                                        }
-                                        return (
-                                            <div
-                                                class="chunk-block n-chunk n-center n-pointer"
-                                                key={item.keyId}
-                                                onClick={(evt: MouseEvent) => fetchUseCompadre(item)}
-                                            >
-                                                <Fragment>
-                                                    {item.userId === uid.value ? (
-                                                        <chat-avatar size={42} src={item.nive.avatar}></chat-avatar>
-                                                    ) : (
-                                                        <chat-avatar size={42} src={item.user.avatar}></chat-avatar>
-                                                    )}
-                                                </Fragment>
-                                                <div class="n-chunk n-column n-auto n-disover">
-                                                    <n-h2 style={{ fontSize: '16px', lineHeight: '22px', fontWeight: 500, margin: 0 }}>
-                                                        {item.userId === uid.value ? (
-                                                            <n-ellipsis tooltip={false}>{item.nive.nickname}</n-ellipsis>
-                                                        ) : (
-                                                            <n-ellipsis tooltip={false}>{item.user.nickname}</n-ellipsis>
-                                                        )}
-                                                    </n-h2>
-                                                    <n-text depth={3} style={{ fontSize: '13px', lineHeight: '20px' }}>
-                                                        {item.userId === uid.value ? (
-                                                            <n-ellipsis tooltip={false}>{`我：${item.comment}`}</n-ellipsis>
-                                                        ) : (
-                                                            <n-ellipsis tooltip={false}>{item.comment}</n-ellipsis>
-                                                        )}
-                                                    </n-text>
-                                                </div>
-                                                <Fragment>
-                                                    {item.status === env.EnumNotificationStatus.waitze && item.userId === uid.value ? (
-                                                        <n-button size="small" type="warning" secondary focusable={false}>
-                                                            待验证
-                                                        </n-button>
-                                                    ) : item.status === env.EnumNotificationStatus.waitze ? (
-                                                        <n-button size="small" secondary focusable={false}>
-                                                            查看
-                                                        </n-button>
-                                                    ) : item.status === env.EnumNotificationStatus.resolve && item.userId === uid.value ? (
-                                                        <n-button text size="small" type="success" focusable={false}>
-                                                            <div class="n-chunk n-center" style={{ columnGap: '3px' }}>
-                                                                <n-icon size={16} component={<Iv-BsSender />} />
-                                                                <span>已添加</span>
-                                                            </div>
-                                                        </n-button>
-                                                    ) : item.status === env.EnumNotificationStatus.resolve ? (
-                                                        <n-button text size="small" type="success" focusable={false}>
-                                                            已添加
-                                                        </n-button>
-                                                    ) : (
-                                                        <n-button text size="small" type="error" focusable={false}>
-                                                            已拒绝
-                                                        </n-button>
-                                                    )}
-                                                </Fragment>
-                                            </div>
-                                        )
-                                    })}
-                                </div>
+                            {props.source === env.EnumNotificationSource.contact ? (
+                                <Fragment>
+                                    <div class="n-chunk n-column n-auto n-disover">
+                                        {dataContact.value.map(item => (
+                                            <chat-notify-contact key={item.keyId} node={item}></chat-notify-contact>
+                                        ))}
+                                    </div>
+                                </Fragment>
+                            ) : (
+                                <Fragment>
+                                    <div class="n-chunk n-column n-auto n-disover">
+                                        {dataCommunit.value.map(item => (
+                                            <chat-notify-communit key={item.keyId} node={item}></chat-notify-communit>
+                                        ))}
+                                    </div>
+                                </Fragment>
                             )}
                         </n-scrollbar>
                     </div>

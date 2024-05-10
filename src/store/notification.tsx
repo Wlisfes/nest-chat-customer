@@ -11,14 +11,18 @@ export const useNotification = defineStore(APP_STORE.STORE_NOTIFICATION, () => {
         total: 0,
         loading: true
     })
+    /**社群通知**/
+    const dataContact = computed(() => {
+        return state.dataSource.filter(item => item.source === env.EnumNotificationSource.contact)
+    })
+    /**联系人通知**/
+    const dataCommunit = computed(() => {
+        return state.dataSource.filter(item => item.source === env.EnumNotificationSource.communit)
+    })
     const dot = computed(() => {
         return {
-            contact: state.dataSource.some(item => {
-                return item.source === env.EnumNotificationSource.contact && item.status === env.EnumNotificationStatus.waitze
-            }),
-            communit: state.dataSource.some(item => {
-                return item.source === env.EnumNotificationSource.communit && item.status === env.EnumNotificationStatus.waitze
-            })
+            contact: dataContact.value.some(item => item.status === env.EnumNotificationStatus.waitze),
+            communit: dataCommunit.value.some(item => item.status === env.EnumNotificationStatus.waitze)
         }
     })
 
@@ -36,5 +40,5 @@ export const useNotification = defineStore(APP_STORE.STORE_NOTIFICATION, () => {
         }
     }
 
-    return { state, dot, ...toRefs(state), setState, fetchNotificationColumn }
+    return { state, dot, dataContact, dataCommunit, ...toRefs(state), setState, fetchNotificationColumn }
 })

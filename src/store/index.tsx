@@ -9,6 +9,7 @@ export { useChat } from '@/store/chat'
 export { useComment } from '@/store/comment'
 export { useNotification } from '@/store/notification'
 export { useContact } from '@/store/contact'
+export { useCommunit } from '@/store/communit'
 /**挂载持久化缓存**/
 const store = createPinia().use(piniaPluginPersistedstate)
 /**导出解构函数**/
