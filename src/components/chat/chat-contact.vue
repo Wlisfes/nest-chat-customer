@@ -63,11 +63,13 @@ export default defineComponent({
                 <div class="n-chunk n-column n-auto n-disover">
                     <n-scrollbar class="is-customize" trigger="none" size={60}>
                         {total.value === 0 ? (
-                            <n-empty description="暂无数据"></n-empty>
+                            <div class="n-chunk n-column n-disover" style={{ padding: '14px' }}>
+                                <n-empty description="暂无数据"></n-empty>
+                            </div>
                         ) : (
                             <n-element class="n-chunk n-column n-auto n-disover">
                                 {dataSource.value.map(item => (
-                                    <common-element class="chunk-element n-chunk n-center n-pointer" key={item.keyId}>
+                                    <common-element class="n-chunk n-center n-pointer" key={item.keyId}>
                                         <Fragment>
                                             {item.user.uid === uid.value ? (
                                                 <chat-avatar size={42} src={item.nive.avatar}></chat-avatar>

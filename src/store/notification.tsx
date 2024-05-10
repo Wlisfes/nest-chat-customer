@@ -30,11 +30,7 @@ export const useNotification = defineStore(APP_STORE.STORE_NOTIFICATION, () => {
     async function fetchNotificationColumn() {
         try {
             const { data } = await httpNotificationColumn()
-            return await setState({
-                dataSource: data.list ?? [],
-                total: data.total ?? 0,
-                loading: false
-            })
+            return await setState({ dataSource: data.list ?? [], total: data.total ?? 0, loading: false })
         } catch (e) {
             return await setState({ dataSource: [], total: 0, loading: false })
         }

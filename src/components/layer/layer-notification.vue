@@ -55,27 +55,35 @@ export default defineComponent({
             >
                 <n-element class="layer-notification n-chunk n-column n-auto n-disover">
                     <chat-header title={props.title} onClose={(evt: MouseEvent) => fetchState({ visible: false })}></chat-header>
-                    <div class="chunk-operate n-chunk n-column n-disover">
+                    <Fragment>
                         {props.source === env.EnumNotificationSource.contact ? (
-                            <div class="chunk-column n-chunk n-center n-disover n-pointer" onClick={fetchUseJoiner}>
+                            <common-element
+                                class="n-chunk n-center n-disover n-pointer"
+                                chunk-before={{ left: 0, right: 0 }}
+                                onClick={fetchUseJoiner}
+                            >
                                 <n-icon-wrapper size={42} color="#2aa886" icon-color="#ffffff" border-radius={4}>
                                     <n-icon size={28} component={<Iv-AsUser />}></n-icon>
                                 </n-icon-wrapper>
                                 <n-text depth={1} style={{ fontSize: '18px' }}>
                                     新增联系人
                                 </n-text>
-                            </div>
+                            </common-element>
                         ) : (
-                            <div class="chunk-column n-chunk n-center n-disover n-pointer" onClick={fetchUseJoiner}>
+                            <common-element
+                                class="n-chunk n-center n-disover n-pointer"
+                                chunk-before={{ left: 0, right: 0 }}
+                                onClick={fetchUseJoiner}
+                            >
                                 <n-icon-wrapper size={42} color="#2aa886" icon-color="#ffffff" border-radius={4}>
                                     <n-icon size={28} component={<Iv-AsCommunit />}></n-icon>
                                 </n-icon-wrapper>
                                 <n-text depth={1} style={{ fontSize: '18px' }}>
                                     查找社群
                                 </n-text>
-                            </div>
+                            </common-element>
                         )}
-                    </div>
+                    </Fragment>
                     <div class="n-chunk n-column n-auto n-disover">
                         <n-scrollbar class="is-customize" trigger="none" size={60}>
                             {props.source === env.EnumNotificationSource.contact ? (
@@ -103,49 +111,3 @@ export default defineComponent({
     }
 })
 </script>
-
-<style lang="scss" scoped>
-.chunk-operate {
-    &::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        height: 1px;
-        z-index: 1;
-        background-color: var(--chat-border-color);
-        transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
-    }
-    .chunk-column {
-        user-select: none;
-        overflow: hidden;
-        padding: 14px;
-        column-gap: 14px;
-        background-color: var(--chat-column-color);
-        transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
-        &:hover {
-            background-color: var(--chat-column-hover-color);
-        }
-    }
-}
-.chunk-block {
-    user-select: none;
-    padding: 14px;
-    column-gap: 10px;
-    transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
-    &:hover {
-        background-color: var(--chat-column-hover-color);
-    }
-    &:not(:last-child)::before {
-        content: '';
-        position: absolute;
-        left: 20px;
-        right: 20px;
-        bottom: 0;
-        height: 1px;
-        background-color: var(--chat-border-color);
-        transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
-    }
-}
-</style>

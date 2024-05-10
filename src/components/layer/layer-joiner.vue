@@ -75,7 +75,7 @@ export default defineComponent({
             >
                 <n-element class="layer-joiner n-chunk n-column n-auto n-disover">
                     <chat-header title={props.title} onClose={(evt: Event) => fetchState({ visible: false })}></chat-header>
-                    <div class="n-chunk n-column" style={{ padding: '0px 14px 14px', rowGap: '8px' }}>
+                    <div class="n-chunk n-column" style={{ padding: '0px 14px 14px' }}>
                         <chat-searcher
                             auto-focus
                             v-model:content={state.keyword}
@@ -90,21 +90,31 @@ export default defineComponent({
                                     <common-loadiner size={32} size-border={4}></common-loadiner>
                                 </div>
                             )}
-                            {state.dataContact.length + state.dataContact.length > 0 ? (
+                            {props.source === env.EnumNotificationSource.contact ? (
                                 <Fragment>
-                                    {props.source === env.EnumNotificationSource.contact ? (
+                                    {!state.loading && state.dataContact.length === 0 && (
+                                        <div class="n-chunk n-column n-disover" style={{ padding: '14px' }}>
+                                            <n-empty description="暂无数据"></n-empty>
+                                        </div>
+                                    )}
+                                    {state.dataContact.length > 0 && (
                                         <div class="n-chunk n-column n-disover">
                                             {state.dataContact.map(item => (
                                                 <chat-join-contact key={item.keyId} node={item}></chat-join-contact>
                                             ))}
                                         </div>
-                                    ) : (
-                                        <div class="n-chunk n-column n-disover"></div>
                                     )}
                                 </Fragment>
-                            ) : !state.loading ? (
-                                <n-empty description="暂无数据"></n-empty>
-                            ) : null}
+                            ) : (
+                                <Fragment>
+                                    {!state.loading && state.dataCommunit.length === 0 && (
+                                        <div class="n-chunk n-column n-disover" style={{ padding: '14px' }}>
+                                            <n-empty description="暂无数据"></n-empty>
+                                        </div>
+                                    )}
+                                    {state.dataCommunit.length > 0 && <div class="n-chunk n-column n-disover">DSA</div>}
+                                </Fragment>
+                            )}
                         </n-scrollbar>
                     </div>
                 </n-element>

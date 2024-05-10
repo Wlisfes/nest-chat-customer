@@ -21,7 +21,7 @@ export default defineComponent({
         }
 
         return () => (
-            <div class="chat-notify-contact n-chunk n-center n-pointer" onClick={fetchUseCompadre}>
+            <common-element class="n-chunk n-center n-pointer" onClick={fetchUseCompadre}>
                 <Fragment>
                     {props.node.userId === uid.value ? (
                         <chat-avatar size={42} src={props.node.nive.avatar}></chat-avatar>
@@ -37,7 +37,7 @@ export default defineComponent({
                             <n-ellipsis tooltip={false}>{props.node.user.nickname}</n-ellipsis>
                         )}
                     </n-h2>
-                    <n-text depth={3} style={{ fontSize: '13px', lineHeight: '20px' }}>
+                    <n-text depth={3} style={{ lineHeight: '20px' }}>
                         {props.node.userId === uid.value ? (
                             <n-ellipsis tooltip={false}>{`我：${props.node.comment}`}</n-ellipsis>
                         ) : (
@@ -71,30 +71,8 @@ export default defineComponent({
                         </n-button>
                     )}
                 </Fragment>
-            </div>
+            </common-element>
         )
     }
 })
 </script>
-
-<style lang="scss" scoped>
-.chat-notify-contact {
-    user-select: none;
-    padding: 14px;
-    column-gap: 10px;
-    transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
-    &:hover {
-        background-color: var(--chat-column-hover-color);
-    }
-    &:not(:last-child)::before {
-        content: '';
-        position: absolute;
-        left: 20px;
-        right: 20px;
-        bottom: 0;
-        height: 1px;
-        background-color: var(--chat-border-color);
-        transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
-    }
-}
-</style>
