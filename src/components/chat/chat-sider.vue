@@ -19,8 +19,8 @@ export default defineComponent({
                         <chat-sessioner observer={observer}></chat-sessioner>
                     ) : chat.current === 'contact' ? (
                         <chat-contact observer={observer}></chat-contact>
-                    ) : chat.current === 'society' ? (
-                        <chat-society observer={observer}></chat-society>
+                    ) : chat.current === 'communit' ? (
+                        <chat-communit observer={observer}></chat-communit>
                     ) : chat.current === 'chane' ? (
                         <chat-chane observer={observer}></chat-chane>
                     ) : chat.current === 'dynamic' ? (

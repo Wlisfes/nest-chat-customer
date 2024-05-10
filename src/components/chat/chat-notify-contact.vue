@@ -1,9 +1,7 @@
 <script lang="tsx">
 import { defineComponent, Fragment, PropType } from 'vue'
-import { useNotification, useContact, useUser, useStore } from '@/store'
-import { useDrawer } from '@/hooks/hook-layer'
-import { Observer } from '@/utils/utils-observer'
-import { fetchJoiner, fetchCompadre } from '@/components/layer/layer.instance'
+import { useUser, useStore } from '@/store'
+import { fetchCompadre } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({

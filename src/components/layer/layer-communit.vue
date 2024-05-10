@@ -8,7 +8,7 @@ import * as env from '@/interface/instance.resolver'
 import * as api from '@/api/instance.service'
 
 export default defineComponent({
-    name: 'LayerSociety',
+    name: 'LayerCommunit',
     emits: ['close', 'submit'],
     props: {
         observer: { type: Object as PropType<Observer<Omix>>, required: true }
@@ -71,7 +71,7 @@ export default defineComponent({
                 show-mask={false}
                 on-after-leave={() => emit('close')}
             >
-                <n-element class="layer-society n-chunk n-column n-auto n-disover">
+                <n-element class="layer-communit n-chunk n-column n-auto n-disover">
                     <chat-header title="新建社群" onClose={(evt: Event) => fetchState({ visible: false })}></chat-header>
                     <div class="n-chunk n-column n-auto n-disover">
                         <n-scrollbar class="is-customize">

@@ -4,11 +4,11 @@ import { useSession, useUser, useCommunit, useNotification, useStore } from '@/s
 import { useDrawer } from '@/hooks/hook-layer'
 import { Observer } from '@/utils/utils-observer'
 import { divineNotice } from '@/utils/utils-component'
-import { fetchSociety, fetchNotification } from '@/components/layer/layer.instance'
+import { fetchCommunit, fetchNotification } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
-    name: 'ChatSociety',
+    name: 'ChatCommunit',
     props: {
         observer: { type: Object as PropType<Observer<Omix>>, required: true }
     },
@@ -19,8 +19,8 @@ export default defineComponent({
         const { observer } = useDrawer({ observer: props.observer, mount: true, unmount: true })
 
         /**新建社群**/
-        async function fetchUseSociety() {
-            return await fetchSociety({
+        async function fetchUseCommunit() {
+            return await fetchCommunit({
                 observer,
                 onClose: async ({ unmount }: Omix<{ unmount: Function }>) => {
                     return await unmount(300)
@@ -44,7 +44,7 @@ export default defineComponent({
         }
 
         return () => (
-            <div class="chat-society n-chunk n-column n-auto n-disover n-pointer">
+            <div class="chat-communit n-chunk n-column n-auto n-disover n-pointer">
                 <chat-compose observer={observer} title="社群">
                     <n-badge
                         class="chat-compose-badge"
@@ -57,7 +57,7 @@ export default defineComponent({
                         <common-icon circle size={40} icon-size={24} component={<Iv-BsAlert />}></common-icon>
                     </n-badge>
                 </chat-compose>
-                <div class="chunk-operate n-chunk n-center n-disover n-pointer" onClick={fetchUseSociety}>
+                <div class="chunk-operate n-chunk n-center n-disover n-pointer" onClick={fetchUseCommunit}>
                     <n-icon-wrapper size={42} color="#2aa886" icon-color="#ffffff" border-radius={4}>
                         <n-icon size={28} component={<Iv-NsSociety />}></n-icon>
                     </n-icon-wrapper>

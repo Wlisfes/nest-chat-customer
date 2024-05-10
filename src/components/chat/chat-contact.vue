@@ -17,7 +17,7 @@ export default defineComponent({
         const { dot } = useStore(useNotification)
         const { uid } = useStore(useUser)
 
-        /**联系人、社群申请操作**/
+        /**新增联系人**/
         async function fetchUseJoiner() {
             return await fetchJoiner({
                 observer,

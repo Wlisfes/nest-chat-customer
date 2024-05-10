@@ -38,8 +38,8 @@ export async function fetchSafety(props: Omix<{ observer: Observer<Omix> }>) {
 }
 
 /**新建社群**/
-export async function fetchSociety(props: Omix<{ observer: Observer<Omix> }>) {
-    return await import('@/components/layer/layer-society.vue').then(async component => {
+export async function fetchCommunit(props: Omix<{ observer: Observer<Omix> }>) {
+    return await import('@/components/layer/layer-communit.vue').then(async component => {
         return await createComponent(component.default, props)
     })
 }
