@@ -13,7 +13,7 @@ export default defineComponent({
         observer: { type: Object as PropType<Observer<Omix>>, required: true }
     },
     setup(props) {
-        const { state, fetchCommunitColumn } = useStore(useCommunit)
+        const { total, dataSource, fetchCommunitColumn } = useStore(useCommunit)
         const { dot } = useStore(useNotification)
         const { uid } = useStore(useUser)
         const { observer } = useDrawer({ observer: props.observer, mount: true, unmount: true })
@@ -57,17 +57,31 @@ export default defineComponent({
                         <common-icon circle size={40} icon-size={24} component={<Iv-BsAlert />}></common-icon>
                     </n-badge>
                 </chat-compose>
-                <div class="chunk-operate n-chunk n-center n-disover n-pointer" onClick={fetchUseCommunit}>
+                <common-element
+                    class="n-chunk n-center n-disover n-pointer"
+                    chunk-before={{ left: 0, right: 0 }}
+                    onClick={fetchUseCommunit}
+                >
                     <n-icon-wrapper size={42} color="#2aa886" icon-color="#ffffff" border-radius={4}>
                         <n-icon size={28} component={<Iv-NsSociety />}></n-icon>
                     </n-icon-wrapper>
                     <n-text depth={1} style={{ fontSize: '18px' }}>
                         新建社群
                     </n-text>
-                </div>
+                </common-element>
                 <div class="n-chunk n-column n-auto n-disover">
                     <n-scrollbar class="is-customize" trigger="none" size={60}>
-                        <n-element class="n-chunk n-column"></n-element>
+                        {total.value === 0 ? (
+                            <n-empty description="暂无数据"></n-empty>
+                        ) : (
+                            <n-element class="n-chunk n-column n-auto n-disover">
+                                {dataSource.value.map(item => (
+                                    <common-element key={item.keyId} class="n-chunk n-center n-pointer">
+                                        <chat-avatar size={42} src={item.poster.fileURL}></chat-avatar>
+                                    </common-element>
+                                ))}
+                            </n-element>
+                        )}
                     </n-scrollbar>
                 </div>
             </div>
@@ -81,7 +95,7 @@ export default defineComponent({
     user-select: none;
     overflow: hidden;
     padding: 14px;
-    column-gap: 14px;
+    column-gap: 10px;
     background-color: var(--chat-column-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     &:hover {
