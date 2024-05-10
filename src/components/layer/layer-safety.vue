@@ -3,7 +3,7 @@ import { defineComponent, onMounted, PropType } from 'vue'
 import { useUser } from '@/store'
 import { useState } from '@/hooks/hook-state'
 import { useDrawer } from '@/hooks/hook-layer'
-import { divineRender, divineNotice, divineDiscover } from '@/utils/utils-component'
+import { divineDiscover } from '@/utils/utils-component'
 import { Observer } from '@/utils/utils-observer'
 
 export default defineComponent({
@@ -71,13 +71,13 @@ export default defineComponent({
         return () => (
             <n-drawer
                 v-model:show={visible.value}
-                width="100%"
-                to={element.value ?? document.body}
+                to={element.value}
                 content-style={chunkContent.value}
+                width="100%"
                 placement="right"
+                show-mask="transparent"
                 auto-focus={false}
                 mask-closable={false}
-                show-mask={false}
                 on-after-leave={() => emit('close')}
             >
                 <n-element class="layer-safety n-chunk n-column">

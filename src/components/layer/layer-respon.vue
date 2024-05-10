@@ -87,13 +87,13 @@ export default defineComponent({
         return () => (
             <n-drawer
                 v-model:show={visible.value}
-                width="100%"
-                to={element.value ?? document.body}
+                to={element.value}
                 content-style={chunkContent.value}
+                width="100%"
                 placement="right"
+                show-mask="transparent"
                 auto-focus={false}
                 mask-closable={false}
-                show-mask={false}
                 on-after-leave={() => emit('close')}
             >
                 <n-element class="layer-respon n-chunk n-column n-auto n-disover">
