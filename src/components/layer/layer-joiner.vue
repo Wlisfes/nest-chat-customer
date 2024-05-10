@@ -100,7 +100,7 @@ export default defineComponent({
                                     {state.dataContact.length > 0 && (
                                         <div class="n-chunk n-column n-disover">
                                             {state.dataContact.map(item => (
-                                                <chat-join-contact key={item.keyId} node={item}></chat-join-contact>
+                                                <next-join-contact key={item.keyId} node={item}></next-join-contact>
                                             ))}
                                         </div>
                                     )}

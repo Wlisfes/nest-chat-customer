@@ -90,7 +90,7 @@ export default defineComponent({
                                 <Fragment>
                                     <div class="n-chunk n-column n-auto n-disover">
                                         {dataContact.value.map(item => (
-                                            <chat-notify-contact key={item.keyId} node={item}></chat-notify-contact>
+                                            <next-notify-contact key={item.keyId} node={item}></next-notify-contact>
                                         ))}
                                     </div>
                                 </Fragment>
@@ -98,7 +98,7 @@ export default defineComponent({
                                 <Fragment>
                                     <div class="n-chunk n-column n-auto n-disover">
                                         {dataCommunit.value.map(item => (
-                                            <chat-notify-communit key={item.keyId} node={item}></chat-notify-communit>
+                                            <next-notify-communit key={item.keyId} node={item}></next-notify-communit>
                                         ))}
                                     </div>
                                 </Fragment>

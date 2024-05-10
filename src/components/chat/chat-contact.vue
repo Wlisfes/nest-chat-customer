@@ -1,6 +1,6 @@
 <script lang="tsx">
-import { defineComponent, Fragment, PropType } from 'vue'
-import { useNotification, useContact, useUser, useStore } from '@/store'
+import { defineComponent, PropType } from 'vue'
+import { useNotification, useContact, useStore } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
 import { Observer } from '@/utils/utils-observer'
 import { fetchNotification, fetchJoiner } from '@/components/layer/layer.instance'
@@ -15,7 +15,6 @@ export default defineComponent({
         const { observer } = useDrawer({ observer: props.observer, mount: true, unmount: true })
         const { total, dataSource } = useStore(useContact)
         const { dot } = useStore(useNotification)
-        const { uid } = useStore(useUser)
 
         /**新增联系人**/
         async function fetchUseJoiner() {
@@ -69,24 +68,7 @@ export default defineComponent({
                         ) : (
                             <n-element class="n-chunk n-column n-auto n-disover">
                                 {dataSource.value.map(item => (
-                                    <common-element class="n-chunk n-center n-pointer" key={item.keyId}>
-                                        <Fragment>
-                                            {item.user.uid === uid.value ? (
-                                                <chat-avatar size={42} src={item.nive.avatar}></chat-avatar>
-                                            ) : (
-                                                <chat-avatar size={42} src={item.user.avatar}></chat-avatar>
-                                            )}
-                                        </Fragment>
-                                        <div class="n-chunk n-column n-auto n-disover">
-                                            <n-h2 style={{ fontSize: '16px', lineHeight: '22px', fontWeight: 500, margin: 0 }}>
-                                                {item.user.uid === uid.value ? (
-                                                    <n-ellipsis tooltip={false}>{item.nive.nickname}</n-ellipsis>
-                                                ) : (
-                                                    <n-ellipsis tooltip={false}>{item.user.nickname}</n-ellipsis>
-                                                )}
-                                            </n-h2>
-                                        </div>
-                                    </common-element>
+                                    <next-column-contact key={item.keyId} node={item}></next-column-contact>
                                 ))}
                             </n-element>
                         )}
@@ -97,5 +79,3 @@ export default defineComponent({
     }
 })
 </script>
-
-<style lang="scss" scoped></style>

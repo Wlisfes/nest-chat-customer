@@ -1,10 +1,10 @@
 <script lang="tsx">
 import { defineComponent, computed, Fragment, PropType } from 'vue'
-import { useNotification, useContact, useUser, useStore } from '@/store'
+import { useContact, useStore } from '@/store'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
-    name: 'ChatJoinContact',
+    name: 'NextJoinContact',
     props: {
         node: { type: Object as PropType<env.SchemaUser>, required: true }
     },
@@ -16,7 +16,7 @@ export default defineComponent({
         })
 
         return () => (
-            <div class="chat-join-contact n-chunk n-center n-pointer">
+            <common-element class="n-chunk n-center n-pointer">
                 <chat-avatar size={42} src={props.node.avatar}></chat-avatar>
                 <div class="n-chunk n-column n-auto n-disover">
                     <n-h2 style={{ fontSize: '16px', lineHeight: '22px', fontWeight: 500, margin: 0 }}>
@@ -37,30 +37,8 @@ export default defineComponent({
                         </n-button>
                     )}
                 </Fragment>
-            </div>
+            </common-element>
         )
     }
 })
 </script>
-
-<style lang="scss" scoped>
-.chat-join-contact {
-    user-select: none;
-    padding: 14px;
-    column-gap: 10px;
-    transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
-    &:hover {
-        background-color: var(--chat-column-hover-color);
-    }
-    &:not(:last-child)::before {
-        content: '';
-        position: absolute;
-        left: 20px;
-        right: 20px;
-        bottom: 0;
-        height: 1px;
-        background-color: var(--chat-border-color);
-        transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
-    }
-}
-</style>

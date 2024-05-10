@@ -5,7 +5,7 @@ import { useMoment } from '@/hooks/hook-common'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
-    name: 'ChatNotifyCommunit',
+    name: 'NextNotifyCommunit',
     props: {
         node: { type: Object as PropType<env.SchemaNotification>, required: true }
     },

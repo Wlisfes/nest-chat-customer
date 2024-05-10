@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, PropType } from 'vue'
-import { useSession, useUser, useCommunit, useNotification, useStore } from '@/store'
+import { useCommunit, useNotification, useStore } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
 import { Observer } from '@/utils/utils-observer'
 import { divineNotice } from '@/utils/utils-component'
@@ -15,7 +15,6 @@ export default defineComponent({
     setup(props) {
         const { total, dataSource, fetchCommunitColumn } = useStore(useCommunit)
         const { dot } = useStore(useNotification)
-        const { uid } = useStore(useUser)
         const { observer } = useDrawer({ observer: props.observer, mount: true, unmount: true })
 
         /**新建社群**/
@@ -78,10 +77,7 @@ export default defineComponent({
                         ) : (
                             <n-element class="n-chunk n-column n-auto n-disover">
                                 {dataSource.value.map(item => (
-                                    <common-element key={item.keyId} class="n-chunk n-center n-pointer">
-                                        <chat-avatar size={42} src={item.poster.fileURL}></chat-avatar>
-                                        <div class="n-chunk n-column n-auto n-disover">DSADA</div>
-                                    </common-element>
+                                    <next-column-communit key={item.keyId} node={item}></next-column-communit>
                                 ))}
                             </n-element>
                         )}

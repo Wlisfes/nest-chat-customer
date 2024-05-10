@@ -5,7 +5,7 @@ import { fetchCompadre } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
-    name: 'ChatNotifyContact',
+    name: 'NextNotifyContact',
     props: {
         node: { type: Object as PropType<env.SchemaNotification>, required: true }
     },
