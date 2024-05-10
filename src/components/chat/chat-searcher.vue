@@ -1,16 +1,21 @@
 <script lang="tsx">
 import { defineComponent, ref, Ref, onMounted } from 'vue'
+import { useVModels } from '@vueuse/core'
 import { InputInst } from 'naive-ui'
 import { divineDelay, divineHandler } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'ChatSearcher',
+    emits: ['update', 'update:content'],
     props: {
         autoFocus: { type: Boolean, default: false },
-        delay: { type: Number, default: 300 }
+        delay: { type: Number, default: 300 },
+        placeholder: { type: String, default: '搜索对话' },
+        content: { type: String, default: '' }
     },
-    setup(props) {
+    setup(props, { emit }) {
         const input = ref<InputInst>() as Ref<InputInst>
+        const { content } = useVModels(props, emit)
 
         onMounted(async () => {
             return await divineHandler(props.autoFocus, {
@@ -23,7 +28,12 @@ export default defineComponent({
 
         return () => (
             <div class="chat-searcher n-chunk n-column n-disover">
-                <n-input ref={input} placeholder="搜索对话">
+                <n-input
+                    ref={input}
+                    placeholder={props.placeholder}
+                    v-model:value={content.value}
+                    onUpdateValue={(value: string) => emit('update', value)}
+                >
                     {{
                         prefix: () => <n-icon size={18} component={<Iv-BsSearch />} style={{ marginRight: '10px' }}></n-icon>
                     }}

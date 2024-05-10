@@ -22,6 +22,7 @@ export default defineComponent({
             return await fetchJoiner({
                 observer,
                 title: '新增联系人',
+                placeholder: 'UID/邮箱/用户昵称',
                 source: env.EnumNotificationSource.contact,
                 onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount()
             })

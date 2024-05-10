@@ -17,3 +17,12 @@ export function httpContactResolver(params: { uid: string }) {
         params
     })
 }
+
+/**关键字列表搜索**/
+export function httpContactSearch(data: { keyword: string }) {
+    return request<env.ColumnResolver<env.SchemaUser>>({
+        url: `/contact/column/search`,
+        method: 'POST',
+        data
+    })
+}

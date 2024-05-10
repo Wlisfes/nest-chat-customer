@@ -73,7 +73,9 @@ export async function fetchCompadre(props: Omix<{ node: env.SchemaNotification }
 }
 
 /**联系人申请操作**/
-export async function fetchJoiner(props: Omix<{ observer: Observer<Omix>; title: string; source: env.EnumNotificationSource }>) {
+export async function fetchJoiner(
+    props: Omix<{ observer: Observer<Omix>; title: string; placeholder: string; source: env.EnumNotificationSource }>
+) {
     return await import('@/components/layer/layer-joiner.vue').then(async component => {
         return await createComponent(component.default, props)
     })
