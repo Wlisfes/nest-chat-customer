@@ -3,7 +3,7 @@ import { defineComponent, onMounted, Fragment, PropType } from 'vue'
 import { useNotification, useStore } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
 import { Observer } from '@/utils/utils-observer'
-import { fetchJoiner, fetchCompadre } from '@/components/layer/layer.instance'
+import { fetchJoiner } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -16,7 +16,7 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { dataContact, dataCommunit } = useStore(useNotification)
-        const { visible, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
+        const { observer, visible, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
 
         onMounted(async () => {
             await fetchState({ visible: true })
@@ -27,16 +27,11 @@ export default defineComponent({
 
         /**联系人、社群申请操作**/
         async function fetchUseJoiner() {
-            // return await fetchJoiner({
-            //     observer: props.observer,
-            //     onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount()
-            // })
-        }
-
-        /**联系人申请验证操作**/
-        async function fetchUseCompadre(scope: env.SchemaNotification) {
-            return await fetchCompadre({
-                node: scope,
+            return await fetchJoiner({
+                observer,
+                title: '新增联系人',
+                placeholder: 'UID/邮箱/用户昵称',
+                source: env.EnumNotificationSource.contact,
                 onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount()
             })
         }
@@ -44,13 +39,14 @@ export default defineComponent({
         return () => (
             <n-drawer
                 v-model:show={visible.value}
-                width="100%"
                 to={element.value}
                 content-style={chunkContent.value}
+                width="100%"
                 placement="right"
+                show-mask="transparent"
                 auto-focus={false}
                 mask-closable={false}
-                show-mask={false}
+                on-esc={() => console.log('on-esc')}
                 on-after-leave={() => emit('close')}
             >
                 <n-element class="layer-notification n-chunk n-column n-auto n-disover">

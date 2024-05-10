@@ -50,7 +50,7 @@ export default defineComponent({
                     </Fragment>
                 </div>
                 <n-text class="n-chunk n-column n-disover" depth={3} style={{ lineHeight: '20px' }}>
-                    <n-ellipsis expand-trigger="click" tooltip={false} line-clamp={3}>
+                    <n-ellipsis tooltip={false} line-clamp={3}>
                         {props.node.communit.comment}
                     </n-ellipsis>
                 </n-text>

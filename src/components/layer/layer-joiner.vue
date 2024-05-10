@@ -70,7 +70,7 @@ export default defineComponent({
                 placement="right"
                 auto-focus={false}
                 mask-closable={false}
-                show-mask={false}
+                show-mask="transparent"
                 on-after-leave={() => emit('close')}
             >
                 <n-element class="layer-joiner n-chunk n-column n-auto n-disover">
