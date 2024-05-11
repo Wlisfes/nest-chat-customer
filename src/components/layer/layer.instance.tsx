@@ -65,18 +65,27 @@ export async function fetchRespon(props: Omix<{ observer: Observer<Omix> }>) {
     })
 }
 
-/**联系人申请操作**/
+/**联系人、社群申请验证**/
 export async function fetchCompadre(props: Omix<{ node: env.SchemaNotification; title: string }>) {
     return await import('@/components/layer/layer-compadre.vue').then(async component => {
         return await createComponent(component.default, props)
     })
 }
 
-/**联系人申请操作**/
+/**联系人、社群申请列表**/
 export async function fetchJoiner(
     props: Omix<{ observer: Observer<Omix>; title: string; placeholder: string; source: env.EnumNotificationSource }>
 ) {
     return await import('@/components/layer/layer-joiner.vue').then(async component => {
+        return await createComponent(component.default, props)
+    })
+}
+
+/**联系人、社群申请**/
+export async function fetchInvite(
+    props: Omix<{ userId?: string; communitId?: string; title: string; source: env.EnumNotificationSource }>
+) {
+    return await import('@/components/layer/layer-invite.vue').then(async component => {
         return await createComponent(component.default, props)
     })
 }

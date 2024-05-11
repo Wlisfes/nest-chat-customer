@@ -1,6 +1,7 @@
 <script lang="tsx">
 import { defineComponent, computed, Fragment, PropType } from 'vue'
-import { useContact, useStore } from '@/store'
+import { useUser, useContact, useNotification, useStore } from '@/store'
+import { fetchInvite } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -9,14 +10,35 @@ export default defineComponent({
         node: { type: Object as PropType<env.SchemaUser>, required: true }
     },
     setup(props) {
+        const { uid } = useStore(useUser)
+        const { dataContact } = useStore(useNotification)
         const { dataSource } = useStore(useContact)
         /**是否存在好友关系**/
         const isContact = computed(() => {
             return dataSource.value.some(item => [item.userId, item.niveId].includes(props.node.uid))
         })
+        /**是否存在未通过的申请记录**/
+        const notification = computed(() => {
+            const item = dataContact.value.find(item => [item.userId, item.niveId].includes(props.node.uid))
+            return item as env.SchemaNotification
+        })
+
+        /**申请添加联系人**/
+        async function fetchUseInvite() {
+            return await fetchInvite({
+                title: '查看基本信息',
+                userId: props.node.uid,
+                source: env.EnumNotificationSource.contact,
+                onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount(),
+                onSubmit: async ({ unmount, done }: Omix<{ unmount: Function; done: Function }>) => {
+                    await done({ visible: false })
+                    return await unmount()
+                }
+            })
+        }
 
         return () => (
-            <common-element class="n-chunk n-center n-pointer">
+            <common-element class="n-chunk n-center n-pointer" onClick={fetchUseInvite}>
                 <chat-avatar size={42} src={props.node.avatar}></chat-avatar>
                 <div class="n-chunk n-column n-auto n-disover">
                     <n-h2 style={{ fontSize: '16px', lineHeight: '22px', fontWeight: 500, margin: 0 }}>
@@ -31,10 +53,34 @@ export default defineComponent({
                         <n-button text size="small" type="success" focusable={false}>
                             已添加
                         </n-button>
-                    ) : (
+                    ) : !Boolean(notification.value) ? (
                         <n-button size="small" secondary focusable={false}>
                             查看
                         </n-button>
+                    ) : (
+                        <Fragment>
+                            {notification.value.status === env.EnumNotificationStatus.waitze ? (
+                                <Fragment>
+                                    {notification.value.command.includes(uid.value) ? (
+                                        <n-button size="small" type="warning" secondary focusable={false}>
+                                            待验证
+                                        </n-button>
+                                    ) : (
+                                        <n-button size="small" secondary focusable={false}>
+                                            查看
+                                        </n-button>
+                                    )}
+                                </Fragment>
+                            ) : notification.value.status === env.EnumNotificationStatus.resolve ? (
+                                <n-button text size="small" type="success" focusable={false}>
+                                    已添加
+                                </n-button>
+                            ) : (
+                                <n-button size="small" secondary focusable={false}>
+                                    查看
+                                </n-button>
+                            )}
+                        </Fragment>
                     )}
                 </Fragment>
             </common-element>

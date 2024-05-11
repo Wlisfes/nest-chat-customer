@@ -1,10 +1,10 @@
 <script lang="tsx">
 import { defineComponent, onMounted, computed, PropType } from 'vue'
-import { useUser, useNotification, useStore } from '@/store'
+import { useUser, useNotification, useContact, useCommunit, useStore } from '@/store'
 import { useModal } from '@/hooks/hook-layer'
 import { divineRender, divineNotice } from '@/utils/utils-component'
 import { divineTransfer } from '@/utils/utils-transfer'
-import { divineWherer } from '@/utils/utils-common'
+import { divineWherer, divineHandler } from '@/utils/utils-common'
 import { httpNotificationUpdate } from '@/api/instance.service'
 import * as env from '@/interface/instance.resolver'
 
@@ -17,6 +17,8 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { uid } = useStore(useUser)
+        const { fetchContactColumn } = useStore(useContact)
+        const { fetchCommunitColumn } = useStore(useCommunit)
         const { fetchNotificationColumn, divineJsonWherer } = useStore(useNotification)
         const { visible, chunkContent, fetchState } = useModal({ width: 500 })
         const json = computed(() => divineJsonWherer(uid.value, props.node))
@@ -34,6 +36,10 @@ export default defineComponent({
                 await done({ loading: true })
                 return await httpNotificationUpdate({ status: status, uid: props.node.uid }).then(async ({ message }) => {
                     await fetchNotificationColumn()
+                    await divineHandler(props.node.source === env.EnumNotificationSource.contact, {
+                        handler: fetchContactColumn,
+                        failure: fetchCommunitColumn
+                    })
                     await divineNotice({ type: 'success', content: message })
                     return await emit('close', { done: fetchState })
                 })

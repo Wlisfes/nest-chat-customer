@@ -1,12 +1,10 @@
 <script lang="tsx">
-import { defineComponent, ref, Ref, onMounted, Fragment, PropType } from 'vue'
-import { useUser, useNotification, useStore } from '@/store'
+import { defineComponent, onMounted, Fragment, PropType } from 'vue'
 import { useDrawer } from '@/hooks/hook-layer'
 import { useState } from '@/hooks/hook-state'
 import { Observer } from '@/utils/utils-observer'
-import { divineWherer, divineHandler } from '@/utils/utils-common'
-import { divineRender, divineNotice } from '@/utils/utils-component'
-import { httpContactSearch, httpNotificationUpdate } from '@/api/instance.service'
+import { divineHandler } from '@/utils/utils-common'
+import { httpContactSearch } from '@/api/instance.service'
 import * as env from '@/interface/instance.resolver'
 import _ from 'lodash'
 
@@ -20,8 +18,6 @@ export default defineComponent({
         observer: { type: Object as PropType<Observer<Omix>>, required: true }
     },
     setup(props, { emit }) {
-        const { uid } = useStore(useUser)
-        const { fetchNotificationColumn } = useStore(useNotification)
         const { visible, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
         const { state, setState } = useState({
             keyword: '',
