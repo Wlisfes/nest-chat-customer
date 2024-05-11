@@ -1,7 +1,8 @@
 <script lang="tsx">
 import { defineComponent, computed, Fragment, PropType } from 'vue'
 import { useUser, useContact, useNotification, useStore } from '@/store'
-import { fetchInvite } from '@/components/layer/layer.instance'
+import { divineHandler } from '@/utils/utils-common'
+import { fetchInvite, fetchCompadre } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -37,8 +38,28 @@ export default defineComponent({
             })
         }
 
+        /**联系人申请验证操作**/
+        async function fetchUseCompadre() {
+            return await fetchCompadre({
+                node: notification.value,
+                title: '申请人基本信息',
+                onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount()
+            })
+        }
+
+        async function fetchClick() {
+            if (notification.value) {
+                return await divineHandler(
+                    [env.EnumNotificationStatus.waitze, env.EnumNotificationStatus.resolve].includes(notification.value?.status),
+                    { handler: fetchUseCompadre, failure: fetchUseInvite }
+                )
+            } else {
+                return await fetchUseInvite()
+            }
+        }
+
         return () => (
-            <common-element class="n-chunk n-center n-pointer" onClick={fetchUseInvite}>
+            <common-element class="n-chunk n-center n-pointer" onClick={fetchClick}>
                 <chat-avatar size={42} src={props.node.avatar}></chat-avatar>
                 <div class="n-chunk n-column n-auto n-disover">
                     <n-h2 style={{ fontSize: '16px', lineHeight: '22px', fontWeight: 500, margin: 0 }}>
@@ -60,17 +81,9 @@ export default defineComponent({
                     ) : (
                         <Fragment>
                             {notification.value.status === env.EnumNotificationStatus.waitze ? (
-                                <Fragment>
-                                    {notification.value.command.includes(uid.value) ? (
-                                        <n-button size="small" type="warning" secondary focusable={false}>
-                                            待验证
-                                        </n-button>
-                                    ) : (
-                                        <n-button size="small" secondary focusable={false}>
-                                            查看
-                                        </n-button>
-                                    )}
-                                </Fragment>
+                                <n-button size="small" type="warning" secondary focusable={false}>
+                                    待验证
+                                </n-button>
                             ) : notification.value.status === env.EnumNotificationStatus.resolve ? (
                                 <n-button text size="small" type="success" focusable={false}>
                                     已添加

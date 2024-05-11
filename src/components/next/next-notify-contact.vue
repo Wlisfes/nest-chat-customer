@@ -11,8 +11,8 @@ export default defineComponent({
     },
     setup(props) {
         const { uid } = useStore(useUser)
-        const { divineJsonWherer } = useStore(useNotification)
-        const json = computed(() => divineJsonWherer(uid.value, props.node))
+        const { divineJsonComment } = useStore(useNotification)
+        const comment = computed(() => divineJsonComment(uid.value, props.node))
 
         /**联系人申请验证操作**/
         async function fetchUseCompadre() {
@@ -78,7 +78,7 @@ export default defineComponent({
                         <n-text type="success" depth={1}>
                             备注：
                         </n-text>
-                        <n-text depth={2}>{json.value.comment}</n-text>
+                        {comment.value && <n-text depth={2}>{comment.value}</n-text>}
                     </n-ellipsis>
                 </n-blockquote>
             </common-element>

@@ -63,7 +63,7 @@ export default defineComponent({
                     <n-scrollbar class="is-customize" trigger="none" size={60}>
                         {total.value === 0 ? (
                             <div class="n-chunk n-column n-disover" style={{ padding: '14px' }}>
-                                <n-empty description="暂无数据"></n-empty>
+                                <n-empty description="暂无联系人"></n-empty>
                             </div>
                         ) : (
                             <n-element class="n-chunk n-column n-auto n-disover">

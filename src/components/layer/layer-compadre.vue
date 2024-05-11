@@ -19,9 +19,9 @@ export default defineComponent({
         const { uid } = useStore(useUser)
         const { fetchContactColumn } = useStore(useContact)
         const { fetchCommunitColumn } = useStore(useCommunit)
-        const { fetchNotificationColumn, divineJsonWherer } = useStore(useNotification)
+        const { fetchNotificationColumn, divineJsonComment } = useStore(useNotification)
         const { visible, chunkContent, fetchState } = useModal({ width: 500 })
-        const json = computed(() => divineJsonWherer(uid.value, props.node))
+        const comment = computed(() => divineJsonComment(uid.value, props.node))
         const userId = computed(() => {
             return divineWherer(props.node.userId === uid.value, props.node.niveId, props.node.userId)
         })
@@ -77,7 +77,7 @@ export default defineComponent({
                                     <n-text type="success" depth={1}>
                                         备注：
                                     </n-text>
-                                    <n-text depth={2}>{json.value.comment}</n-text>
+                                    {comment.value && <n-text depth={2}>{comment.value}</n-text>}
                                 </n-ellipsis>
                             </n-blockquote>
                         </div>

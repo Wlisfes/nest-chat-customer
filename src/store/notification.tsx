@@ -26,11 +26,16 @@ export const useNotification = defineStore(APP_STORE.STORE_NOTIFICATION, () => {
         }
     })
 
-    function divineJsonWherer(uid: string, node: env.SchemaNotification) {
-        if (node.userId === uid) {
-            return node.json[node.niveId]
+    function divineJsonComment(uid: string, node: env.SchemaNotification) {
+        if (node.userId === uid && node.json[node.niveId]) {
+            return node.json[node.niveId].comment ?? ''
+        } else if (node.niveId === uid && node.json[node.userId]) {
+            return node.json[node.userId].comment ?? ''
+        } else if (node.userId === uid && node.json[node.userId]) {
+            return node.json[node.userId].comment ?? ''
+        } else if (node.niveId === uid && node.json[node.niveId]) {
+            return node.json[node.niveId].comment ?? ''
         }
-        return node.json[node.userId]
     }
 
     /**通知列表**/
@@ -43,5 +48,14 @@ export const useNotification = defineStore(APP_STORE.STORE_NOTIFICATION, () => {
         }
     }
 
-    return { state, dot, dataContact, dataCommunit, ...toRefs(state), setState, divineJsonWherer, fetchNotificationColumn }
+    return {
+        state,
+        dot,
+        dataContact,
+        dataCommunit,
+        ...toRefs(state),
+        setState,
+        divineJsonComment,
+        fetchNotificationColumn
+    }
 })
