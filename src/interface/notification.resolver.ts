@@ -18,7 +18,8 @@ export interface SchemaNotification extends env.CommonSchema {
     uid: string
     userId: string
     niveId: string
-    comment: string
+    command: Array<string>
+    json: Omix<{ [key in string]: Omix<{ uid: string; comment: string; date: number }> }>
     communitId: string
     communit: env.SchemaCommunit
     user: env.SchemaUser

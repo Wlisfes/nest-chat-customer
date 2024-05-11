@@ -11,11 +11,9 @@ export default defineComponent({
     emits: ['update', 'ready'],
     props: {
         userId: { type: String, required: true },
+        command: { type: Array as PropType<Array<string>>, default: () => [] },
         footer: { type: Boolean, default: false },
-        status: {
-            type: String as PropType<env.EnumNotificationStatus>,
-            default: env.EnumNotificationStatus.waitze
-        }
+        status: { type: String as PropType<env.EnumNotificationStatus>, default: env.EnumNotificationStatus.waitze }
     },
     setup(props, { slots, emit }) {
         const { uid } = useStore(useUser)
@@ -32,8 +30,8 @@ export default defineComponent({
             try {
                 await setState({ loading: true })
                 return await httpUserCurrentResolver({ uid: props.userId }).then(async ({ data }) => {
-                    const { uid, comment, avatar, nickname, email } = data
-                    await setState({ userId: uid, comment, avatar, nickname, email })
+                    const { comment, avatar, nickname, email } = data
+                    await setState({ comment, avatar, nickname, email })
                     return await emit('ready', data)
                 })
             } catch (e) {
@@ -87,11 +85,7 @@ export default defineComponent({
                             <n-space wrap-item={false} size={16} justify="center" style={{ flex: 1, paddingTop: '24px' }}>
                                 {props.status === env.EnumNotificationStatus.waitze ? (
                                     <Fragment>
-                                        {props.userId === uid.value ? (
-                                            <n-button secondary type="warning" style={{ minWidth: '88px', cursor: 'not-allowed' }}>
-                                                待验证
-                                            </n-button>
-                                        ) : (
+                                        {props.command.includes(uid.value) ? (
                                             <n-space wrap-item={false} size={16} justify="center">
                                                 <common-state
                                                     data-render={(scope: Omix<{ loading: boolean }>, done: Function) => (
@@ -126,6 +120,10 @@ export default defineComponent({
                                                     )}
                                                 ></common-state>
                                             </n-space>
+                                        ) : (
+                                            <n-button secondary type="warning" style={{ minWidth: '88px', cursor: 'not-allowed' }}>
+                                                待验证
+                                            </n-button>
                                         )}
                                     </Fragment>
                                 ) : props.status === env.EnumNotificationStatus.resolve ? (

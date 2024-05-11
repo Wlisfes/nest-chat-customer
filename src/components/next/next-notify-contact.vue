@@ -1,6 +1,6 @@
 <script lang="tsx">
-import { defineComponent, Fragment, PropType } from 'vue'
-import { useUser, useStore } from '@/store'
+import { defineComponent, computed, Fragment, PropType } from 'vue'
+import { useUser, useNotification, useStore } from '@/store'
 import { fetchCompadre } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
@@ -11,6 +11,8 @@ export default defineComponent({
     },
     setup(props) {
         const { uid } = useStore(useUser)
+        const { divineJsonWherer } = useStore(useNotification)
+        const json = computed(() => divineJsonWherer(uid.value, props.node))
 
         /**联系人申请验证操作**/
         async function fetchUseCompadre() {
@@ -48,21 +50,18 @@ export default defineComponent({
                         </n-text>
                     </div>
                     <Fragment>
-                        {props.node.status === env.EnumNotificationStatus.waitze && props.node.userId === uid.value ? (
-                            <n-button size="small" type="warning" secondary focusable={false}>
-                                待验证
-                            </n-button>
-                        ) : props.node.status === env.EnumNotificationStatus.waitze ? (
-                            <n-button size="small" secondary focusable={false}>
-                                查看
-                            </n-button>
-                        ) : props.node.status === env.EnumNotificationStatus.resolve && props.node.userId === uid.value ? (
-                            <n-button text size="small" type="success" focusable={false}>
-                                <div class="n-chunk n-center" style={{ columnGap: '3px' }}>
-                                    <n-icon size={16} component={<Iv-BsSender />} />
-                                    <span>已添加</span>
-                                </div>
-                            </n-button>
+                        {props.node.status === env.EnumNotificationStatus.waitze ? (
+                            <Fragment>
+                                {props.node.command.includes(uid.value) ? (
+                                    <n-button size="small" type="warning" secondary focusable={false}>
+                                        待验证
+                                    </n-button>
+                                ) : (
+                                    <n-button size="small" secondary focusable={false}>
+                                        查看
+                                    </n-button>
+                                )}
+                            </Fragment>
                         ) : props.node.status === env.EnumNotificationStatus.resolve ? (
                             <n-button text size="small" type="success" focusable={false}>
                                 已添加
@@ -79,7 +78,7 @@ export default defineComponent({
                         <n-text type="success" depth={1}>
                             备注：
                         </n-text>
-                        <n-text depth={2}>{props.node.comment}</n-text>
+                        <n-text depth={2}>{json.value.comment}</n-text>
                     </n-ellipsis>
                 </n-blockquote>
             </common-element>

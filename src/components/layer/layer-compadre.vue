@@ -17,8 +17,9 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { uid } = useStore(useUser)
-        const { fetchNotificationColumn } = useStore(useNotification)
+        const { fetchNotificationColumn, divineJsonWherer } = useStore(useNotification)
         const { visible, chunkContent, fetchState } = useModal({ width: 500 })
+        const json = computed(() => divineJsonWherer(uid.value, props.node))
         const userId = computed(() => {
             return divineWherer(props.node.userId === uid.value, props.node.niveId, props.node.userId)
         })
@@ -59,6 +60,7 @@ export default defineComponent({
                     <next-user-resolver
                         footer
                         user-id={userId.value}
+                        command={props.node.command}
                         status={props.node.status}
                         style={{ margin: '10px 0 0' }}
                         onUpdate={fetchNotificationUpdate}
@@ -69,7 +71,7 @@ export default defineComponent({
                                     <n-text type="success" depth={1}>
                                         备注：
                                     </n-text>
-                                    <n-text depth={2}>{props.node.comment}</n-text>
+                                    <n-text depth={2}>{json.value.comment}</n-text>
                                 </n-ellipsis>
                             </n-blockquote>
                         </div>

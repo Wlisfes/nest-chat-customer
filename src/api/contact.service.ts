@@ -18,6 +18,15 @@ export function httpContactResolver(params: { uid: string }) {
     })
 }
 
+/**申请添加好友**/
+export function httpContactInviteJoiner(data: { niveId: string; comment: string }) {
+    return request<env.ColumnResolver<env.SchemaUser>>({
+        url: `/contact/invite/joiner`,
+        method: 'POST',
+        data
+    })
+}
+
 /**关键字列表搜索**/
 export function httpContactSearch(data: { keyword: string }) {
     return request<env.ColumnResolver<env.SchemaUser>>({
