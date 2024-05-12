@@ -7,6 +7,7 @@ import * as env from '@/interface/instance.resolver'
 
 export const useCommunit = defineStore(APP_STORE.STORE_COMMUNIT, () => {
     const { state, setState } = useState({
+        dataCommunit: [] as Array<env.SchemaCommunit>,
         dataSource: [] as Array<env.SchemaCommunit>,
         total: 0,
         loading: true

@@ -1,10 +1,10 @@
 <script lang="tsx">
 import { defineComponent, onMounted, Fragment, PropType } from 'vue'
+import { useContact, useCommunit, useStore } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
 import { useState } from '@/hooks/hook-state'
 import { Observer } from '@/utils/utils-observer'
 import { divineHandler } from '@/utils/utils-common'
-import { httpContactSearch } from '@/api/instance.service'
 import * as env from '@/interface/instance.resolver'
 import _ from 'lodash'
 
@@ -18,40 +18,25 @@ export default defineComponent({
         observer: { type: Object as PropType<Observer<Omix>>, required: true }
     },
     setup(props, { emit }) {
+        const { dataContact, fetchContactSearch } = useStore(useContact)
+        const { dataCommunit } = useStore(useCommunit)
         const { visible, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
-        const { state, setState } = useState({
-            keyword: '',
-            loading: false,
-            dataContact: [] as Array<env.SchemaUser>,
-            dataCommunit: []
-        })
+        const { state, setState } = useState({ keyword: '', loading: false })
 
         onMounted(async () => {
             await fetchState({ visible: true })
-            await divineLayerUnmounted(props.observer, () => {
+            return await divineLayerUnmounted(props.observer, () => {
                 return fetchState({ visible: false })
-            })
-            return await divineHandler(props.source === env.EnumNotificationSource.contact, {
-                handler: fetchContactSearch
             })
         })
 
-        /**用户关键字列表搜索**/
-        async function fetchContactSearch() {
-            try {
-                await setState({ loading: true })
-                const { data } = await httpContactSearch({ keyword: state.keyword })
-                return await setState({ loading: false, dataCommunit: [], dataContact: data.list })
-            } catch (e) {
-                return await setState({ loading: false, dataCommunit: [], dataContact: [] })
-            }
-        }
-
         const onUpdateThrottle = _.debounce(
-            async value => {
-                return await divineHandler(props.source === env.EnumNotificationSource.contact, {
-                    handler: fetchContactSearch
+            async (keyword: string) => {
+                await setState({ loading: true })
+                await divineHandler(props.source === env.EnumNotificationSource.contact, {
+                    handler: () => fetchContactSearch(keyword)
                 })
+                return await setState({ loading: false })
             },
             500,
             { trailing: true }
@@ -88,14 +73,14 @@ export default defineComponent({
                             )}
                             {props.source === env.EnumNotificationSource.contact ? (
                                 <Fragment>
-                                    {!state.loading && state.dataContact.length === 0 && (
+                                    {!state.loading && dataContact.value.length === 0 && (
                                         <div class="n-chunk n-column n-disover" style={{ padding: '14px' }}>
                                             <n-empty description="暂无数据"></n-empty>
                                         </div>
                                     )}
-                                    {state.dataContact.length > 0 && (
+                                    {dataContact.value.length > 0 && (
                                         <div class="n-chunk n-column n-disover">
-                                            {state.dataContact.map(item => (
+                                            {dataContact.value.map(item => (
                                                 <next-join-contact key={item.keyId} node={item}></next-join-contact>
                                             ))}
                                         </div>
@@ -103,12 +88,12 @@ export default defineComponent({
                                 </Fragment>
                             ) : (
                                 <Fragment>
-                                    {!state.loading && state.dataCommunit.length === 0 && (
+                                    {!state.loading && dataCommunit.value.length === 0 && (
                                         <div class="n-chunk n-column n-disover" style={{ padding: '14px' }}>
                                             <n-empty description="暂无数据"></n-empty>
                                         </div>
                                     )}
-                                    {state.dataCommunit.length > 0 && <div class="n-chunk n-column n-disover">DSA</div>}
+                                    {dataCommunit.value.length > 0 && <div class="n-chunk n-column n-disover">DSA</div>}
                                 </Fragment>
                             )}
                         </n-scrollbar>

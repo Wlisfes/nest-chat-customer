@@ -14,7 +14,7 @@ export default defineComponent({
         const { fetchSocketServerMessager } = useMessenger()
         const { fetchUserResolver } = useUser()
         const { fetchNotificationColumn } = useNotification()
-        const { fetchContactColumn } = useContact()
+        const { fetchContactColumn, fetchContactSearch } = useContact()
         const { fetchCommunitColumn } = useCommunit()
 
         onMounted(async () => {
@@ -24,6 +24,7 @@ export default defineComponent({
                 await fetchSessionInitColumn()
                 await fetchNotificationColumn()
                 await fetchContactColumn()
+                await fetchContactSearch()
                 await fetchCommunitColumn()
                 return await setState({ online, loading: false })
             })
