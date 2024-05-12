@@ -9,6 +9,15 @@ export function httpContactColumn() {
     })
 }
 
+/**关键字列表搜索**/
+export function httpContactColumnSearch(data: { keyword: string }) {
+    return request<env.ColumnResolver<env.SchemaUser>>({
+        url: `/contact/column/search`,
+        method: 'POST',
+        data
+    })
+}
+
 /**好友关系详情**/
 export function httpContactResolver(params: { uid: string }) {
     return request<env.SchemaContact>({
@@ -22,15 +31,6 @@ export function httpContactResolver(params: { uid: string }) {
 export function httpContactInviteJoiner(data: { niveId: string; comment: string }) {
     return request<env.ColumnResolver<env.SchemaUser>>({
         url: `/contact/invite/joiner`,
-        method: 'POST',
-        data
-    })
-}
-
-/**关键字列表搜索**/
-export function httpContactSearch(data: { keyword: string }) {
-    return request<env.ColumnResolver<env.SchemaUser>>({
-        url: `/contact/column/search`,
         method: 'POST',
         data
     })

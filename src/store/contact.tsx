@@ -2,7 +2,7 @@ import { toRefs } from 'vue'
 import { defineStore } from 'pinia'
 import { useState } from '@/hooks/hook-state'
 import { APP_STORE } from '@/utils/utils-storage'
-import { httpContactColumn, httpContactSearch } from '@/api/instance.service'
+import { httpContactColumn, httpContactColumnSearch } from '@/api/instance.service'
 import * as env from '@/interface/instance.resolver'
 
 export const useContact = defineStore(APP_STORE.STORE_CONTACT, () => {
@@ -24,14 +24,14 @@ export const useContact = defineStore(APP_STORE.STORE_CONTACT, () => {
     }
 
     /**用户关键字列表搜索**/
-    async function fetchContactSearch(keyword: string = '') {
+    async function fetchContactColumnSearch(keyword: string = '') {
         try {
-            const { data } = await httpContactSearch({ keyword })
+            const { data } = await httpContactColumnSearch({ keyword })
             return await setState({ dataContact: data.list ?? [] })
         } catch (e) {
             return await setState({ dataContact: [] })
         }
     }
 
-    return { state, ...toRefs(state), setState, fetchContactColumn, fetchContactSearch }
+    return { state, ...toRefs(state), setState, fetchContactColumn, fetchContactColumnSearch }
 })

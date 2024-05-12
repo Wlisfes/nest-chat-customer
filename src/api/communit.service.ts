@@ -18,6 +18,15 @@ export function httpCommunitColumn() {
     })
 }
 
+/**社群列表**/
+export function httpCommunitColumnSearch(data: { keyword: string }) {
+    return request<env.ColumnResolver<env.SchemaCommunit>>({
+        url: `/communit/column/search`,
+        method: 'POST',
+        data
+    })
+}
+
 /**社群详情**/
 export function httpCommunitResolver(params: { uid: string }) {
     return request<env.SchemaCommunit>({

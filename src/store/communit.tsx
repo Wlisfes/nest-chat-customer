@@ -2,7 +2,7 @@ import { toRefs } from 'vue'
 import { defineStore } from 'pinia'
 import { useState } from '@/hooks/hook-state'
 import { APP_STORE } from '@/utils/utils-storage'
-import { httpCommunitColumn } from '@/api/instance.service'
+import { httpCommunitColumn, httpCommunitColumnSearch } from '@/api/instance.service'
 import * as env from '@/interface/instance.resolver'
 
 export const useCommunit = defineStore(APP_STORE.STORE_COMMUNIT, () => {
@@ -23,5 +23,15 @@ export const useCommunit = defineStore(APP_STORE.STORE_COMMUNIT, () => {
         }
     }
 
-    return { state, ...toRefs(state), setState, fetchCommunitColumn }
+    /**社群关键字列表搜索**/
+    async function fetchCommunitColumnSearch(keyword: string = '') {
+        try {
+            const { data } = await httpCommunitColumnSearch({ keyword })
+            return await setState({ dataCommunit: data.list ?? [] })
+        } catch (e) {
+            return await setState({ dataCommunit: [] })
+        }
+    }
+
+    return { state, ...toRefs(state), setState, fetchCommunitColumn, fetchCommunitColumnSearch }
 })

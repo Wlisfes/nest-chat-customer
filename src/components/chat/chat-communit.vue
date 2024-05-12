@@ -4,7 +4,7 @@ import { useCommunit, useNotification, useStore } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
 import { Observer } from '@/utils/utils-observer'
 import { divineNotice } from '@/utils/utils-component'
-import { fetchCommunit, fetchNotification } from '@/components/layer/layer.instance'
+import { fetchCommunit, fetchNotification, fetchJoiner } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -32,7 +32,18 @@ export default defineComponent({
             })
         }
 
-        /**查找社群、通知组件**/
+        /**查找社群**/
+        async function fetchUseJoiner() {
+            return await fetchJoiner({
+                observer,
+                title: '查找社群',
+                placeholder: 'UID/社群名称',
+                source: env.EnumNotificationSource.communit,
+                onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount()
+            })
+        }
+
+        /**通知组件**/
         async function fetchUseNotification() {
             return await fetchNotification({
                 observer,
@@ -56,16 +67,20 @@ export default defineComponent({
                         <common-icon circle size={40} icon-size={24} component={<Iv-BsAlert />}></common-icon>
                     </n-badge>
                 </chat-compose>
-                <common-element
-                    class="n-chunk n-center n-disover n-pointer"
-                    chunk-before={{ left: 0, right: 0 }}
-                    onClick={fetchUseCommunit}
-                >
+                <common-element class="n-chunk n-center n-disover n-pointer" onClick={fetchUseCommunit}>
                     <n-icon-wrapper size={42} color="#2aa886" icon-color="#ffffff" border-radius={4}>
                         <n-icon size={28} component={<Iv-NsSociety />}></n-icon>
                     </n-icon-wrapper>
                     <n-text depth={1} style={{ fontSize: '18px' }}>
                         新建社群
+                    </n-text>
+                </common-element>
+                <common-element class="n-chunk n-center n-disover n-pointer" chunk-before={{ left: 0, right: 0 }} onClick={fetchUseJoiner}>
+                    <n-icon-wrapper size={42} color="#f0a020" icon-color="#ffffff" border-radius={4}>
+                        <n-icon size={28} component={<Iv-AsCommunit />}></n-icon>
+                    </n-icon-wrapper>
+                    <n-text depth={1} style={{ fontSize: '18px' }}>
+                        查找社群
                     </n-text>
                 </common-element>
                 <div class="n-chunk n-column n-auto n-disover">

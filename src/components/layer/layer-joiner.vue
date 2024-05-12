@@ -18,23 +18,25 @@ export default defineComponent({
         observer: { type: Object as PropType<Observer<Omix>>, required: true }
     },
     setup(props, { emit }) {
-        const { dataContact, fetchContactSearch } = useStore(useContact)
-        const { dataCommunit } = useStore(useCommunit)
+        const { dataContact, fetchContactColumnSearch } = useStore(useContact)
+        const { dataCommunit, fetchCommunitColumnSearch } = useStore(useCommunit)
         const { visible, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
         const { state, setState } = useState({ keyword: '', loading: false })
 
         onMounted(async () => {
             await fetchState({ visible: true })
-            return await divineLayerUnmounted(props.observer, () => {
-                return fetchState({ visible: false })
+            return await divineLayerUnmounted(props.observer, async () => {
+                await setState({ keyword: '', loading: false })
+                return await fetchState({ visible: false })
             })
         })
 
-        const onUpdateThrottle = _.debounce(
+        const onUpdate = _.debounce(
             async (keyword: string) => {
                 await setState({ loading: true })
                 await divineHandler(props.source === env.EnumNotificationSource.contact, {
-                    handler: () => fetchContactSearch(keyword)
+                    handler: () => fetchContactColumnSearch(keyword),
+                    failure: () => fetchCommunitColumnSearch(keyword)
                 })
                 return await setState({ loading: false })
             },
@@ -61,7 +63,7 @@ export default defineComponent({
                             auto-focus
                             v-model:content={state.keyword}
                             placeholder={props.placeholder}
-                            onUpdate={onUpdateThrottle}
+                            onUpdate={onUpdate}
                         ></chat-searcher>
                     </div>
                     <div class="n-chunk n-column n-auto n-disover">
@@ -75,7 +77,7 @@ export default defineComponent({
                                 <Fragment>
                                     {!state.loading && dataContact.value.length === 0 && (
                                         <div class="n-chunk n-column n-disover" style={{ padding: '14px' }}>
-                                            <n-empty description="暂无数据"></n-empty>
+                                            <n-empty description="暂无用户"></n-empty>
                                         </div>
                                     )}
                                     {dataContact.value.length > 0 && (
@@ -90,7 +92,7 @@ export default defineComponent({
                                 <Fragment>
                                     {!state.loading && dataCommunit.value.length === 0 && (
                                         <div class="n-chunk n-column n-disover" style={{ padding: '14px' }}>
-                                            <n-empty description="暂无数据"></n-empty>
+                                            <n-empty description="暂无社群"></n-empty>
                                         </div>
                                     )}
                                     {dataCommunit.value.length > 0 && <div class="n-chunk n-column n-disover">DSA</div>}
