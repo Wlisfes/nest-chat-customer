@@ -29,7 +29,7 @@ export default defineComponent({
         async function fetchUseJoiner() {
             return await fetchJoiner({
                 observer,
-                title: '新增联系人',
+                title: '查找联系人',
                 placeholder: 'UID/邮箱/用户昵称',
                 source: env.EnumNotificationSource.contact,
                 onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount()
@@ -57,11 +57,11 @@ export default defineComponent({
                                 chunk-before={{ left: 0, right: 0 }}
                                 onClick={fetchUseJoiner}
                             >
-                                <n-icon-wrapper size={42} color="#2aa886" icon-color="#ffffff" border-radius={4}>
+                                <n-icon-wrapper size={42} color="#f0a020" icon-color="#ffffff" border-radius={4}>
                                     <n-icon size={28} component={<Iv-AsUser />}></n-icon>
                                 </n-icon-wrapper>
                                 <n-text depth={1} style={{ fontSize: '18px' }}>
-                                    新增联系人
+                                    查找联系人
                                 </n-text>
                             </common-element>
                         ) : (

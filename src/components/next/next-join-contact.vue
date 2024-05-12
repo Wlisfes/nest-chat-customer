@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, computed, Fragment, PropType } from 'vue'
-import { useUser, useContact, useNotification, useStore } from '@/store'
+import { useContact, useNotification, useStore } from '@/store'
 import { divineHandler } from '@/utils/utils-common'
 import { fetchInvite, fetchCompadre } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
@@ -11,7 +11,6 @@ export default defineComponent({
         node: { type: Object as PropType<env.SchemaUser>, required: true }
     },
     setup(props) {
-        const { uid } = useStore(useUser)
         const { dataContact } = useStore(useNotification)
         const { dataSource } = useStore(useContact)
         /**是否存在好友关系**/

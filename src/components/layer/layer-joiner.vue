@@ -12,7 +12,7 @@ export default defineComponent({
     name: 'LayerJoiner',
     emits: ['close', 'submit'],
     props: {
-        title: { type: String, default: '新增联系人' },
+        title: { type: String, default: '查找联系人' },
         placeholder: { type: String, default: 'UID/邮箱/用户昵称' },
         source: { type: String as PropType<env.EnumNotificationSource>, required: true },
         observer: { type: Object as PropType<Observer<Omix>>, required: true }
