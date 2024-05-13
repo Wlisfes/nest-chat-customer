@@ -4,7 +4,7 @@ import { useUser, useNotification, useContact, useCommunit, useStore } from '@/s
 import { useModal } from '@/hooks/hook-layer'
 import { divineRender, divineNotice } from '@/utils/utils-component'
 import { divineTransfer } from '@/utils/utils-transfer'
-import { divineWherer, divineHandler } from '@/utils/utils-common'
+import { divineHandler } from '@/utils/utils-common'
 import { httpNotificationUpdate } from '@/api/instance.service'
 import * as env from '@/interface/instance.resolver'
 
@@ -19,12 +19,10 @@ export default defineComponent({
         const { uid } = useStore(useUser)
         const { fetchContactColumn } = useStore(useContact)
         const { fetchCommunitColumn } = useStore(useCommunit)
-        const { fetchNotificationColumn, divineJsonComment } = useStore(useNotification)
+        const { fetchNotificationColumn, divineJsonComment, divineJsonUserId } = useStore(useNotification)
         const { visible, chunkContent, fetchState } = useModal({ width: 500 })
         const comment = computed(() => divineJsonComment(uid.value, props.node))
-        const userId = computed(() => {
-            return divineWherer(props.node.userId === uid.value, props.node.niveId, props.node.userId)
-        })
+        const userId = computed(() => divineJsonUserId(uid.value, props.node))
 
         onMounted(async () => {
             await fetchState({ visible: true })

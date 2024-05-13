@@ -11,6 +11,8 @@ export default defineComponent({
         node: { type: Object as PropType<env.SchemaCommunit>, required: true }
     },
     setup(props) {
+        console.log(props)
+
         return () => <common-element class="n-chunk n-center n-pointer"></common-element>
     }
 })

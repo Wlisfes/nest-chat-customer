@@ -26,15 +26,29 @@ export const useNotification = defineStore(APP_STORE.STORE_NOTIFICATION, () => {
         }
     })
 
+    /**通知组件申请用户**/
+    function divineJsonUserId(uid: string, node: env.SchemaNotification) {
+        if (node.source === env.EnumNotificationSource.contact) {
+            return node.userId === uid ? node.niveId : node.userId
+        } else {
+            return node.userId === uid ? node.communit.ownId : node.userId
+        }
+    }
+
+    /**通知组件备注**/
     function divineJsonComment(uid: string, node: env.SchemaNotification) {
-        if (node.userId === uid && node.json[node.niveId]) {
-            return node.json[node.niveId].comment ?? ''
-        } else if (node.niveId === uid && node.json[node.userId]) {
-            return node.json[node.userId].comment ?? ''
-        } else if (node.userId === uid && node.json[node.userId]) {
-            return node.json[node.userId].comment ?? ''
-        } else if (node.niveId === uid && node.json[node.niveId]) {
-            return node.json[node.niveId].comment ?? ''
+        if (node.source === env.EnumNotificationSource.contact) {
+            if (node.userId === uid) {
+                return node.json[node.niveId] ? node.json[node.niveId].comment : node.json[node.userId].comment
+            } else {
+                return node.json[node.userId] ? node.json[node.userId].comment : node.json[node.niveId].comment
+            }
+        } else {
+            if (node.userId === uid) {
+                return node.json[node.communit.ownId] ? node.json[node.communit.ownId].comment : node.json[node.userId].comment
+            } else {
+                return node.json[node.userId] ? node.json[node.userId].comment : node.json[node.communit.ownId].comment
+            }
         }
     }
 
@@ -56,6 +70,7 @@ export const useNotification = defineStore(APP_STORE.STORE_NOTIFICATION, () => {
         ...toRefs(state),
         setState,
         divineJsonComment,
+        divineJsonUserId,
         fetchNotificationColumn
     }
 })

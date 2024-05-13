@@ -95,7 +95,13 @@ export default defineComponent({
                                             <n-empty description="暂无社群"></n-empty>
                                         </div>
                                     )}
-                                    {dataCommunit.value.length > 0 && <div class="n-chunk n-column n-disover">DSA</div>}
+                                    {dataCommunit.value.length > 0 && (
+                                        <div class="n-chunk n-column n-disover">
+                                            {dataCommunit.value.map(item => (
+                                                <next-join-communit key={item.keyId} node={item}></next-join-communit>
+                                            ))}
+                                        </div>
+                                    )}
                                 </Fragment>
                             )}
                         </n-scrollbar>

@@ -1,6 +1,6 @@
 <script lang="tsx">
-import { defineComponent, Fragment, PropType } from 'vue'
-import { useUser, useStore } from '@/store'
+import { defineComponent, computed, Fragment, PropType } from 'vue'
+import { useUser, useNotification, useStore } from '@/store'
 import { fetchCompadre } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
@@ -11,6 +11,8 @@ export default defineComponent({
     },
     setup(props) {
         const { uid } = useStore(useUser)
+        const { divineJsonComment } = useStore(useNotification)
+        const comment = computed(() => divineJsonComment(uid.value, props.node))
 
         /**社群申请验证操作**/
         async function fetchUseCompadre() {
@@ -65,7 +67,7 @@ export default defineComponent({
                         <n-text type="success" depth={1}>
                             备注：
                         </n-text>
-                        <n-text depth={2}>{props.node.comment}</n-text>
+                        {comment.value && <n-text depth={2}>{comment.value}</n-text>}
                     </n-ellipsis>
                 </n-blockquote>
                 <div class="n-chunk n-column n-disover" style={{ rowGap: '10px' }}>
