@@ -32,8 +32,13 @@ export default defineComponent({
                     <n-scrollbar class="is-customize" trigger="none" size={60} on-scroll={onScroller}>
                         <n-element class="n-chunk n-column">
                             {loading.value && dataSource.value.length === 0 && (
-                                <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
+                                <div class="n-chunk n-column n-center n-middle" style={{ padding: '14px' }}>
                                     <common-loadiner size={32} size-border={4}></common-loadiner>
+                                </div>
+                            )}
+                            {!loading.value && dataSource.value.length === 0 && (
+                                <div class="n-chunk n-column n-disover" style={{ padding: '14px' }}>
+                                    <n-empty description="暂无对话"></n-empty>
                                 </div>
                             )}
                             {dataSource.value.length > 0 && (

@@ -77,7 +77,7 @@ export default defineComponent({
                                 <Fragment>
                                     {!state.loading && dataContact.value.length === 0 && (
                                         <div class="n-chunk n-column n-disover" style={{ padding: '14px' }}>
-                                            <n-empty description="暂无用户"></n-empty>
+                                            <n-empty description="暂无联系人"></n-empty>
                                         </div>
                                     )}
                                     {dataContact.value.length > 0 && (

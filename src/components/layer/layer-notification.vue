@@ -70,7 +70,7 @@ export default defineComponent({
                                 chunk-before={{ left: 0, right: 0 }}
                                 onClick={fetchUseJoiner}
                             >
-                                <n-icon-wrapper size={42} color="#2aa886" icon-color="#ffffff" border-radius={4}>
+                                <n-icon-wrapper size={42} color="#f0a020" icon-color="#ffffff" border-radius={4}>
                                     <n-icon size={28} component={<Iv-AsCommunit />}></n-icon>
                                 </n-icon-wrapper>
                                 <n-text depth={1} style={{ fontSize: '18px' }}>
@@ -83,6 +83,11 @@ export default defineComponent({
                         <n-scrollbar class="is-customize" trigger="none" size={60}>
                             {props.source === env.EnumNotificationSource.contact ? (
                                 <Fragment>
+                                    {dataContact.value.length === 0 && (
+                                        <div class="n-chunk n-column n-disover" style={{ padding: '14px' }}>
+                                            <n-empty description="暂无对话通知"></n-empty>
+                                        </div>
+                                    )}
                                     <div class="n-chunk n-column n-auto n-disover">
                                         {dataContact.value.map(item => (
                                             <next-notify-contact key={item.keyId} node={item}></next-notify-contact>
@@ -91,6 +96,11 @@ export default defineComponent({
                                 </Fragment>
                             ) : (
                                 <Fragment>
+                                    {dataCommunit.value.length === 0 && (
+                                        <div class="n-chunk n-column n-disover" style={{ padding: '14px' }}>
+                                            <n-empty description="暂无社群通知"></n-empty>
+                                        </div>
+                                    )}
                                     <div class="n-chunk n-column n-auto n-disover">
                                         {dataCommunit.value.map(item => (
                                             <next-notify-communit key={item.keyId} node={item}></next-notify-communit>
