@@ -25,6 +25,7 @@ export default defineComponent({
 
         /**申请添加社群**/
         async function fetchUseInvite() {
+            console.log(props.node)
             return await fetchInvite({
                 title: '查看基本信息',
                 communitId: props.node.uid,
@@ -38,7 +39,7 @@ export default defineComponent({
         }
 
         async function fetchClick() {
-            if (notification.value) {
+            if (notification.value && false) {
                 // return await divineHandler(
                 //     [env.EnumNotificationStatus.waitze, env.EnumNotificationStatus.resolve].includes(notification.value?.status),
                 //     { handler: fetchUseCompadre, failure: fetchUseInvite }
