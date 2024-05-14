@@ -47,7 +47,9 @@ export default defineComponent({
                 <n-element class="layer-invite n-chunk n-column n-disover">
                     {props.source === env.EnumNotificationSource.contact ? (
                         <next-invite-contact user-id={props.userId} onSubmit={onSubmit}></next-invite-contact>
-                    ) : null}
+                    ) : (
+                        <next-communit-resolver communit-id={props.communitId}></next-communit-resolver>
+                    )}
                 </n-element>
             </n-modal>
         )

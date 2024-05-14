@@ -17,7 +17,7 @@ export default defineComponent({
         const isContact = computed(() => {
             return dataSource.value.some(item => [item.userId, item.niveId].includes(props.node.uid))
         })
-        /**是否存在未通过的申请记录**/
+        /**是否存在申请记录**/
         const notification = computed(() => {
             const item = dataContact.value.find(item => [item.userId, item.niveId].includes(props.node.uid))
             return item as env.SchemaNotification

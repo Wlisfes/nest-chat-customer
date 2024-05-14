@@ -36,6 +36,7 @@ export interface SchemaCommunit extends env.CommonSchema {
     name: string
     poster: env.SchemaMedia
     ownId: string
+    own: env.SchemaUser
     status: EnumCommunitStatus
     comment: string
     speak: boolean

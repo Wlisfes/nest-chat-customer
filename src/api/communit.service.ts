@@ -35,3 +35,12 @@ export function httpCommunitResolver(params: { uid: string }) {
         params
     })
 }
+
+/**查看社群详情**/
+export function httpCommunitCurrentResolver(params: { uid: string }) {
+    return request<env.SchemaCommunit>({
+        url: `/communit/current/resolver`,
+        method: 'GET',
+        params
+    })
+}
