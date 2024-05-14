@@ -1,21 +1,22 @@
 <script lang="tsx">
 import { defineComponent, onMounted } from 'vue'
-import { useUser, useConfiger, useMessenger, useSession, useChat, useNotification, useContact, useCommunit } from '@/store'
+import { useUser, useConfiger, useMessenger, useSession, useChat, useNotification, useContact, useCommunit, useStore } from '@/store'
 import { useWebSocket } from '@/hooks/hook-websocket'
+import { divineHandler } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
     name: 'ChatLayout',
     setup() {
         const { connectClient } = useWebSocket({ unmounted: true })
-        const { setState } = useChat()
-        const { fetchCommonWallpaper } = useConfiger()
-        const { fetchSessionInitColumn, fetchNewServerMessager } = useSession()
-        const { fetchSocketServerMessager } = useMessenger()
-        const { fetchUserResolver } = useUser()
-        const { fetchNotificationColumn, fetchSocketServerNotification } = useNotification()
-        const { fetchContactColumn, fetchContactColumnSearch } = useContact()
-        const { fetchCommunitColumn, fetchCommunitColumnSearch } = useCommunit()
+        const { setState } = useStore(useChat)
+        const { fetchCommonWallpaper } = useStore(useConfiger)
+        const { fetchSessionInitColumn, fetchNewServerMessager } = useStore(useSession)
+        const { fetchSocketServerMessager } = useStore(useMessenger)
+        const { uid, fetchUserResolver } = useStore(useUser)
+        const { fetchNotificationColumn, fetchSocketServerNotification } = useStore(useNotification)
+        const { fetchContactColumn, fetchContactColumnSearch } = useStore(useContact)
+        const { fetchCommunitColumn, fetchCommunitColumnSearch } = useStore(useCommunit)
 
         onMounted(async () => {
             await fetchUserResolver()
@@ -46,10 +47,19 @@ export default defineComponent({
                         /**消息列表处理**/
                         await fetchSocketServerMessager(data)
                         /**会话列表**/
-                        return await fetchNewServerMessager(data)
+                        return await fetchNewServerMessager(uid.value, data)
                     })
                     client.on('server-notification-messager', async (data: Omix<env.SchemaNotification>) => {
-                        return await fetchSocketServerNotification(data)
+                        await fetchSocketServerNotification(data)
+                        return await divineHandler(data.status !== env.EnumNotificationStatus.waitze, {
+                            handler: async () => {
+                                if (data.source === env.EnumNotificationSource.contact) {
+                                    return await fetchContactColumn()
+                                } else {
+                                    return await fetchCommunitColumn()
+                                }
+                            }
+                        })
                     })
                 })
             })

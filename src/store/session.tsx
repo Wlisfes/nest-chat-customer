@@ -112,13 +112,29 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
     }
 
     /**socket新会话消息推送会话处理**/
-    async function fetchNewServerMessager(scope: Omix<env.SchemaMessager>) {
-        const node = state.dataSource.find(item => item.sid === scope.sessionId) as env.SchemaSession
-        return await divineHandler(!Boolean(node), {
+    async function fetchNewServerMessager(userId: string, scope: Omix<env.SchemaMessager>) {
+        const node = state.dataSource.find(item => item.sid === scope.sessionId) as Omix<env.SchemaSession>
+        await divineHandler(!Boolean(node), {
             handler: async () => {
                 const { data } = await httpSessionOneResolver({ sid: scope.sessionId })
                 return await setState({
                     dataSource: [data, ...state.dataSource.filter(item => item.sid !== scope.sessionId)]
+                })
+            }
+        })
+        return await divineHandler(Boolean(node) && !Boolean(node.mounted), {
+            handler: async () => {
+                node.message.keyId = scope.keyId
+                node.message.sid = scope.sid
+                node.message.createTime = scope.createTime
+                node.message.source = scope.source
+                node.message.status = scope.status
+                node.message.text = scope.text
+                node.message.userId = scope.userId
+                return await divineHandler(scope.userId !== userId, {
+                    handler: async () => {
+                        return (node.unread = node.unread.concat(scope))
+                    }
                 })
             }
         })

@@ -9,6 +9,7 @@ export enum EnumSessionSource {
 /**会话记录表**/
 export interface SchemaSession extends env.CommonSchema {
     sid: string
+    mounted: boolean
     source: EnumSessionSource
     communit: env.SchemaCommunit
     communitId: string

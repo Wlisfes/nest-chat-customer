@@ -31,12 +31,12 @@ export default defineComponent({
                 <div class="n-chunk n-column n-auto n-disover">
                     <n-scrollbar class="is-customize" trigger="none" size={60} on-scroll={onScroller}>
                         <n-element class="n-chunk n-column">
-                            {loading.value && total.value === 0 && (
+                            {loading.value && dataSource.value.length === 0 && (
                                 <div class="n-chunk n-column n-center n-middle" style={{ padding: '20px' }}>
                                     <common-loadiner size={32} size-border={4}></common-loadiner>
                                 </div>
                             )}
-                            {total.value > 0 && (
+                            {dataSource.value.length > 0 && (
                                 <div class="n-chunk n-column">
                                     {dataSource.value.map(item => {
                                         return <chat-node-sessioner key={item.keyId} v-model:node={item}></chat-node-sessioner>
