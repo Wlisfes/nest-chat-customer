@@ -13,7 +13,7 @@ export default defineComponent({
         const { fetchSessionInitColumn, fetchNewServerMessager } = useSession()
         const { fetchSocketServerMessager } = useMessenger()
         const { fetchUserResolver } = useUser()
-        const { fetchNotificationColumn } = useNotification()
+        const { fetchNotificationColumn, fetchSocketServerNotification } = useNotification()
         const { fetchContactColumn, fetchContactColumnSearch } = useContact()
         const { fetchCommunitColumn, fetchCommunitColumnSearch } = useCommunit()
 
@@ -47,6 +47,9 @@ export default defineComponent({
                         await fetchSocketServerMessager(data)
                         /**会话列表**/
                         return await fetchNewServerMessager(data)
+                    })
+                    client.on('server-notification-messager', async (data: Omix<env.SchemaNotification>) => {
+                        return await fetchSocketServerNotification(data)
                     })
                 })
             })

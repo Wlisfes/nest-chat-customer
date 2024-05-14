@@ -3,8 +3,8 @@ import { defineStore } from 'pinia'
 import { useState } from '@/hooks/hook-state'
 import { APP_STORE } from '@/utils/utils-storage'
 import { divineHandler } from '@/utils/utils-common'
+import { httpContactResolver, httpCommunitResolver, httpSessionColumn, httpSessionOneResolver } from '@/api/instance.service'
 import * as env from '@/interface/instance.resolver'
-import * as api from '@/api/instance.service'
 
 export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
     const communit = ref() as Ref<env.SchemaCommunit>
@@ -28,7 +28,7 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
         if (schema.value.source === env.EnumSessionSource.contact) {
             try {
                 const contactId = schema.value.contactId
-                return await api.httpContactResolver({ uid: contactId }).then(async ({ data }) => {
+                return await httpContactResolver({ uid: contactId }).then(async ({ data }) => {
                     return await divineHandler(contactId === state.sid, {
                         handler: () => (contact.value = data)
                     })
@@ -39,7 +39,7 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
         } else if (schema.value.source === env.EnumSessionSource.communit) {
             try {
                 const communitId = schema.value.communitId
-                return await api.httpCommunitResolver({ uid: schema.value.communitId }).then(async ({ data }) => {
+                return await httpCommunitResolver({ uid: schema.value.communitId }).then(async ({ data }) => {
                     return await divineHandler(communitId === state.sid, {
                         handler: () => (communit.value = data)
                     })
@@ -53,7 +53,7 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
     /**会话列表**/
     async function fetchSessionColumn() {
         try {
-            const { data } = await api.httpSessionColumn()
+            const { data } = await httpSessionColumn()
             return { total: data.total ?? 0, list: data.list ?? [] }
         } catch (e) {
             return { total: 0, list: [] }
@@ -116,7 +116,7 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
         const node = state.dataSource.find(item => item.sid === scope.sessionId) as env.SchemaSession
         return await divineHandler(!Boolean(node), {
             handler: async () => {
-                const { data } = await api.httpSessionOneResolver({ sid: scope.sessionId })
+                const { data } = await httpSessionOneResolver({ sid: scope.sessionId })
                 return await setState({
                     dataSource: [data, ...state.dataSource.filter(item => item.sid !== scope.sessionId)]
                 })

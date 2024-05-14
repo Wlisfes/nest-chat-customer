@@ -62,6 +62,13 @@ export const useNotification = defineStore(APP_STORE.STORE_NOTIFICATION, () => {
         }
     }
 
+    /**socket推送通知消息处理**/
+    async function fetchSocketServerNotification(node: env.SchemaNotification) {
+        return await setState({
+            dataSource: [node, ...state.dataSource.filter(item => item.uid !== node.uid)]
+        })
+    }
+
     return {
         state,
         dot,
@@ -71,6 +78,7 @@ export const useNotification = defineStore(APP_STORE.STORE_NOTIFICATION, () => {
         setState,
         divineJsonComment,
         divineJsonUserId,
-        fetchNotificationColumn
+        fetchNotificationColumn,
+        fetchSocketServerNotification
     }
 })
