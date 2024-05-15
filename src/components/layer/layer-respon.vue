@@ -1,9 +1,8 @@
 <script lang="tsx">
 import { defineComponent, computed, onMounted, PropType, CSSProperties } from 'vue'
-import { useUser, useConfiger } from '@/store'
+import { useUser, useConfiger, useStore } from '@/store'
 import { useState } from '@/hooks/hook-state'
 import { useDrawer } from '@/hooks/hook-layer'
-import { divineNotice } from '@/utils/utils-component'
 import { divineWherer, divineHandler } from '@/utils/utils-common'
 import { Observer } from '@/utils/utils-observer'
 import * as env from '@/interface/instance.resolver'
@@ -15,11 +14,16 @@ export default defineComponent({
         observer: { type: Object as PropType<Observer<Omix>>, required: true }
     },
     setup(props, { emit }) {
-        const configer = useConfiger()
+        const { wallpaper, theme } = useStore(useConfiger)
         const { visible, loading, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
-        const { paint, keyIdColor, lightColor, darkColor, setState: setUser, fetchUserUpdate } = useUser()
-        const { state, setState } = useState({ paint, keyIdColor, lightColor, darkColor })
-        const inverted = computed(() => configer.theme === env.EnumUserTheme.light)
+        const { paint, light, dark, waid, setState: setUser, fetchUserUpdate } = useStore(useUser)
+        const { state, setState } = useState({
+            paint: paint.value,
+            light: light.value,
+            dark: dark.value,
+            waid: waid.value
+        })
+        const inverted = computed(() => theme.value === env.EnumUserTheme.light)
 
         onMounted(async () => {
             await fetchState({ visible: true })
@@ -32,7 +36,7 @@ export default defineComponent({
         function divineChunkClassName(scope: env.RestCommonWallpaper): Omix {
             return {
                 'chunk-column': true,
-                'chunk-current': state.keyIdColor === scope.keyId
+                'chunk-current': state.waid === scope.waid
             }
         }
 
@@ -48,7 +52,7 @@ export default defineComponent({
         async function onMouseover(scope: env.RestCommonWallpaper) {
             return await divineHandler(!loading.value, {
                 handler: async () => {
-                    return await setUser({ lightColor: scope.light, darkColor: scope.dark })
+                    return await setUser({ light: scope.light, dark: scope.dark })
                 }
             })
         }
@@ -57,7 +61,7 @@ export default defineComponent({
         async function onMouseout(scope: env.RestCommonWallpaper) {
             return await divineHandler(!loading.value, {
                 handler: async () => {
-                    return await setUser({ lightColor: state.lightColor, darkColor: state.darkColor })
+                    return await setUser({ light: state.light, dark: state.dark })
                 }
             })
         }
@@ -71,12 +75,12 @@ export default defineComponent({
 
         /**更新壁纸背景**/
         async function fetchBasicUpdate(scope: env.RestCommonWallpaper, done: Function) {
-            return await divineHandler(!loading.value && state.keyIdColor !== scope.keyId, {
+            return await divineHandler(!loading.value && state.waid !== scope.waid, {
                 handler: async () => {
                     await fetchState({ loading: true })
                     await done({ loading: true })
-                    return await fetchUserUpdate({ color: scope.keyId }, {}, async () => {
-                        await setState({ keyIdColor: scope.keyId, lightColor: scope.light, darkColor: scope.dark })
+                    return await fetchUserUpdate({ color: scope.waid }, {}, async () => {
+                        await setState({ waid: scope.waid, light: scope.light, dark: scope.dark })
                         await done({ loading: false })
                         return await fetchState({ loading: false })
                     })
@@ -110,10 +114,10 @@ export default defineComponent({
                                     onUpdateChecked={(checked: boolean) => fetchPaintUpdate(checked)}
                                 />
                             </div>
-                            {configer.wallpaper.length > 0 && (
+                            {wallpaper.value.length > 0 && (
                                 <div class="n-chunk n-column n-disover" style={{ padding: '0 24px 24px' }}>
                                     <n-grid cols={3} x-gap={16} y-gap={16}>
-                                        {configer.wallpaper.map(item => (
+                                        {wallpaper.value.map(item => (
                                             <n-grid-item key={item.keyId}>
                                                 <common-state>
                                                     {{
