@@ -16,9 +16,9 @@ export default defineComponent({
     setup(props, { emit }) {
         const { visible, loading, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
         const { state, setState } = useState({
-            name: '',
-            comment: '大家好！本社群可供成员在话题群组中交流，还可以及时获取重要公告。',
-            poster: '',
+            name: '骊珠洞天',
+            comment: `九洲之一东宝瓶洲中的洞天福地，骊珠洞天虽小，但是里面人气运和修行资质都极好，后坠落于大骊国界地面天地融为一体后逐渐名扬天下。`,
+            poster: '2164999699268976640',
             fileURL: ''
         })
         const disabled = computed(() => {

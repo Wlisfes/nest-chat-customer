@@ -18,3 +18,12 @@ export function httpSessionOneMessager(params: env.QuerySessionOneMessager) {
         params
     })
 }
+
+/**发送自定义消息**/
+export function httpSessionCustomizeMessager(data: env.BodySessionCustomizeMessager) {
+    return request<Omix<env.NoticeResolver & { sid: string }>>({
+        url: `/messager/customize/transmitter`,
+        method: 'POST',
+        data
+    })
+}
