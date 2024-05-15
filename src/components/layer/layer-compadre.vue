@@ -39,7 +39,7 @@ export default defineComponent({
                         failure: fetchCommunitColumn
                     })
                     await divineNotice({ type: 'success', content: message })
-                    return await emit('close', { done: fetchState })
+                    return await emit('submit', { done: fetchState })
                 })
             } catch (e) {
                 return await divineNotice({ type: 'error', content: e.message }).then(async () => {

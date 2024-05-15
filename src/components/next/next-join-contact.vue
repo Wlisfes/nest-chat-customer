@@ -42,7 +42,8 @@ export default defineComponent({
             return await fetchCompadre({
                 node: notification.value,
                 title: '查看基本信息',
-                onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount()
+                onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount(),
+                onSubmit: ({ done }: Omix<{ unmount: Function; done: Function }>) => done({ visible: false })
             })
         }
 
