@@ -23,9 +23,9 @@ export function useDrawer(scope: { mount?: boolean; unmount?: boolean; observer?
     /**监听销毁事件**/
     async function divineLayerUnmounted<T>(observer: Observer<Omix<T>>, handler: Function) {
         await divineHandler(Boolean(scope.observer), {
-            handler: () => scope.observer!.once('layer-unmounted', handler as never)
+            handler: () => scope.observer!.on('layer-unmounted', handler as never)
         })
-        return observer.once('layer-unmounted', handler as never)
+        return observer.on('layer-unmounted', handler as never)
     }
 
     /**主动发起销毁事件**/

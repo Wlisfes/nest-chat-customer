@@ -16,7 +16,7 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { dataContact, dataCommunit } = useStore(useNotification)
-        const { observer, visible, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
+        const { visible, element, chunkContent, fetchState, divineLayerUnmounted } = useDrawer()
 
         onMounted(async () => {
             await fetchState({ visible: true })
@@ -28,7 +28,7 @@ export default defineComponent({
         /**联系人、社群申请操作**/
         async function fetchUseJoiner() {
             return await fetchJoiner({
-                observer,
+                observer: props.observer,
                 title: '查找联系人',
                 placeholder: 'UID/邮箱/用户昵称',
                 source: env.EnumNotificationSource.contact,
