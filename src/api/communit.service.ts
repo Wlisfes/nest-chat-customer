@@ -44,3 +44,12 @@ export function httpCommunitCurrentResolver(params: { uid: string }) {
         params
     })
 }
+
+/**申请加入社群**/
+export function httpCommunitInviteJoiner(data: { uid: string; comment: string }) {
+    return request<env.NoticeResolver>({
+        url: `/communit/invite/joiner`,
+        method: 'POST',
+        data
+    })
+}

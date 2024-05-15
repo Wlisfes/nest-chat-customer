@@ -10,7 +10,10 @@ export default defineComponent({
     name: 'NextCommunitResolver',
     emits: ['update', 'ready'],
     props: {
-        communitId: { type: String, required: true }
+        communitId: { type: String, required: true },
+        command: { type: Array as PropType<Array<string>>, default: () => [] },
+        footer: { type: Boolean, default: false },
+        status: { type: String as PropType<env.EnumNotificationStatus>, default: env.EnumNotificationStatus.waitze }
     },
     setup(props, { emit, slots }) {
         const { uid } = useStore(useUser)
@@ -92,8 +95,8 @@ export default defineComponent({
                         </div>
                     </n-grid-item>
                 </n-grid>
-                {slots.default && <Fragment>{slots.default(state)}</Fragment>}
-                <div class="n-chunk n-column n-disover" style={{ rowGap: '10px', paddingTop: '24px' }}>
+                {slots.comment && <Fragment>{slots.comment(state)}</Fragment>}
+                <div class="n-chunk n-column n-disover" style={{ rowGap: '10px', paddingTop: '16px' }}>
                     <div class="n-chunk n-center n-disover" style={{ columnGap: '10px' }}>
                         <chat-avatar size={44} src={state.poster}></chat-avatar>
                         <div class="n-chunk n-column n-auto n-disover">
@@ -108,6 +111,69 @@ export default defineComponent({
                         </n-ellipsis>
                     </n-text>
                 </div>
+                {slots.default && <Fragment>{slots.default(state)}</Fragment>}
+                {props.footer && (
+                    <Fragment>
+                        {slots.footer ? (
+                            slots.footer(state)
+                        ) : (
+                            <n-space wrap-item={false} size={16} justify="center" style={{ flex: 1, paddingTop: '24px' }}>
+                                {props.status === env.EnumNotificationStatus.waitze ? (
+                                    <Fragment>
+                                        {props.command.includes(uid.value) ? (
+                                            <n-space wrap-item={false} size={16} justify="center">
+                                                <common-state
+                                                    data-render={(scope: Omix<{ loading: boolean }>, done: Function) => (
+                                                        <n-button
+                                                            secondary
+                                                            type="error"
+                                                            style={{ minWidth: '88px' }}
+                                                            loading={scope.loading}
+                                                            disabled={scope.loading}
+                                                            onClick={(evt: MouseEvent) => {
+                                                                emit('update', { done, status: env.EnumNotificationStatus.reject })
+                                                            }}
+                                                        >
+                                                            拒绝
+                                                        </n-button>
+                                                    )}
+                                                ></common-state>
+                                                <common-state
+                                                    data-render={(scope: Omix<{ loading: boolean }>, done: Function) => (
+                                                        <n-button
+                                                            secondary
+                                                            type="success"
+                                                            style={{ minWidth: '88px' }}
+                                                            loading={scope.loading}
+                                                            disabled={scope.loading}
+                                                            onClick={(evt: MouseEvent) => {
+                                                                emit('update', { done, status: env.EnumNotificationStatus.resolve })
+                                                            }}
+                                                        >
+                                                            通过验证
+                                                        </n-button>
+                                                    )}
+                                                ></common-state>
+                                            </n-space>
+                                        ) : (
+                                            <n-button secondary type="warning" style={{ minWidth: '88px', cursor: 'not-allowed' }}>
+                                                待验证
+                                            </n-button>
+                                        )}
+                                    </Fragment>
+                                ) : props.status === env.EnumNotificationStatus.resolve ? (
+                                    <n-button secondary type="success" style={{ minWidth: '88px', cursor: 'not-allowed' }}>
+                                        已验证
+                                    </n-button>
+                                ) : (
+                                    <n-button secondary type="error" style={{ minWidth: '88px', cursor: 'not-allowed' }}>
+                                        已拒绝
+                                    </n-button>
+                                )}
+                            </n-space>
+                        )}
+                    </Fragment>
+                )}
             </div>
         )
     }

@@ -38,12 +38,21 @@ export default defineComponent({
             })
         }
 
+        /**社群申请验证操作**/
+        async function fetchUseCompadre() {
+            return await fetchCompadre({
+                node: notification.value,
+                title: '申请人基本信息',
+                onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount()
+            })
+        }
+
         async function fetchClick() {
-            if (notification.value && false) {
-                // return await divineHandler(
-                //     [env.EnumNotificationStatus.waitze, env.EnumNotificationStatus.resolve].includes(notification.value?.status),
-                //     { handler: fetchUseCompadre, failure: fetchUseInvite }
-                // )
+            if (notification.value) {
+                return await divineHandler(
+                    [env.EnumNotificationStatus.waitze, env.EnumNotificationStatus.resolve].includes(notification.value?.status),
+                    { handler: fetchUseCompadre, failure: fetchUseInvite }
+                )
             } else {
                 return await fetchUseInvite()
             }

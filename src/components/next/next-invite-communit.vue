@@ -1,10 +1,11 @@
 <script lang="tsx">
-import { defineComponent, computed, onMounted } from 'vue'
+import { defineComponent, computed, onMounted, PropType } from 'vue'
 import { useCommunit, useNotification, useUser, useStore } from '@/store'
 import { useFormCustomize } from '@/hooks/hook-customize'
 import { divineNotice } from '@/utils/utils-component'
 import { divineHandler } from '@/utils/utils-common'
-import { httpContactInviteJoiner } from '@/api/instance.service'
+import { httpCommunitInviteJoiner } from '@/api/instance.service'
+import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
     name: 'NextInviteCommunit',
@@ -14,10 +15,9 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { nickname } = useStore(useUser)
-        const { dataCommunit } = useStore(useNotification)
         const { dataSource } = useStore(useCommunit)
         const { formRef, form, rules, loading, setForm, setLoading, divineFormValidater } = useFormCustomize({
-            form: { communitId: props.communitId, comment: '' },
+            form: { uid: props.communitId, comment: '' },
             rules: {
                 comment: { required: true, trigger: 'blur', min: 2, max: 64, message: '请输入2~64位字符' }
             }
@@ -32,28 +32,27 @@ export default defineComponent({
         })
 
         async function onSubmit() {
-            // return await divineHandler(await divineFormValidater(), {
-            //     handler: async () => {
-            //         try {
-            //             await setLoading(true)
-            //             return await httpContactInviteJoiner({ ...form.value }).then(async ({ message }) => {
-            //                 await divineNotice({ type: 'success', content: message })
-            //                 await setLoading(false)
-            //                 return await emit('submit')
-            //             })
-            //         } catch (e) {
-            //             return await divineNotice({ type: 'error', content: e.message }).then(async () => {
-            //                 return await setLoading(false)
-            //             })
-            //         }
-            //     }
-            // })
+            return await divineHandler(await divineFormValidater(), {
+                handler: async () => {
+                    try {
+                        await setLoading(true)
+                        return await httpCommunitInviteJoiner({ ...form.value }).then(async ({ message }) => {
+                            await divineNotice({ type: 'success', content: message })
+                            await setLoading(false)
+                            return await emit('submit')
+                        })
+                    } catch (e) {
+                        return await divineNotice({ type: 'error', content: e.message }).then(async () => {
+                            return await setLoading(false)
+                        })
+                    }
+                }
+            })
         }
 
         return () => (
             <div class="next-invite-contact n-chunk n-column n-disover">
-                <next-communit-resolver communit-id={props.communitId}></next-communit-resolver>
-                {/* <next-user-resolver style={{ margin: '10px 0 0' }}>
+                <next-communit-resolver style={{ margin: '10px 0 0' }} communit-id={props.communitId}>
                     {!isCommunit.value && (
                         <div class="n-chunk n-column n-disover" style={{ padding: '14px 0 0', rowGap: '14px' }}>
                             <n-form ref={formRef} model={form.value} rules={rules.value} label-placement="top">
@@ -88,7 +87,7 @@ export default defineComponent({
                             </div>
                         </div>
                     )}
-                </next-user-resolver> */}
+                </next-communit-resolver>
             </div>
         )
     }

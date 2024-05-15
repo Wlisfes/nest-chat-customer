@@ -26,7 +26,8 @@ export default defineComponent({
 
         async function onSubmit() {
             return await divineHandler(props.source === env.EnumNotificationSource.contact, {
-                handler: fetchNotificationColumn
+                handler: fetchNotificationColumn,
+                failure: fetchNotificationColumn
             }).then(() => {
                 return emit('submit', { done: fetchState })
             })
@@ -48,7 +49,7 @@ export default defineComponent({
                     {props.source === env.EnumNotificationSource.contact ? (
                         <next-invite-contact user-id={props.userId} onSubmit={onSubmit}></next-invite-contact>
                     ) : (
-                        <next-communit-resolver communit-id={props.communitId}></next-communit-resolver>
+                        <next-invite-communit communit-id={props.communitId} onSubmit={onSubmit}></next-invite-communit>
                     )}
                 </n-element>
             </n-modal>
