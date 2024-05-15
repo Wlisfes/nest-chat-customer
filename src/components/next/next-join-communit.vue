@@ -25,7 +25,6 @@ export default defineComponent({
 
         /**申请添加社群**/
         async function fetchUseInvite() {
-            console.log(props.node)
             return await fetchInvite({
                 title: '查看基本信息',
                 communitId: props.node.uid,
@@ -42,7 +41,7 @@ export default defineComponent({
         async function fetchUseCompadre() {
             return await fetchCompadre({
                 node: notification.value,
-                title: '申请人基本信息',
+                title: '查看基本信息',
                 onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount()
             })
         }

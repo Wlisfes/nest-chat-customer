@@ -18,7 +18,7 @@ export default defineComponent({
         async function fetchUseCompadre() {
             return await fetchCompadre({
                 node: props.node,
-                title: '申请人基本信息',
+                title: '查看基本信息',
                 onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount()
             })
         }
@@ -62,6 +62,13 @@ export default defineComponent({
                                     </n-button>
                                 )}
                             </Fragment>
+                        ) : props.node.status === env.EnumNotificationStatus.resolve && props.node.userId === uid.value ? (
+                            <n-button text size="small" type="success" focusable={false}>
+                                <div class="n-chunk n-center" style={{ columnGap: '3px' }}>
+                                    <n-icon size={16} component={<Iv-BsSender />} />
+                                    <span>已添加</span>
+                                </div>
+                            </n-button>
                         ) : props.node.status === env.EnumNotificationStatus.resolve ? (
                             <n-button text size="small" type="success" focusable={false}>
                                 已添加

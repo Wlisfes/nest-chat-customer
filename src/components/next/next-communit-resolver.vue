@@ -3,14 +3,15 @@ import { defineComponent, onMounted, Fragment, PropType } from 'vue'
 import { useUser, useStore } from '@/store'
 import { useState } from '@/hooks/hook-state'
 import { divineHandler } from '@/utils/utils-common'
-import { httpCommunitCurrentResolver } from '@/api/instance.service'
+import { httpCommunitCurrentResolver, httpUserCurrentResolver } from '@/api/instance.service'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
     name: 'NextCommunitResolver',
-    emits: ['update', 'ready'],
+    emits: ['update', 'ready', 'ready-user'],
     props: {
         communitId: { type: String, required: true },
+        userId: { type: String },
         command: { type: Array as PropType<Array<string>>, default: () => [] },
         footer: { type: Boolean, default: false },
         status: { type: String as PropType<env.EnumNotificationStatus>, default: env.EnumNotificationStatus.waitze }
@@ -35,21 +36,44 @@ export default defineComponent({
             })
         })
 
+        /**查看用户信息**/
+        async function fetchUserCurrentResolver() {
+            try {
+                await setState({ loading: true })
+                return await httpUserCurrentResolver({ uid: props.userId as string }).then(async ({ data }) => {
+                    await setState({
+                        ownId: data.uid,
+                        nickname: data.nickname,
+                        avatar: data.avatar,
+                        email: data.email,
+                        signature: data.comment,
+                        loading: false
+                    })
+                    return await emit('ready-user', data)
+                })
+            } catch (e) {
+                return await setState({ loading: false })
+            }
+        }
+
         /**社群详情**/
         async function fetchCommunitCurrentResolver() {
             try {
                 await setState({ loading: true })
                 return await httpCommunitCurrentResolver({ uid: props.communitId }).then(async ({ data }) => {
-                    const { name, comment, own, poster } = data
                     await setState({
-                        name,
-                        comment,
-                        poster: poster.fileURL,
-                        ownId: own.uid,
-                        nickname: own.nickname,
-                        avatar: own.avatar,
-                        email: own.email,
-                        signature: own.comment
+                        name: data.name,
+                        comment: data.comment,
+                        poster: data.poster.fileURL,
+                        ownId: data.own.uid,
+                        nickname: data.own.nickname,
+                        avatar: data.own.avatar,
+                        email: data.own.email,
+                        signature: data.own.comment,
+                        loading: false
+                    })
+                    await divineHandler(Boolean(props.userId), {
+                        handler: fetchUserCurrentResolver
                     })
                     return await emit('ready', data)
                 })

@@ -18,7 +18,7 @@ export default defineComponent({
         async function fetchUseCompadre() {
             return await fetchCompadre({
                 node: props.node,
-                title: '申请人基本信息',
+                title: '查看基本信息',
                 onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount()
             })
         }
@@ -26,10 +26,18 @@ export default defineComponent({
         return () => (
             <common-element y-gap={14} class="n-chunk n-column n-pointer" onClick={fetchUseCompadre}>
                 <div class="n-chunk n-center" style={{ columnGap: '10px' }}>
-                    <chat-avatar size={46} src={props.node.communit.own.avatar}></chat-avatar>
+                    {props.node.userId === uid.value ? (
+                        <chat-avatar size={46} src={props.node.communit.own.avatar}></chat-avatar>
+                    ) : (
+                        <chat-avatar size={46} src={props.node.user.avatar}></chat-avatar>
+                    )}
                     <div class="n-chunk n-column n-auto n-disover">
                         <n-h2 style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 500, margin: 0 }}>
-                            <n-ellipsis tooltip={false}>{props.node.communit.own.nickname}</n-ellipsis>
+                            {props.node.userId === uid.value ? (
+                                <n-ellipsis tooltip={false}>{props.node.communit.own.nickname}</n-ellipsis>
+                            ) : (
+                                <n-ellipsis tooltip={false}>{props.node.user.nickname}</n-ellipsis>
+                            )}
                         </n-h2>
                         <n-text depth={3} style={{ lineHeight: '20px' }}>
                             {props.node.updateTime}

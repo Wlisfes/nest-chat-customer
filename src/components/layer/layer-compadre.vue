@@ -84,6 +84,7 @@ export default defineComponent({
                     ) : (
                         <next-communit-resolver
                             footer
+                            user-id={userId.value}
                             communit-id={props.node.communitId}
                             command={props.node.command}
                             status={props.node.status}

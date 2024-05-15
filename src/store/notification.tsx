@@ -31,7 +31,7 @@ export const useNotification = defineStore(APP_STORE.STORE_NOTIFICATION, () => {
         if (node.source === env.EnumNotificationSource.contact) {
             return node.userId === uid ? node.niveId : node.userId
         } else {
-            return node.userId === uid ? node.communit.ownId : node.userId
+            return node.communit.ownId === uid ? node.userId : undefined
         }
     }
 
