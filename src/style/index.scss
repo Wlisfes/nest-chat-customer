@@ -15,4 +15,7 @@ body,
     a {
         text-decoration: none;
     }
+    .app.is-customize > .n-scrollbar-rail {
+        z-index: 99;
+    }
 }

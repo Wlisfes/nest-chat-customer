@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, ref, computed, watch, CSSProperties } from 'vue'
+import { defineComponent, computed, CSSProperties } from 'vue'
 import { useCurrentElement, useElementSize } from '@vueuse/core'
 import { useChat, useConfiger, useStore } from '@/store'
 import { divineWherer } from '@/utils/utils-common'
@@ -8,29 +8,17 @@ export default defineComponent({
     name: 'ChatLayer',
     setup() {
         const layer = useCurrentElement<HTMLElement>()
-        const element = ref<HTMLElement>()
         const { isPwa } = useStore(useConfiger)
-        const chat = useChat()
+        const { loading } = useStore(useChat)
         const { width } = useElementSize(layer)
-        const chatWidth = computed(() => {
-            return isPwa.value ? '100%' : divineWherer(width.value > 2000, Math.floor(width.value * 0.8) + 'px', '1600px')
-        })
         const compute = computed<CSSProperties>(() => ({
-            '--chat-layer-width': chatWidth.value,
-            '--chat-layer-sider-width': divineWherer(width.value > 2000, '520px', '420px'),
-            '--chat-layer-sider-shrink': divineWherer(width.value < 860, width.value + 'px', 'var(--chat-layer-sider-width)'),
-            '--chat-layer-context': 'calc(100% - var(--chat-layer-sider-shrink)'
+            '--chat-layer-width': isPwa.value ? '100%' : divineWherer(width.value > 2000, Math.floor(width.value * 0.8) + 'px', '1600px'),
+            '--chat-layer-sider-width': divineWherer(width.value > 2000, '520px', '420px')
         }))
-
-        watch(
-            () => width.value,
-            () => chat.setState({ width: width.value }),
-            { immediate: true }
-        )
 
         return () => (
             <n-element class={{ 'chat-layer n-chunk n-column n-auto': true, 'chat-pwa': isPwa.value }} style={compute.value}>
-                {chat.loading ? (
+                {loading.value ? (
                     <div class="chat-loadiner n-chunk n-auto n-center n-middle">
                         <div class="chat-loadiner__container n-chunk n-column n-center n-middle">
                             <n-icon size={56} color="var(--text-color-3)" style={{ opacity: 0.2 }} component={<Iv-BsChat />}></n-icon>
@@ -41,7 +29,7 @@ export default defineComponent({
                         </div>
                     </div>
                 ) : (
-                    <div ref={element} class="chat-element n-chunk n-column n-auto n-disover">
+                    <div class="chat-element n-chunk n-column n-auto n-disover">
                         <div class="chat-element__container n-chunk n-auto n-disover">
                             <div class="chunk-sider n-chunk n-column">
                                 <div class="chunk-sider__element n-chunk n-column n-auto">
@@ -49,7 +37,7 @@ export default defineComponent({
                                 </div>
                             </div>
                             <div class="chunk-context n-chunk n-column n-auto n-disover">
-                                <div class="n-chunk n-column n-auto n-disover" style={{ minWidth: '540px' }}>
+                                <div class="n-chunk n-column n-auto n-disover" style={{ minWidth: '450px' }}>
                                     <chat-context></chat-context>
                                 </div>
                             </div>
@@ -137,14 +125,13 @@ export default defineComponent({
 }
 
 .chunk-context {
-    width: var(--chat-layer-context);
     background-color: var(--chat-context-color);
     transition: width 0.3s, background-color 0.3s var(--cubic-bezier-ease-in-out);
 }
 
 .chunk-sider {
     overflow: hidden;
-    width: var(--chat-layer-sider-shrink);
+    width: var(--chat-layer-sider-width);
     transition: width 0.3s;
     &::before {
         content: '';

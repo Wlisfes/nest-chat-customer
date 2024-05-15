@@ -8,7 +8,7 @@ export default defineComponent({
         const configer = useConfiger()
 
         return () => (
-            <n-element class="auth-layout n-chunk n-column">
+            <n-element class="auth-layout n-chunk n-column n-auto">
                 <common-rainbow></common-rainbow>
                 <div class="auth-layout__context n-chunk n-column n-center n-middle">
                     {/* <div class="chunk-switch"></div> */}
