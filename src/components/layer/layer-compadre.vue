@@ -67,7 +67,7 @@ export default defineComponent({
                             user-id={userId.value}
                             command={props.node.command}
                             status={props.node.status}
-                            style={{ margin: '10px 0 0' }}
+                            style={{ padding: '10px 0 0' }}
                             onUpdate={fetchNotificationUpdate}
                         >
                             <div class="n-chunk n-column n-auto n-disover" style={{ paddingTop: '14px' }}>
@@ -88,7 +88,7 @@ export default defineComponent({
                             communit-id={props.node.communitId}
                             command={props.node.command}
                             status={props.node.status}
-                            style={{ margin: '10px 0 0' }}
+                            style={{ padding: '10px 0 0' }}
                             onUpdate={fetchNotificationUpdate}
                         >
                             {{
