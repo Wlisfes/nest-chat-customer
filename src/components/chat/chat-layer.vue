@@ -29,9 +29,9 @@ export default defineComponent({
         )
 
         return () => (
-            <n-element class={{ 'chat-layer': true, 'chat-pwa': isPwa.value }} style={compute.value}>
+            <n-element class={{ 'chat-layer n-chunk n-column n-auto': true, 'chat-pwa': isPwa.value }} style={compute.value}>
                 {chat.loading ? (
-                    <div class="chat-loadiner n-chunk n-center n-middle">
+                    <div class="chat-loadiner n-chunk n-auto n-center n-middle">
                         <div class="chat-loadiner__container n-chunk n-column n-center n-middle">
                             <n-icon size={56} color="var(--text-color-3)" style={{ opacity: 0.2 }} component={<Iv-BsChat />}></n-icon>
                             <n-skeleton height="4px" round />
@@ -41,8 +41,8 @@ export default defineComponent({
                         </div>
                     </div>
                 ) : (
-                    <div ref={element} class="chat-element">
-                        <div class="chat-element__container n-chunk">
+                    <div ref={element} class="chat-element n-chunk n-column n-auto n-disover">
+                        <div class="chat-element__container n-chunk n-auto n-disover">
                             <div class="chunk-sider n-chunk n-column">
                                 <div class="chunk-sider__element n-chunk n-column n-auto">
                                     <chat-sider></chat-sider>
@@ -114,7 +114,7 @@ export default defineComponent({
     overflow: hidden;
     width: 100%;
     height: 100%;
-    margin: auto;
+    margin: 0 auto;
     box-sizing: border-box;
     max-width: var(--chat-layer-width);
     transition: max-width 0.3s;

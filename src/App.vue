@@ -1,21 +1,24 @@
 <script lang="tsx">
 import { defineComponent, Fragment } from 'vue'
-import { useUser } from '@/store/user'
+import { useUser, useStore } from '@/store'
 
 export default defineComponent({
     name: 'App',
     setup() {
-        const user = useUser()
+        const { token } = useStore(useUser)
+
         return () => (
-            <n-element class="n-chunk n-column n-disover" style={{ height: '100%' }}>
-                {user.token ? (
-                    <Fragment>
-                        <chat-layout></chat-layout>
-                    </Fragment>
-                ) : (
-                    <auth-layout></auth-layout>
-                )}
-            </n-element>
+            <n-scrollbar class="is-customize" trigger="none" x-scrollable>
+                <n-element class="n-chunk n-column n-auto n-disover">
+                    {token.value ? (
+                        <Fragment>
+                            <chat-layout></chat-layout>
+                        </Fragment>
+                    ) : (
+                        <auth-layout></auth-layout>
+                    )}
+                </n-element>
+            </n-scrollbar>
         )
     }
 })
