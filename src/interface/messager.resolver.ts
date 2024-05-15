@@ -63,6 +63,14 @@ export interface QuerySessionColumnMessager extends Pick<SchemaMessager, 'sessio
 /**获取消息详情**/
 export interface QuerySessionOneMessager extends Pick<SchemaMessager, 'sid'> {}
 
+/**发送自定义消息**/
+export interface BodySessionCustomizeMessager {
+    sessionId: string
+    source: EnumMessagerSource
+    text?: string
+    fileId?: string
+}
+
 /**Socket发送自定义消息**/
 export interface BodyComposeMessager {
     source: EnumMessagerSource
