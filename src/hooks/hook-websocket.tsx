@@ -23,7 +23,8 @@ export function useWebSocket(option: Omix<{ unmounted?: boolean }> = {}) {
     /**开启连接**/
     async function connectClient(scope: Omix<env.WebSocketConnectOption> = {}) {
         const IS_MODE = import.meta.env.MODE === 'development'
-        const PROTOCOL = IS_MODE ? 'ws' : 'wss'
+        const IS_SECURE = window.location.protocol === 'https:'
+        const PROTOCOL = IS_SECURE ? 'wss' : 'ws'
         const DEV_URL = `${PROTOCOL}://localhost:34571`
         const PROD_URL = `${PROTOCOL}://chat.lisfes.cn`
         const client = io(IS_MODE ? DEV_URL : PROD_URL, {
