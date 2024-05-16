@@ -8,7 +8,14 @@ export default defineComponent({
         const { token } = useStore(useUser)
 
         return () => (
-            <n-scrollbar class="app is-customize" trigger="none" x-scrollable>
+            <n-scrollbar
+                class="root-scrollbar"
+                content-class="n-chunk n-column n-disover"
+                trigger="none"
+                content-style={{ height: '100%', maxHeight: '100%' }}
+                horizontal-rail-style={{ zIndex: 99 }}
+                x-scrollable
+            >
                 <n-element class="n-chunk n-column n-auto n-disover">
                     {token.value ? (
                         <Fragment>
