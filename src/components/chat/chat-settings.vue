@@ -9,7 +9,9 @@ import { fetchResolver, fetchProfile, fetchRespon, fetchNotice, fetchSafety } fr
 export default defineComponent({
     name: 'ChatSettings',
     props: {
-        observer: { type: Object as PropType<Observer<Omix>>, required: true }
+        observer: { type: Object as PropType<Observer<Omix>>, required: true },
+        setState: { type: Function, required: true },
+        profile: { type: Boolean, default: false }
     },
     setup(props) {
         const user = useUser()
@@ -23,10 +25,18 @@ export default defineComponent({
 
         /**用户信息**/
         async function fetchUseProfile() {
-            return await fetchProfile({
-                observer,
-                onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount(300)
-            })
+            if (props.profile) {
+                return props.observer.emit('layer-unmounted')
+            } else {
+                await props.setState({ profile: true })
+                return await fetchProfile({
+                    observer: props.observer,
+                    onClose: async ({ unmount }: Omix<{ unmount: Function }>) => {
+                        await props.setState({ profile: false })
+                        return await unmount(300)
+                    }
+                })
+            }
         }
 
         /**账号设置**/

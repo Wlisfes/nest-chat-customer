@@ -1,32 +1,34 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
-import { useChat } from '@/store'
+import { useState } from '@/hooks/hook-state'
+import { useChat, useStore } from '@/store'
 import { useDrawer } from '@/hooks/hook-layer'
 
 export default defineComponent({
     name: 'ChatSider',
     setup() {
-        const chat = useChat()
+        const { state, setState } = useState({ profile: false })
+        const { current } = useStore(useChat)
         const { element, observer } = useDrawer({ mount: true, unmount: true })
 
         return () => (
             <div class="chat-sider n-chunk n-auto n-disover">
                 <div class="n-chunk n-column n-disover" style={{ width: '60px' }}>
-                    <chat-carte observer={observer}></chat-carte>
+                    <chat-carte observer={observer} profile={state.profile} set-state={setState}></chat-carte>
                 </div>
                 <div ref={element} class="n-chunk n-column n-auto n-disover">
-                    {chat.current === 'session' ? (
+                    {current.value === 'session' ? (
                         <chat-sessioner observer={observer}></chat-sessioner>
-                    ) : chat.current === 'contact' ? (
+                    ) : current.value === 'contact' ? (
                         <chat-contact observer={observer}></chat-contact>
-                    ) : chat.current === 'communit' ? (
+                    ) : current.value === 'communit' ? (
                         <chat-communit observer={observer}></chat-communit>
-                    ) : chat.current === 'chane' ? (
+                    ) : current.value === 'chane' ? (
                         <chat-chane observer={observer}></chat-chane>
-                    ) : chat.current === 'dynamic' ? (
+                    ) : current.value === 'dynamic' ? (
                         <chat-dynamic observer={observer}></chat-dynamic>
-                    ) : chat.current === 'settings' ? (
-                        <chat-settings observer={observer}></chat-settings>
+                    ) : current.value === 'settings' ? (
+                        <chat-settings observer={observer} profile={state.profile} set-state={setState}></chat-settings>
                     ) : null}
                 </div>
             </div>

@@ -5,11 +5,14 @@ import { useState } from '@/hooks/hook-state'
 import { useProvider } from '@/hooks/hook-provider'
 import { Observer } from '@/utils/utils-observer'
 import { stop, divineWherer, divineHandler, divineDelay } from '@/utils/utils-common'
+import { fetchProfile } from '@/components/layer/layer.instance'
 
 export default defineComponent({
     name: 'ChatCarte',
     props: {
-        observer: { type: Object as PropType<Observer<Omix>>, required: true }
+        observer: { type: Object as PropType<Observer<Omix>>, required: true },
+        setState: { type: Function, required: true },
+        profile: { type: Boolean, default: false }
     },
     setup(props) {
         const { state, setState } = useState({ visible: false, switch: false })
@@ -30,6 +33,24 @@ export default defineComponent({
                 '--n-text-color': 'var(--primary-color)',
                 '--n-text-color-hover': 'var(--primary-color)',
                 '--n-text-color-pressed': 'var(--primary-color)'
+            })
+        }
+
+        /**用户信息**/
+        async function fetchUseProfile() {
+            return await fetchClickoutside().then(async () => {
+                if (props.profile) {
+                    return props.observer.emit('layer-unmounted')
+                } else {
+                    await props.setState({ profile: true })
+                    return await fetchProfile({
+                        observer: props.observer,
+                        onClose: async ({ unmount }: Omix<{ unmount: Function }>) => {
+                            await props.setState({ profile: false })
+                            return await unmount(300)
+                        }
+                    })
+                }
             })
         }
 
@@ -115,7 +136,7 @@ export default defineComponent({
                         }}
                     >
                         <n-element class="chat-resolver n-chunk n-column n-disover">
-                            <div class="chunk-user n-chunk n-center n-disover n-pointer">
+                            <div class="chunk-user n-chunk n-center n-disover n-pointer" onClick={fetchUseProfile}>
                                 <chat-avatar size={40} radius={20} icon-size={20} src={avatar.value}></chat-avatar>
                                 <div class="n-chunk n-column n-auto">
                                     <n-text depth={1} style={{ fontSize: '16px', lineHeight: '22px' }}>
