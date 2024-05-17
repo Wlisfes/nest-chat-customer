@@ -1,10 +1,9 @@
 <script lang="tsx">
-import { defineComponent, onMounted, Fragment, PropType } from 'vue'
+import { defineComponent, Fragment, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
 import { useUser, useMessenger, useSession, useComment } from '@/store'
 import { instance } from '@/store/messenger'
 import { useMoment } from '@/hooks/hook-common'
-import { useWebSocket } from '@/hooks/hook-websocket'
 import { divineWherer, divineHandler } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 
@@ -15,41 +14,11 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { node } = useVModels(props, emit)
-        const { socket } = useWebSocket()
         const { divineDateMomentTransfor } = useMoment()
         const user = useUser()
         const session = useSession()
         const message = useMessenger()
         const comment = useComment()
-
-        onMounted(async () => {
-            return await divineHandler(!node.value.mounted, {
-                handler: async () => {
-                    socket.value.on('server-customize-messager', fetchUpdateNodeMessager)
-                    node.value.mounted = true
-                }
-            })
-        })
-
-        /**更新最新消息数据**/
-        async function fetchUpdateNodeMessager(scope: Omix<env.SchemaMessager>) {
-            return await divineHandler(scope.sessionId === node.value.sid, {
-                handler: async function () {
-                    node.value.message.keyId = scope.keyId
-                    node.value.message.sid = scope.sid
-                    node.value.message.createTime = scope.createTime
-                    node.value.message.source = scope.source
-                    node.value.message.status = scope.status
-                    node.value.message.text = scope.text
-                    node.value.message.userId = scope.userId
-                    return await divineHandler(scope.userId !== user.uid, {
-                        handler: async () => {
-                            return (node.value.unread = node.value.unread.concat(scope))
-                        }
-                    })
-                }
-            })
-        }
 
         /**更新会话未读列表**/
         async function fetchUpdateNodeUnread(unread: Array<env.SchemaMessager>) {
@@ -131,7 +100,7 @@ export default defineComponent({
                                     </n-text>
                                 )}
                             </div>
-                            {(node.value.unread ?? []).length > 0 && node.value.source === env.EnumSessionSource.contact && (
+                            {(node.value.unread ?? []).length > 0 && (
                                 <div class="chat-badge n-chunk n-center n-middle">
                                     <span>{node.value.unread.length}</span>
                                 </div>

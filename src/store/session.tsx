@@ -122,7 +122,7 @@ export const useSession = defineStore(APP_STORE.STORE_SESSION, () => {
                 })
             }
         })
-        return await divineHandler(Boolean(node) && !Boolean(node.mounted), {
+        return await divineHandler(Boolean(node), {
             handler: async () => {
                 node.message.keyId = scope.keyId
                 node.message.sid = scope.sid

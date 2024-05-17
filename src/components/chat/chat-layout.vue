@@ -8,12 +8,12 @@ import * as env from '@/interface/instance.resolver'
 export default defineComponent({
     name: 'ChatLayout',
     setup() {
-        const { connectClient } = useWebSocket({ unmounted: true })
+        const { connectClient, fetchSocketSounder } = useWebSocket({ unmounted: true })
         const { setState } = useStore(useChat)
         const { fetchCommonWallpaper } = useStore(useConfiger)
         const { fetchSessionInitColumn, fetchNewServerMessager } = useStore(useSession)
         const { fetchSocketServerMessager } = useStore(useMessenger)
-        const { uid, fetchUserResolver } = useStore(useUser)
+        const { uid, sound, fetchUserResolver } = useStore(useUser)
         const { fetchNotificationColumn, fetchSocketServerNotification } = useStore(useNotification)
         const { fetchContactColumn, fetchContactColumnSearch } = useStore(useContact)
         const { fetchCommunitColumn, fetchCommunitColumnSearch } = useStore(useCommunit)
@@ -44,6 +44,7 @@ export default defineComponent({
                     client.on('connect_error', err => resolve(false))
                     /**监听消息推送**/
                     client.on('server-customize-messager', async (data: Omix<env.SchemaMessager>) => {
+                        await fetchSocketSounder({ sound: sound.value, type: 'tip' })
                         /**消息列表处理**/
                         await fetchSocketServerMessager(data)
                         /**会话列表**/
