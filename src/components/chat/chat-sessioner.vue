@@ -15,7 +15,7 @@ export default defineComponent({
         const { observer } = useDrawer({ observer: props.observer, mount: true, unmount: true })
         const { uid } = useStore(useUser)
         const { keyword, filter, loading, dataSource } = useStore(useSession)
-        const total = computed(() => dataSource.value.map(item => divineSourceFilter(item)).length)
+        const total = computed(() => dataSource.value.filter(item => divineSourceFilter(item)).length)
 
         function divineSearchKeyword(item: Omix<env.SchemaSession>) {
             if (item.source === env.EnumSessionSource.contact) {

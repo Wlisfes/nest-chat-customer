@@ -89,3 +89,10 @@ export async function fetchInvite(
         return await createComponent(component.default, props)
     })
 }
+
+/**多端登录挤出提示**/
+export async function fetchClosure(props: Omix = {}) {
+    return await import('@/components/layer/layer-closure.vue').then(async component => {
+        return await createComponent(component.default, props)
+    })
+}

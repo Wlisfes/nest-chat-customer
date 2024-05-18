@@ -3,6 +3,7 @@ import { defineComponent, onMounted } from 'vue'
 import { useUser, useConfiger, useMessenger, useSession, useChat, useNotification, useContact, useCommunit, useStore } from '@/store'
 import { useWebSocket } from '@/hooks/hook-websocket'
 import { divineHandler } from '@/utils/utils-common'
+import { fetchClosure } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -42,6 +43,19 @@ export default defineComponent({
                     client.on('disconnect', reason => resolve(false))
                     /**监听socket错误**/
                     client.on('connect_error', err => resolve(false))
+
+                    /**监听用户多端登录挤出**/
+                    client.on('server-socket-closure', async data => {
+                        return await fetchClosure({
+                            onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount(),
+                            onSubmit: async ({ done }: Omix<{ unmount: Function; done: Function }>) => {
+                                window.close()
+                                await done({ visible: false })
+                                return await divineConnectSocketClient()
+                            }
+                        })
+                    })
+
                     /**监听消息推送**/
                     client.on('server-customize-messager', async (data: Omix<env.SchemaMessager>) => {
                         await fetchSocketSounder({ sound: sound.value, type: 'tip' })
@@ -50,6 +64,8 @@ export default defineComponent({
                         /**会话列表**/
                         return await fetchNewServerMessager(uid.value, data)
                     })
+
+                    /**监听操作通知消息推送**/
                     client.on('server-notification-messager', async (data: Omix<env.SchemaNotification>) => {
                         await fetchSocketServerNotification(data)
                         return await divineHandler(data.status !== env.EnumNotificationStatus.waitze, {

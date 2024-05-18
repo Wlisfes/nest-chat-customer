@@ -18,3 +18,9 @@
         flex-direction: column;
     }
 }
+
+.n-dialog.is-customize {
+    &.close-title > .n-dialog__title {
+        display: none;
+    }
+}

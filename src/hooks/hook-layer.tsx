@@ -61,7 +61,7 @@ export function useDrawer(scope: { mount?: boolean; unmount?: boolean; observer?
 }
 
 /**模态框组件使用实例**/
-export function useModal(option: { width: number; closable?: boolean }) {
+export function useModal(option: { width: number; closable?: boolean; content?: Omix<CSSProperties>; button?: Omix<CSSProperties> }) {
     const { state, setState: fetchState } = useState({ visible: false, loading: false, disabled: false })
     const chunkContent = computed<CSSProperties>(() => ({
         width: option.width + 'px',
@@ -71,18 +71,19 @@ export function useModal(option: { width: number; closable?: boolean }) {
         '--n-close-size': divineWherer(option.closable ?? true, '22px', '-6px'),
         display: 'flex',
         flexDirection: 'column',
-        rowGap: '10px'
+        rowGap: '10px',
+        ...option.content
     }))
     const chunkNegative = computed<ButtonProps>(() => ({
         size: 'medium',
         ghost: false,
         secondary: true,
-        style: { '--n-height': '32px', '--n-padding': '0 10px', 'min-width': '80px' }
+        style: { '--n-height': '32px', '--n-padding': '0 10px', 'min-width': '80px', ...option.button }
     }))
     const chunkPositive = computed<ButtonProps>(() => ({
         size: 'medium',
         type: 'error',
-        style: { '--n-height': '32px', '--n-padding': '0 10px', 'min-width': '80px' },
+        style: { '--n-height': '32px', '--n-padding': '0 10px', 'min-width': '80px', ...option.button },
         disabled: state.disabled,
         loading: state.disabled
     }))
