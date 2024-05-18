@@ -1,10 +1,9 @@
 <script lang="tsx">
-import { defineComponent, Fragment, PropType } from 'vue'
+import { defineComponent, Fragment, computed, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
-import { useUser, useMessenger, useSession, useComment } from '@/store'
-import { instance } from '@/store/messenger'
+import { useUser, useStore } from '@/store'
+import { useReduxtor } from '@/hooks/hook-reduxtor'
 import { useMoment } from '@/hooks/hook-common'
-import { divineWherer, divineHandler } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -14,50 +13,21 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { node } = useVModels(props, emit)
+        const { sid, fetchUpdateNodeSelector } = useReduxtor()
         const { divineDateMomentTransfor } = useMoment()
-        const user = useUser()
-        const session = useSession()
-        const message = useMessenger()
-        const comment = useComment()
-
-        /**更新会话未读列表**/
-        async function fetchUpdateNodeUnread(unread: Array<env.SchemaMessager>) {
-            return (node.value.unread = unread)
-        }
-
-        /**选择、切换会话**/
-        async function fetchSessionSelector(evt: Event) {
-            return await divineHandler(message.sid !== node.value.sid, {
-                handler: async () => {
-                    const limit = divineWherer(node.value.unread.length < message.limit, message.limit, node.value.unread.length)
-                    await session.setState({ sid: node.value.sid })
-                    await session.fetchSessionOneResolver()
-                    await comment.setState({ message: '' })
-                    return await message.fetchSessionColumnInitMessager(node.value.sid, limit).then(async ({ compared }) => {
-                        return await divineHandler(compared && Boolean(instance.value), {
-                            handler: async () => {
-                                await fetchUpdateNodeUnread([])
-                                return instance.value.scrollTo({
-                                    top: 999999,
-                                    behavior: 'auto'
-                                })
-                            }
-                        })
-                    })
-                }
-            })
-        }
+        const { uid } = useStore(useUser)
+        const className = computed(() => ({
+            'chat-node-sessioner n-chunk n-pointer': true,
+            'chunk-present': sid.value === node.value.sid
+        }))
 
         return () => (
-            <div
-                class={{ 'chat-node-sessioner n-chunk n-pointer': true, 'chunk-present': session.sid === node.value.sid }}
-                onClick={fetchSessionSelector}
-            >
+            <div class={className.value} onClick={(evt: MouseEvent) => fetchUpdateNodeSelector(node.value.sid)}>
                 {node.value.source === 'communit' ? (
                     <chat-avatar size={46} src={node.value.communit.poster.fileURL}></chat-avatar>
                 ) : (
                     <Fragment>
-                        {node.value.contact.userId === user.uid ? (
+                        {node.value.contact.userId === uid.value ? (
                             <chat-avatar size={46} src={node.value.contact.nive.avatar}></chat-avatar>
                         ) : (
                             <chat-avatar size={46} src={node.value.contact.user.avatar}></chat-avatar>
@@ -73,7 +43,7 @@ export default defineComponent({
                                 </n-h2>
                             ) : (
                                 <n-h2 style={{ fontSize: '16px', lineHeight: '22px', fontWeight: 500, margin: 0 }}>
-                                    {node.value.contact.userId === user.uid ? (
+                                    {node.value.contact.userId === uid.value ? (
                                         <n-ellipsis tooltip={false}>{node.value.contact.nive.nickname}</n-ellipsis>
                                     ) : (
                                         <n-ellipsis tooltip={false}>{node.value.contact.user.nickname}</n-ellipsis>
