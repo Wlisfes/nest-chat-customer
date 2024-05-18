@@ -26,7 +26,12 @@ export default defineComponent({
         }
 
         return () => (
-            <common-element class="n-chunk n-center n-pointer" present={present.value} onClick={fetchUpdateSelector}>
+            <common-element
+                class="n-chunk n-center n-pointer"
+                chunk-before={{ left: 70, right: 14 }}
+                present={present.value}
+                onClick={fetchUpdateSelector}
+            >
                 <Fragment>
                     {props.node.user.uid === uid.value ? (
                         <chat-avatar size={42} src={props.node.nive.avatar}></chat-avatar>
