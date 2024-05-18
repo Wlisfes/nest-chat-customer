@@ -10,6 +10,24 @@ export function useReduxtor() {
     const comment = useComment()
     const sid = computed(() => session.sid)
 
+    async function fetchUpdateCommonSelector(source: env.EnumSessionSource, uid: string) {
+        if (source === env.EnumSessionSource.contact) {
+            const node = session.dataSource.find(item => item.contactId === uid) as env.SchemaSession
+            return await divineHandler(Boolean(node), {
+                handler: async function () {
+                    return await fetchUpdateNodeSelector(node.sid)
+                }
+            })
+        } else {
+            const node = session.dataSource.find(item => item.communitId === uid) as env.SchemaSession
+            return await divineHandler(Boolean(node), {
+                handler: async function () {
+                    return await fetchUpdateNodeSelector(node.sid)
+                }
+            })
+        }
+    }
+
     /**选择、切换会话**/
     async function fetchUpdateNodeSelector(sid: string) {
         const node = session.dataSource.find(item => item.sid === sid) as env.SchemaSession
@@ -42,5 +60,5 @@ export function useReduxtor() {
         })
     }
 
-    return { sid, fetchUpdateNodeUnreader, fetchUpdateNodeSelector }
+    return { sid, fetchUpdateNodeUnreader, fetchUpdateNodeSelector, fetchUpdateCommonSelector }
 }

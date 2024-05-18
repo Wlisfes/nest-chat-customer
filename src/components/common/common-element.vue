@@ -6,6 +6,7 @@ export default defineComponent({
     props: {
         select: { type: Boolean, default: true },
         lastChild: { type: Boolean, default: true },
+        present: { type: Boolean, default: false },
         xGap: { type: Number, default: 10 },
         yGap: { type: Number, default: 10 },
         chunkBefore: { type: Object, default: () => ({ left: 14, right: 14 }) }
@@ -14,7 +15,8 @@ export default defineComponent({
         const className = computed(() => ({
             'common-element chunk-before': true,
             'chunk-select': props.select,
-            'chunk-last-child': props.lastChild
+            'chunk-last-child': props.lastChild,
+            'chunk-present': props.present
         }))
         const chunkStyle = computed<CSSProperties>(() => ({
             '--element-x-gap': props.xGap + 'px',
@@ -40,6 +42,9 @@ export default defineComponent({
     background-color: var(--chat-column-color);
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
     &:hover {
+        background-color: var(--chat-column-hover-color);
+    }
+    &.chunk-present {
         background-color: var(--chat-column-hover-color);
     }
     &.chunk-select {

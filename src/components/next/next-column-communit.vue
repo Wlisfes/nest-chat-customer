@@ -1,5 +1,7 @@
 <script lang="tsx">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, computed, PropType } from 'vue'
+import { useSession, useStore } from '@/store'
+import { useReduxtor } from '@/hooks/hook-reduxtor'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -8,8 +10,22 @@ export default defineComponent({
         node: { type: Object as PropType<env.SchemaCommunit>, required: true }
     },
     setup(props) {
+        const { fetchUpdateCommonSelector } = useReduxtor()
+        const { schema } = useStore(useSession)
+
+        const present = computed(() => {
+            if (Boolean(schema.value) && schema.value.source === env.EnumSessionSource.communit) {
+                return schema.value.communitId === props.node.uid
+            }
+            return false
+        })
+
+        async function fetchUpdateSelector(evt: MouseEvent) {
+            return await fetchUpdateCommonSelector(env.EnumSessionSource.communit, props.node.uid)
+        }
+
         return () => (
-            <common-element class="n-chunk n-column n-pointer">
+            <common-element class="n-chunk n-column n-pointer" present={present.value} onClick={fetchUpdateSelector}>
                 <div class="n-chunk n-center" style={{ columnGap: '10px' }}>
                     <chat-avatar size={42} src={props.node.poster.fileURL}></chat-avatar>
                     <div class="n-chunk n-column n-auto n-disover">
