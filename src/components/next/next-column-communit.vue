@@ -5,7 +5,7 @@ import { useReduxtor } from '@/hooks/hook-reduxtor'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
-    name: 'ChatContact',
+    name: 'NextColumnCommunit',
     props: {
         node: { type: Object as PropType<env.SchemaCommunit>, required: true }
     },

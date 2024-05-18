@@ -7,7 +7,7 @@ import { divineHandler } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
-    name: 'ChatNodeMessenger',
+    name: 'NextColumnMessenger',
     props: {
         order: { type: Number, default: 0 },
         node: { type: Object as PropType<Omix<env.SchemaMessager>>, required: true }

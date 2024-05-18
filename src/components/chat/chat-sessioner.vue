@@ -70,7 +70,7 @@ export default defineComponent({
                                 <div class="n-chunk n-column">
                                     {dataSource.value.map(item => {
                                         if (divineSourceFilter(item)) {
-                                            return <chat-node-sessioner key={item.keyId} v-model:node={item}></chat-node-sessioner>
+                                            return <next-column-sessioner key={item.keyId} v-model:node={item}></next-column-sessioner>
                                         } else {
                                             return null
                                         }

@@ -7,7 +7,7 @@ import { useMoment } from '@/hooks/hook-common'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
-    name: 'ChatNodeSessioner',
+    name: 'NextColumnSessioner',
     props: {
         node: { type: Object as PropType<Omix<env.SchemaSession>>, required: true }
     },

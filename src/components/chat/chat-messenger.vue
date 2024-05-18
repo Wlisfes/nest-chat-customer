@@ -53,11 +53,11 @@ export default defineComponent({
                         {message.total > 0 && (
                             <n-element class="ctx-messenger n-chunk n-column n-auto">
                                 {message.dataSource.map((item, index) => (
-                                    <chat-node-messenger
+                                    <next-column-messenger
                                         v-model:node={item}
                                         key={item.uuid ?? item.sid}
                                         order={message.dataSource.length - index}
-                                    ></chat-node-messenger>
+                                    ></next-column-messenger>
                                 ))}
                             </n-element>
                         )}
