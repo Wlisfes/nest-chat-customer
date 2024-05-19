@@ -88,7 +88,11 @@ export default defineComponent({
             })
         }
 
-        return () => <chat-layer></chat-layer>
+        return () => (
+            <n-notification-provider placement="bottom-right">
+                <chat-layer></chat-layer>
+            </n-notification-provider>
+        )
     }
 })
 </script>
