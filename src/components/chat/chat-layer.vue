@@ -18,35 +18,37 @@ export default defineComponent({
 
         return () => (
             <n-element class={{ 'chat-layer n-chunk n-column n-auto': true, 'chat-pwa': isPwa.value }} style={compute.value}>
-                {loading.value ? (
-                    <div class="chat-loadiner n-chunk n-auto n-center n-middle">
-                        <div class="chat-loadiner__container n-chunk n-column n-center n-middle">
-                            <n-icon size={56} color="var(--text-color-3)" style={{ opacity: 0.2 }} component={<Iv-BsChat />}></n-icon>
-                            <div
-                                class={{ 'chunk-bar': true, 'is-finish': percentage.value >= 100 }}
-                                style={{ '--bar-max-width': percentage.value + '%' }}
-                            ></div>
-                            <n-text depth={3} style={{ opacity: 0.5, fontSize: '16px' }}>
-                                Chat 盒子
-                            </n-text>
-                        </div>
-                    </div>
-                ) : (
-                    <div class="chat-element n-chunk n-column n-auto n-disover">
-                        <div class="chat-element__container n-chunk n-auto n-disover">
-                            <div class="chunk-sider n-chunk n-column">
-                                <div class="chunk-sider__element n-chunk n-column n-auto">
-                                    <chat-sider></chat-sider>
-                                </div>
-                            </div>
-                            <div class="chunk-context n-chunk n-column n-auto n-disover">
-                                <div class="n-chunk n-column n-auto n-disover" style={{ minWidth: '450px' }}>
-                                    <chat-context></chat-context>
-                                </div>
+                <n-notification-provider placement="bottom-right">
+                    {loading.value ? (
+                        <div class="chat-loadiner n-chunk n-auto n-center n-middle">
+                            <div class="chat-loadiner__container n-chunk n-column n-center n-middle">
+                                <n-icon size={56} color="var(--text-color-3)" style={{ opacity: 0.2 }} component={<Iv-BsChat />}></n-icon>
+                                <div
+                                    class={{ 'chunk-bar': true, 'is-finish': percentage.value >= 100 }}
+                                    style={{ '--bar-max-width': percentage.value + '%' }}
+                                ></div>
+                                <n-text depth={3} style={{ opacity: 0.5, fontSize: '16px' }}>
+                                    Chat 盒子
+                                </n-text>
                             </div>
                         </div>
-                    </div>
-                )}
+                    ) : (
+                        <div class="chat-element n-chunk n-column n-auto n-disover">
+                            <div class="chat-element__container n-chunk n-auto n-disover">
+                                <div class="chunk-sider n-chunk n-column">
+                                    <div class="chunk-sider__element n-chunk n-column n-auto">
+                                        <chat-sider></chat-sider>
+                                    </div>
+                                </div>
+                                <div class="chunk-context n-chunk n-column n-auto n-disover">
+                                    <div class="n-chunk n-column n-auto n-disover" style={{ minWidth: '450px' }}>
+                                        <chat-context></chat-context>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </n-notification-provider>
             </n-element>
         )
     }
