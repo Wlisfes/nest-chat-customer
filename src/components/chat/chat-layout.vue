@@ -2,7 +2,7 @@
 import { defineComponent, onMounted } from 'vue'
 import { useUser, useConfiger, useMessenger, useSession, useChat, useNotification, useContact, useCommunit, useStore } from '@/store'
 import { useWebSocket } from '@/hooks/hook-websocket'
-import { divineHandler } from '@/utils/utils-common'
+import { divineHandler, divineDelay } from '@/utils/utils-common'
 import { fetchClosure } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
 
@@ -20,16 +20,22 @@ export default defineComponent({
         const { fetchCommunitColumn, fetchCommunitColumnSearch } = useStore(useCommunit)
 
         onMounted(async () => {
+            await setState({ percentage: 80 })
             await fetchUserResolver()
             return await divineConnectSocketClient().then(async online => {
-                await fetchCommonWallpaper()
-                await fetchSessionInitColumn()
-                await fetchNotificationColumn()
-                await fetchContactColumn()
-                await fetchContactColumnSearch()
-                await fetchCommunitColumn()
-                await fetchCommunitColumnSearch()
-                return await setState({ online, loading: false })
+                await Promise.all([
+                    fetchCommonWallpaper(),
+                    fetchSessionInitColumn(),
+                    fetchNotificationColumn(),
+                    fetchContactColumn(),
+                    fetchContactColumnSearch(),
+                    fetchCommunitColumn(),
+                    fetchCommunitColumnSearch()
+                ])
+                return await setState({ percentage: 100 }).then(async () => {
+                    await divineDelay(220)
+                    return await setState({ online, loading: false })
+                })
             })
         })
 

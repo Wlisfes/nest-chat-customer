@@ -9,7 +9,7 @@ export default defineComponent({
     setup() {
         const layer = useCurrentElement<HTMLElement>()
         const { isPwa } = useStore(useConfiger)
-        const { loading } = useStore(useChat)
+        const { loading, percentage } = useStore(useChat)
         const { width } = useElementSize(layer)
         const compute = computed<CSSProperties>(() => ({
             '--chat-layer-width': isPwa.value ? '100%' : divineWherer(width.value > 2000, Math.floor(width.value * 0.8) + 'px', '1600px'),
@@ -22,7 +22,10 @@ export default defineComponent({
                     <div class="chat-loadiner n-chunk n-auto n-center n-middle">
                         <div class="chat-loadiner__container n-chunk n-column n-center n-middle">
                             <n-icon size={56} color="var(--text-color-3)" style={{ opacity: 0.2 }} component={<Iv-BsChat />}></n-icon>
-                            <n-skeleton height="4px" round />
+                            <div
+                                class={{ 'chunk-bar': true, 'is-finish': percentage.value >= 100 }}
+                                style={{ '--bar-max-width': percentage.value + '%' }}
+                            ></div>
                             <n-text depth={3} style={{ opacity: 0.5, fontSize: '16px' }}>
                                 Chat 盒子
                             </n-text>
@@ -95,6 +98,30 @@ export default defineComponent({
         margin: auto;
         row-gap: 24px;
     }
+    .chunk-bar {
+        --bar-max-width: 0%;
+        position: relative;
+        width: 100%;
+        height: 4px;
+        overflow: hidden;
+        border-radius: 2px;
+        background-color: var(--progress-rail-color);
+        transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
+        &.is-finish::before {
+            transition: max-width 0.2s linear, background-color 0.2s linear;
+        }
+        &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            max-width: var(--bar-max-width);
+            width: 100%;
+            height: 100%;
+            background-color: var(--primary-color);
+            transition: max-width 2s linear, background-color 0.2s linear;
+        }
+    }
 }
 
 .chat-element {
@@ -105,7 +132,6 @@ export default defineComponent({
     margin: 0 auto;
     box-sizing: border-box;
     max-width: var(--chat-layer-width);
-    transition: max-width 0.3s;
     animation: zoom-scale 0.3s var(--cubic-bezier-ease-in-out);
     @keyframes zoom-scale {
         from {
@@ -126,13 +152,12 @@ export default defineComponent({
 
 .chunk-context {
     background-color: var(--chat-context-color);
-    transition: width 0.3s, background-color 0.3s var(--cubic-bezier-ease-in-out);
+    transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
 }
 
 .chunk-sider {
     overflow: hidden;
     width: var(--chat-layer-sider-width);
-    transition: width 0.3s;
     &::before {
         content: '';
         position: absolute;

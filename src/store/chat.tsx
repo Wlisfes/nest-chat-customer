@@ -6,6 +6,7 @@ import { APP_STORE } from '@/utils/utils-storage'
 export const useChat = defineStore(APP_STORE.STORE_CHAT, () => {
     const { state, setState } = useState({
         current: 'session',
+        percentage: 0,
         loading: true,
         online: false
     })
