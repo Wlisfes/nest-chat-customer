@@ -18,9 +18,8 @@ export default defineComponent({
                 // avatar: () => <chat-avatar size={68} src={avatar.value}></chat-avatar>,
                 // title: 'daskldjaskl ',
                 // content: 'You can change the placement',
-                content: () => <div>大师降低扫段首</div>,
-                class: 'sdasdas'
-            } as never)
+                content: () => <div>大师降低扫段首</div>
+            })
         }
 
         return () => (

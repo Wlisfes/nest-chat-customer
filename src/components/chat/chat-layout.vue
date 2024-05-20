@@ -2,6 +2,7 @@
 import { defineComponent, onMounted } from 'vue'
 import { useUser, useConfiger, useMessenger, useSession, useChat, useNotification, useContact, useCommunit, useStore } from '@/store'
 import { useWebSocket } from '@/hooks/hook-websocket'
+import { useCallRemote } from '@/hooks/hook-remote'
 import { divineHandler, divineDelay } from '@/utils/utils-common'
 import { fetchClosure } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
@@ -9,7 +10,6 @@ import * as env from '@/interface/instance.resolver'
 export default defineComponent({
     name: 'ChatLayout',
     setup() {
-        const { connectClient, fetchSocketSounder } = useWebSocket({ unmounted: true })
         const { setState } = useStore(useChat)
         const { fetchCommonWallpaper } = useStore(useConfiger)
         const { fetchSessionInitColumn, fetchNewServerMessager } = useStore(useSession)
@@ -18,6 +18,8 @@ export default defineComponent({
         const { fetchNotificationColumn, fetchSocketServerNotification } = useStore(useNotification)
         const { fetchContactColumn, fetchContactColumnSearch } = useStore(useContact)
         const { fetchCommunitColumn, fetchCommunitColumnSearch } = useStore(useCommunit)
+        const { connectClient } = useWebSocket({ unmounted: true })
+        const { fetchConnectRemote, fetchDisconnectRemote, fetchDestroyRemote, fetchRemoteSounder } = useCallRemote({ unmounted: true })
 
         onMounted(async () => {
             await setState({ percentage: 80 })
@@ -44,14 +46,24 @@ export default defineComponent({
             return new Promise(resolve => {
                 connectClient().then(client => {
                     /**监听socket连接**/
-                    client.on('connect', () => resolve(true))
+                    client.on('connect', async () => {
+                        await fetchConnectRemote()
+                        return resolve(true)
+                    })
                     /**监听socket断开连接**/
-                    client.on('disconnect', reason => resolve(false))
+                    client.on('disconnect', async reason => {
+                        await fetchDisconnectRemote()
+                        return resolve(false)
+                    })
                     /**监听socket错误**/
-                    client.on('connect_error', err => resolve(false))
+                    client.on('connect_error', async err => {
+                        await fetchDestroyRemote()
+                        return resolve(false)
+                    })
 
                     /**监听用户多端登录挤出**/
                     client.on('server-socket-closure', async data => {
+                        await fetchDisconnectRemote()
                         return await fetchClosure({
                             onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount(),
                             onSubmit: async ({ done }: Omix<{ unmount: Function; done: Function }>) => {
@@ -64,7 +76,7 @@ export default defineComponent({
 
                     /**监听消息推送**/
                     client.on('server-customize-messager', async (data: Omix<env.SchemaMessager>) => {
-                        await fetchSocketSounder({ sound: sound.value, type: 'tip' })
+                        await fetchRemoteSounder({ sound: sound.value, type: 'tip' })
                         /**消息列表处理**/
                         await fetchSocketServerMessager(data)
                         /**会话列表**/
@@ -89,7 +101,7 @@ export default defineComponent({
         }
 
         return () => (
-            <n-notification-provider placement="bottom-right">
+            <n-notification-provider container-class="is-customize-remote-provider" placement="bottom-right">
                 <chat-layer></chat-layer>
             </n-notification-provider>
         )

@@ -1,9 +1,7 @@
 import { computed, ref, Ref, onUnmounted } from 'vue'
 import { io } from 'socket.io-client'
 import { APP_COMMON, getStore } from '@/utils/utils-storage'
-import { divineHandler, divineDelay } from '@/utils/utils-common'
-import tip from '@/assets/audio/tip.wav'
-import call from '@/assets/audio/call.wav'
+import { divineHandler } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
 
 export type SocketClient = ReturnType<typeof io>
@@ -22,20 +20,6 @@ export function useWebSocket(option: Omix<{ unmounted?: boolean }> = {}) {
             }
         })
     })
-
-    /**消息通知声音**/
-    async function fetchSocketSounder(scope: Omix<{ sound: boolean; type: 'tip' | 'call'; loop?: boolean; end?: Function }>) {
-        const src = { tip: tip, call: call }
-        const audio = new Audio(src[scope.type])
-        audio.loop = scope.loop ?? false
-        audio.onended = evt => scope.end && scope.end(evt)
-        scope.sound && audio.play()
-        return {
-            audio,
-            remove: audio.remove.bind(audio),
-            pause: audio.pause.bind(audio)
-        }
-    }
 
     /**开启连接**/
     async function connectClient(scope: Omix<env.WebSocketConnectOption> = {}) {
@@ -93,5 +77,5 @@ export function useWebSocket(option: Omix<{ unmounted?: boolean }> = {}) {
         })
     }
 
-    return { socket, connected, connectClient, fetchSocketSounder, divineSocketCustomizeMessager, divineSocketChangeMessager }
+    return { socket, connected, connectClient, divineSocketCustomizeMessager, divineSocketChangeMessager }
 }

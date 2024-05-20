@@ -24,3 +24,18 @@
         display: none;
     }
 }
+
+.n-notification-container.is-customize-remote-provider {
+    .n-scrollbar-content {
+        padding: 12px;
+    }
+    .n-notification-wrapper {
+        margin-top: 0;
+    }
+    .n-notification,
+    .n-notification-main {
+        margin: 0;
+        padding: 0;
+        width: inherit;
+    }
+}
