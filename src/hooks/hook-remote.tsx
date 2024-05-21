@@ -17,16 +17,18 @@ export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
 
     /**开启连接**/
     async function fetchConnectRemote(clientId: string) {
-        const IS_MODE = import.meta.env.MODE === 'development'
-        const IS_SECURE = window.location.protocol === 'https:'
         const server = new Peer(clientId, {
-            host: IS_SECURE ? 'chat.lisfes.cn' : 'localhost',
-            port: 34550,
-            path: '/peer-server',
-            debug: IS_MODE ? 3 : 1,
+            host: '//chat.lisfes.cn',
+            path: '/web-peer-server',
             pingInterval: 10000,
             token: getStore<string>(APP_COMMON.CHAT_TOKEN)
         })
+
+        /**收到呼叫**/
+        server.on('call', call => {
+            console.log('call', call)
+        })
+
         return (client.value = server)
     }
 
@@ -62,10 +64,18 @@ export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
         }
     }
 
+    /**远程呼叫**/
+    async function fetchCallRemote(clientId: string) {
+        window.navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+            console.log(stream)
+        })
+    }
+
     return {
         fetchConnectRemote,
         fetchDisconnectRemote,
         fetchDestroyRemote,
-        fetchRemoteSounder
+        fetchRemoteSounder,
+        fetchCallRemote
     }
 }

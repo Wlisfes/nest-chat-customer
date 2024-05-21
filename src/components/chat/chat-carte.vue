@@ -120,8 +120,8 @@ export default defineComponent({
                             trigger: () => (
                                 <common-icon
                                     circle
-                                    size={40}
-                                    icon-size={30}
+                                    size={48}
+                                    icon-size={38}
                                     component={
                                         <n-image
                                             preview-disabled
