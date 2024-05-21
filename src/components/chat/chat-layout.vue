@@ -67,7 +67,6 @@ export default defineComponent({
                         return await fetchClosure({
                             onClose: ({ unmount }: Omix<{ unmount: Function }>) => unmount(),
                             onSubmit: async ({ done }: Omix<{ unmount: Function; done: Function }>) => {
-                                window.close()
                                 await done({ visible: false })
                                 return await divineConnectSocketClient()
                             }
