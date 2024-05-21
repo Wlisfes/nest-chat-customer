@@ -47,7 +47,7 @@ export default defineComponent({
                 connectClient().then(client => {
                     /**监听socket连接**/
                     client.on('connect', async () => {
-                        await fetchConnectRemote()
+                        await fetchConnectRemote(client.id as string)
                         return resolve(true)
                     })
                     /**监听socket断开连接**/
