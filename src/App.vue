@@ -18,9 +18,9 @@ export default defineComponent({
             >
                 <n-element class="n-chunk n-column n-auto n-disover">
                     {token.value ? (
-                        <Fragment>
+                        <n-notification-provider container-class="is-customize-remote-provider" placement="bottom-right">
                             <chat-layout></chat-layout>
-                        </Fragment>
+                        </n-notification-provider>
                     ) : (
                         <auth-layout></auth-layout>
                     )}

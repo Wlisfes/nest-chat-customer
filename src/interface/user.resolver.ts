@@ -27,6 +27,8 @@ export interface SchemaUser extends env.CommonSchema {
     notify: boolean
     factor: boolean
     limit: number
+    socketId: string
+    online: boolean
 }
 
 /**登录账号返回值**/

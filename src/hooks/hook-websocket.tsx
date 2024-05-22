@@ -43,17 +43,13 @@ export function useWebSocket(option: Omix<{ unmounted?: boolean }> = {}) {
         scope: env.BodyCustomizeMessager,
         callback?: Function
     ): Promise<Omix<T>> {
-        return new Promise((resolve, reject) => {
-            try {
-                return client.emit('socket-customize-messager', scope, (response: Omix<T>) => {
-                    if (typeof callback === 'function') {
-                        callback(response)
-                    }
-                    return resolve(response)
-                })
-            } catch (e) {
-                return reject(e)
-            }
+        return new Promise(resolve => {
+            return client.emit('socket-customize-messager', scope, (response: Omix<T>) => {
+                if (typeof callback === 'function') {
+                    callback(response)
+                }
+                return resolve(response)
+            })
         })
     }
 
@@ -63,19 +59,31 @@ export function useWebSocket(option: Omix<{ unmounted?: boolean }> = {}) {
         scope: env.BodySocketChangeMessager,
         callback?: Function
     ): Promise<Omix<T>> {
-        return new Promise((resolve, reject) => {
-            try {
-                return client.emit('socket-change-messager', scope, (response: Omix<T>) => {
-                    if (typeof callback === 'function') {
-                        callback(response)
-                    }
-                    return resolve(response)
-                })
-            } catch (e) {
-                return reject(e)
-            }
+        return new Promise(resolve => {
+            return client.emit('socket-change-messager', scope, (response: Omix<T>) => {
+                if (typeof callback === 'function') {
+                    callback(response)
+                }
+                return resolve(response)
+            })
         })
     }
 
-    return { socket, connected, connectClient, fetchSocketCustomizeMessager, fetchSocketChangeMessager }
+    /**远程呼叫查询**/
+    function fetchSocketCallRemoteResolver(
+        client: SocketClient,
+        scope: env.BodySocketCallRemote,
+        callback?: Function
+    ): Promise<env.ResultResolver<Omix<env.RestSocketCallRemoteResolver>>> {
+        return new Promise(resolve => {
+            return client.emit('socket-call-resolver', scope, (response: env.ResultResolver<Omix<env.RestSocketCallRemoteResolver>>) => {
+                if (typeof callback === 'function') {
+                    callback(response)
+                }
+                return resolve(response)
+            })
+        })
+    }
+
+    return { socket, connected, connectClient, fetchSocketCustomizeMessager, fetchSocketChangeMessager, fetchSocketCallRemoteResolver }
 }

@@ -10,15 +10,23 @@ export default defineComponent({
     },
     setup(props, { slots }) {
         const notification = useNotification()
-        const { avatar } = useStore(useUser)
+        const { avatar, nickname } = useStore(useUser)
 
         async function createNotification() {
             const { destroy } = notification.create({
                 closable: false,
-                // avatar: () => <chat-avatar size={68} src={avatar.value}></chat-avatar>,
-                // title: 'daskldjaskl ',
-                // content: 'You can change the placement',
-                content: () => <div>大师降低扫段首</div>
+                content: () => (
+                    <n-element class="n-chunk n-column" style={{ padding: '16px', width: '240px' }}>
+                        <div class="n-chunk n-center n-disover" style={{ gap: '14px' }}>
+                            <chat-avatar size={60} src={avatar.value}></chat-avatar>
+                            <div class="n-chunk n-column n-auto n-disover">
+                                <n-h2 style={{ fontSize: '20px', lineHeight: '28px', fontWeight: 500, margin: 0 }}>
+                                    <n-ellipsis tooltip={false}>{nickname.value}</n-ellipsis>
+                                </n-h2>
+                            </div>
+                        </div>
+                    </n-element>
+                )
             })
         }
 

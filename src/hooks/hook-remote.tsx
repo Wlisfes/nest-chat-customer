@@ -1,7 +1,10 @@
 import { ref, Ref, onUnmounted } from 'vue'
+import { useNotification } from 'naive-ui'
 import { Peer } from 'peerjs'
+import { useUser, useStore } from '@/store'
 import { APP_COMMON, getStore } from '@/utils/utils-storage'
 import { divineHandler } from '@/utils/utils-common'
+import { divineNotice } from '@/utils/utils-component'
 import tip from '@/assets/audio/tip.wav'
 import call from '@/assets/audio/call.wav'
 
@@ -9,6 +12,9 @@ import call from '@/assets/audio/call.wav'
 export const client = ref<Peer>() as Ref<Peer>
 
 export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
+    const notification = useNotification()
+    const { uid, avatar, nickname } = useStore(useUser)
+
     onUnmounted(async () => {
         return await divineHandler((option.unmounted ?? false) && Boolean(client.value), {
             handler: () => fetchDestroyRemote()
@@ -27,10 +33,21 @@ export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
         /**收到呼叫**/
         server.on('call', call => {
             console.log('call', call)
+
+            // {call.metadata.nickname}
+            const { destroy } = notification.create({
+                closable: false,
+                content: () => (
+                    <n-element class="n-chunk">
+                        <chat-avatar size={68} src={call.metadata.avatar}></chat-avatar>
+                    </n-element>
+                )
+            })
         })
 
         return (client.value = server)
     }
+    ;``
 
     /**中断连接**/
     async function fetchDisconnectRemote() {
@@ -65,13 +82,21 @@ export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
     }
 
     /**远程呼叫**/
-    async function fetchCallRemote(clientId: string) {
-        window.navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-            console.log(stream)
-        })
+    async function fetchCallRemote(socketId: string, scope: { audio: boolean; video?: boolean }) {
+        try {
+            await window.navigator.mediaDevices.getUserMedia(scope).then(stream => {
+                console.log(stream)
+                client.value.call(socketId, stream, {
+                    metadata: { uid: uid.value, avatar: avatar.value, nickname: nickname.value }
+                })
+            })
+        } catch (e) {
+            return await divineNotice({ type: 'error', title: '呼叫失败，请检查麦克风是否正常' })
+        }
     }
 
     return {
+        client,
         fetchConnectRemote,
         fetchDisconnectRemote,
         fetchDestroyRemote,

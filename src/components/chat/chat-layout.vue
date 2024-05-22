@@ -99,11 +99,7 @@ export default defineComponent({
             })
         }
 
-        return () => (
-            <n-notification-provider container-class="is-customize-remote-provider" placement="bottom-right">
-                <chat-layer></chat-layer>
-            </n-notification-provider>
-        )
+        return () => <chat-layer></chat-layer>
     }
 })
 </script>
