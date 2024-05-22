@@ -42,7 +42,7 @@ export default defineComponent({
         }
 
         /**发送自定义消息**/
-        async function fetchSocketCustomizeMessager() {
+        async function fetchSocketCustomizeSender() {
             await comment.setState({ loading: true })
             await fetchComposeMessager({
                 source: env.EnumMessagerSource.text,
@@ -82,7 +82,7 @@ export default defineComponent({
                 evt.preventDefault()
                 evt.stopPropagation()
                 return await divineHandler(Boolean(comment.message), {
-                    handler: fetchSocketCustomizeMessager
+                    handler: fetchSocketCustomizeSender
                 })
             }
         }
@@ -117,12 +117,7 @@ export default defineComponent({
                 />
                 <div class="chat-comment__footer n-chunk n-center n-end">
                     <n-text depth={3}>Enter 发送，Ctrl+Enter 换行</n-text>
-                    <n-button
-                        type="info"
-                        size="small"
-                        disabled={comment.loading || !comment.message}
-                        onClick={fetchSocketCustomizeMessager}
-                    >
+                    <n-button type="info" size="small" disabled={comment.loading || !comment.message} onClick={fetchSocketCustomizeSender}>
                         <div class="n-chunk n-center" style={{ columnGap: '5px' }}>
                             <n-icon size={16} component={<Iv-BsSender />}></n-icon>
                             <span>发送</span>

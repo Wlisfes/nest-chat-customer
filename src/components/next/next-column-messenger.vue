@@ -14,7 +14,7 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { node } = useVModels(props, emit)
-        const { socket, divineSocketChangeMessager, divineSocketCustomizeMessager } = useWebSocket()
+        const { socket, fetchSocketChangeMessager, fetchSocketCustomizeMessager } = useWebSocket()
         const user = useUser()
         const session = useSession()
         const current = computed<boolean>(() => user.uid === node.value.userId)
@@ -56,7 +56,7 @@ export default defineComponent({
 
         /**消息已读操作**/
         async function fetcnSocketChangeMessager() {
-            return await divineSocketChangeMessager(socket.value, {
+            return await fetchSocketChangeMessager(socket.value, {
                 userId: user.uid,
                 sid: node.value.sid,
                 sessionId: node.value.sessionId
@@ -68,7 +68,7 @@ export default defineComponent({
         /**初始化状态、socket发送消息**/
         async function fetchSocketInitialize(scope: Omix<env.SchemaMessager>) {
             try {
-                const { sid } = await divineSocketCustomizeMessager(socket.value, {
+                const { sid } = await fetchSocketCustomizeMessager(socket.value, {
                     sessionId: scope.sessionId,
                     source: scope.source,
                     text: scope.text

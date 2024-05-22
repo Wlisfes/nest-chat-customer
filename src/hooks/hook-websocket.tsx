@@ -38,7 +38,7 @@ export function useWebSocket(option: Omix<{ unmounted?: boolean }> = {}) {
     }
 
     /**发送自定义消息**/
-    function divineSocketCustomizeMessager<T>(
+    function fetchSocketCustomizeMessager<T>(
         client: SocketClient,
         scope: env.BodyCustomizeMessager,
         callback?: Function
@@ -58,7 +58,7 @@ export function useWebSocket(option: Omix<{ unmounted?: boolean }> = {}) {
     }
 
     /**发送消息已读操作**/
-    function divineSocketChangeMessager<T>(
+    function fetchSocketChangeMessager<T>(
         client: SocketClient,
         scope: env.BodySocketChangeMessager,
         callback?: Function
@@ -77,5 +77,5 @@ export function useWebSocket(option: Omix<{ unmounted?: boolean }> = {}) {
         })
     }
 
-    return { socket, connected, connectClient, divineSocketCustomizeMessager, divineSocketChangeMessager }
+    return { socket, connected, connectClient, fetchSocketCustomizeMessager, fetchSocketChangeMessager }
 }

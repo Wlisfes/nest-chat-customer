@@ -18,7 +18,7 @@ export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
     /**开启连接**/
     async function fetchConnectRemote(clientId: string) {
         const server = new Peer(clientId, {
-            host: '//chat.lisfes.cn',
+            host: 'chat.lisfes.cn',
             path: '/web-peer-server',
             pingInterval: 10000,
             token: getStore<string>(APP_COMMON.CHAT_TOKEN)
