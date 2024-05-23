@@ -3,6 +3,7 @@ import { useNotification } from 'naive-ui'
 import { Peer } from 'peerjs'
 import { useUser, useStore } from '@/store'
 import { APP_COMMON, getStore } from '@/utils/utils-storage'
+import { Observer } from '@/utils/utils-observer'
 import { divineHandler } from '@/utils/utils-common'
 import { divineNotice } from '@/utils/utils-component'
 import { fetchRemote } from '@/components/layer/layer.instance'
@@ -13,6 +14,7 @@ import call from '@/assets/audio/call.wav'
 export const client = ref<Peer>() as Ref<Peer>
 
 export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
+    const observer = new Observer()
     const notification = useNotification()
     const { uid, avatar, nickname } = useStore(useUser)
 
@@ -33,8 +35,12 @@ export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
 
         /**收到呼叫**/
         server.on('call', async call => {
-            console.log('call', call)
-            await fetchRemote({})
+            return await fetchRemote({
+                observer,
+                clientId,
+                server: call,
+                source: 'income'
+            })
         })
 
         return (client.value = server)

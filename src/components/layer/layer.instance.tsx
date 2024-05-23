@@ -1,5 +1,6 @@
 import { createComponent } from '@/utils/utils-component'
 import { Observer } from '@/utils/utils-observer'
+import { MediaConnection } from 'peerjs'
 import * as env from '@/interface/instance.resolver'
 
 /**双因子认证**/
@@ -98,7 +99,9 @@ export async function fetchClosure(props: Omix = {}) {
 }
 
 /**远程呼叫组件**/
-export async function fetchRemote(props: Omix = {}) {
+export async function fetchRemote(
+    props: Omix<{ observer: Observer<Omix>; server: MediaConnection; clientId: string; source: 'initiate' | 'income' }>
+) {
     return await import('@/components/layer/layer-remote.vue').then(async component => {
         return await createComponent(component.default, props)
     })

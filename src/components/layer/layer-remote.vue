@@ -1,12 +1,21 @@
 <script lang="tsx">
-import { defineComponent, ref, Ref, computed, onMounted, CSSProperties, Transition, Teleport } from 'vue'
+import { defineComponent, ref, Ref, computed, onMounted, PropType, CSSProperties, Transition, Teleport } from 'vue'
+import { MediaConnection } from 'peerjs'
 import { useDraggable } from '@vueuse/core'
 import { useUser, useStore } from '@/store'
 import { useState } from '@/hooks/hook-state'
+import { Observer } from '@/utils/utils-observer'
+import { divineNotice } from '@/utils/utils-component'
 
 export default defineComponent({
     name: 'LayerCallmer',
     emits: ['close', 'submit'],
+    props: {
+        observer: { type: Object as PropType<Observer<Omix>>, required: true },
+        server: { type: Object as PropType<MediaConnection>, required: true },
+        source: { type: String as PropType<'initiate' | 'income'>, required: true },
+        clientId: { type: String, required: true }
+    },
     setup(props, { emit }) {
         const { avatar, nickname } = useStore(useUser)
         const { state, setState } = useState({ visible: false, zoom: false, width: 320, height: 250, right: 10, bottom: 10 })
@@ -51,6 +60,18 @@ export default defineComponent({
             }
         }
 
+        async function onClose() {
+            return emit('close', { done: setState })
+        }
+
+        async function onSubmit() {
+            try {
+                await window.navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(async remoteStream => {})
+            } catch (e) {
+                return await divineNotice({ type: 'error', title: '呼叫失败，请检查麦克风是否正常' })
+            }
+        }
+
         return () => (
             <Teleport to={document.body}>
                 <Transition name="fade-callmer" appear>
@@ -65,10 +86,10 @@ export default defineComponent({
                                     </n-h2>
                                 </div>
                                 <div class="chunk-callmer__footer n-chunk n-middle n-center n-disover">
-                                    <n-button circle color="#07c160" onClick={(evt: Event) => emit('submit', evt)}>
+                                    <n-button circle color="#07c160" onClick={onSubmit}>
                                         <n-icon size={28} color="#ffffff" component={<Iv-BsCaller />}></n-icon>
                                     </n-button>
-                                    <n-button circle color="#ff0000" onClick={(evt: Event) => emit('close', evt)}>
+                                    <n-button circle color="#ff0000" onClick={onClose}>
                                         <n-icon
                                             size={28}
                                             color="#ffffff"
