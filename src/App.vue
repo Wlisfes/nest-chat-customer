@@ -21,6 +21,7 @@ export default defineComponent({
                         <n-notification-provider
                             container-class="is-customize-remote-provider"
                             placement="bottom-right"
+                            max={2}
                             container-style={{ zIndex: 2000 }}
                         >
                             <chat-layout></chat-layout>

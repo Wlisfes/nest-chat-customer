@@ -41,7 +41,8 @@ export function divineTransfer(target: HTMLElement, className: string = '.n-dial
         instance.top = targetTop as never
     }
 
-    const element = target.querySelector(className ?? '.n-dialog__title') as HTMLElement
+    const dragElement = target.querySelector(className ?? '.n-dialog__title') as HTMLElement
+    const element = dragElement ?? target
     if (element) {
         element.style.cursor = 'all-scroll'
         element.onmousedown = function (event) {
