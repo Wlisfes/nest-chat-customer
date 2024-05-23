@@ -1,7 +1,5 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
-import { useNotification } from 'naive-ui'
-import { useUser, useStore } from '@/store'
 
 export default defineComponent({
     name: 'ChatCompose',
@@ -9,22 +7,9 @@ export default defineComponent({
         title: { type: String }
     },
     setup(props, { slots }) {
-        const notification = useNotification()
-        const { avatar, nickname } = useStore(useUser)
-
-        async function createNotification() {
-            const dsds = notification.create({
-                closable: false,
-                content: () => <done-callmer></done-callmer>,
-                onAfterEnter: () => {
-                    console.log(dsds)
-                }
-            })
-        }
-
         return () => (
             <div class="chat-compose n-chunk n-center n-disover">
-                <div class="n-chunk n-column n-auto n-disover" onClick={createNotification}>
+                <div class="n-chunk n-column n-auto n-disover">
                     <n-h1>{props.title}</n-h1>
                 </div>
                 {slots.default && slots.default()}

@@ -5,6 +5,7 @@ import { useUser, useStore } from '@/store'
 import { APP_COMMON, getStore } from '@/utils/utils-storage'
 import { divineHandler } from '@/utils/utils-common'
 import { divineNotice } from '@/utils/utils-component'
+import { fetchRemote } from '@/components/layer/layer.instance'
 import tip from '@/assets/audio/tip.wav'
 import call from '@/assets/audio/call.wav'
 
@@ -31,18 +32,9 @@ export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
         })
 
         /**收到呼叫**/
-        server.on('call', call => {
+        server.on('call', async call => {
             console.log('call', call)
-
-            // {call.metadata.nickname}
-            const { destroy } = notification.create({
-                closable: false,
-                content: () => (
-                    <n-element class="n-chunk">
-                        <chat-avatar size={68} src={call.metadata.avatar}></chat-avatar>
-                    </n-element>
-                )
-            })
+            await fetchRemote({})
         })
 
         return (client.value = server)
