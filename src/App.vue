@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, Fragment } from 'vue'
+import { defineComponent } from 'vue'
 import { useUser, useStore } from '@/store'
 
 export default defineComponent({
@@ -18,7 +18,11 @@ export default defineComponent({
             >
                 <n-element class="n-chunk n-column n-auto n-disover">
                     {token.value ? (
-                        <n-notification-provider container-class="is-customize-remote-provider" placement="bottom-right">
+                        <n-notification-provider
+                            container-class="is-customize-remote-provider"
+                            placement="bottom-right"
+                            container-style={{ zIndex: 2000 }}
+                        >
                             <chat-layout></chat-layout>
                         </n-notification-provider>
                     ) : (

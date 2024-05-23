@@ -30,6 +30,7 @@ export default defineComponent({
             })
             if (schema.value.source === env.EnumSessionSource.contact) {
                 /**私聊通话**/
+                console.log(data)
                 const { online, socketId } = divineWherer(uid.value === data.user.uid, data.nive, data.user)
                 return await divineHandler(online, {
                     failure: async function () {},

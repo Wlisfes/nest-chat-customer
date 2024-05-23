@@ -26,19 +26,22 @@
 }
 
 .n-notification-container.is-customize-remote-provider {
+    --call-notification-padding: 20px;
     .n-scrollbar-content {
-        padding: 12px;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
+        padding-top: 16px !important;
+        padding-bottom: 16px !important;
     }
-    .n-notification-wrapper {
+    .n-notification-wrapper:first-child {
         margin-top: 0;
     }
-    .n-notification,
+    .n-notification {
+        --n-width: 320px;
+        padding: var(--call-notification-padding);
+        // background-color: var(--chat-carte-color);
+    }
     .n-notification-main {
-        margin: 0;
+        margin-left: 0;
         padding: 0;
-        width: inherit;
+        width: 100%;
     }
 }

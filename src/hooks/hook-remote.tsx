@@ -47,7 +47,6 @@ export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
 
         return (client.value = server)
     }
-    ;``
 
     /**中断连接**/
     async function fetchDisconnectRemote() {
@@ -84,10 +83,14 @@ export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
     /**远程呼叫**/
     async function fetchCallRemote(socketId: string, scope: { audio: boolean; video?: boolean }) {
         try {
-            await window.navigator.mediaDevices.getUserMedia(scope).then(stream => {
-                console.log(stream)
-                client.value.call(socketId, stream, {
+            await window.navigator.mediaDevices.getUserMedia(scope).then(localStream => {
+                const call = client.value.call(socketId, localStream, {
                     metadata: { uid: uid.value, avatar: avatar.value, nickname: nickname.value }
+                })
+                /**接收远程流**/
+                call.on('stream', remoteStream => {
+                    // remoteVideo.srcObject = remoteStream
+                    console.log({ localStream, remoteStream })
                 })
             })
         } catch (e) {
