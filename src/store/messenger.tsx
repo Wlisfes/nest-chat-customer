@@ -2,6 +2,7 @@ import { toRefs, ref, Ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { ScrollbarInst } from 'naive-ui'
 import { useState } from '@/hooks/hook-state'
+import { useWebSocket } from '@/hooks/hook-websocket'
 import { APP_STORE } from '@/utils/utils-storage'
 import { divineHandler, divineParameter } from '@/utils/utils-common'
 import * as env from '@/interface/instance.resolver'
@@ -13,6 +14,7 @@ export const element = ref<HTMLElement>() as Ref<HTMLElement>
 export const instance = ref<ScrollbarInst>() as Ref<ScrollbarInst>
 
 export const useMessenger = defineStore(APP_STORE.STORE_MESSANGER, () => {
+    const { socket, connected, fetchSocketSessionColumnMessager } = useWebSocket()
     const { state, setState } = useState({
         sid: '',
         limit: 30,
@@ -27,12 +29,21 @@ export const useMessenger = defineStore(APP_STORE.STORE_MESSANGER, () => {
     /**会话消息列表**/
     async function fetchSessionColumnMessager(limit?: number) {
         try {
-            const { data } = await api.httpSessionColumnMessager({
-                sessionId: state.sid,
-                offset: state.dataSource.length,
-                limit: limit ?? state.limit
-            })
-            return { total: data.total ?? 0, list: data.list ?? [] }
+            if (connected.value) {
+                const { data } = await fetchSocketSessionColumnMessager(socket.value, {
+                    sessionId: state.sid,
+                    offset: state.dataSource.length,
+                    limit: limit ?? state.limit
+                })
+                return { total: data.total ?? 0, list: data.list ?? [] }
+            } else {
+                const { data } = await api.httpSessionColumnMessager({
+                    sessionId: state.sid,
+                    offset: state.dataSource.length,
+                    limit: limit ?? state.limit
+                })
+                return { total: data.total ?? 0, list: data.list ?? [] }
+            }
         } catch (e) {
             return { total: 0, list: [] }
         }

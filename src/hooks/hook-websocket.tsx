@@ -85,5 +85,33 @@ export function useWebSocket(option: Omix<{ unmounted?: boolean }> = {}) {
         })
     }
 
-    return { socket, connected, connectClient, fetchSocketCustomizeMessager, fetchSocketChangeMessager, fetchSocketCallRemoteResolver }
+    /**查询会话消息列表**/
+    function fetchSocketSessionColumnMessager(
+        client: SocketClient,
+        scope: env.QuerySessionColumnMessager,
+        callback?: Function
+    ): Promise<env.ResultResolver<Omix<env.ColumnResolver<env.SchemaMessager>>>> {
+        return new Promise(resolve => {
+            return client.emit(
+                'socket-session-column-messager',
+                scope,
+                (response: env.ResultResolver<Omix<env.ColumnResolver<env.SchemaMessager>>>) => {
+                    if (typeof callback === 'function') {
+                        callback(response)
+                    }
+                    return resolve(response)
+                }
+            )
+        })
+    }
+
+    return {
+        socket,
+        connected,
+        connectClient,
+        fetchSocketCustomizeMessager,
+        fetchSocketChangeMessager,
+        fetchSocketCallRemoteResolver,
+        fetchSocketSessionColumnMessager
+    }
 }
