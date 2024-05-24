@@ -103,7 +103,6 @@ export async function fetchRemote(
     props: Omix<{
         observer: Observer<Omix>
         server: MediaConnection
-        clientId: string
         source: 'initiate' | 'receiver'
         localStream?: MediaStream
     }>

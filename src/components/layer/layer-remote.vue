@@ -1,13 +1,12 @@
 <script lang="tsx">
-import { defineComponent, ref, Ref, computed, onMounted, PropType, CSSProperties, Transition, Teleport } from 'vue'
+import { defineComponent, ref, Ref, onMounted, PropType, Fragment, Transition, Teleport } from 'vue'
 import { MediaConnection } from 'peerjs'
-import { useDraggable } from '@vueuse/core'
-import { useUser, useStore } from '@/store'
 import { useState } from '@/hooks/hook-state'
-import { useCallRemote, useSounder } from '@/hooks/hook-remote'
+import { moment } from '@/hooks/hook-common'
+import { useCallController, useConnection, useSounder, callAudio } from '@/hooks/hook-remote'
 import { Observer } from '@/utils/utils-observer'
 import { divineNotice } from '@/utils/utils-component'
-import call from '@/assets/audio/call.wav'
+import { divineHandler } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'LayerCallmer',
@@ -16,76 +15,116 @@ export default defineComponent({
         observer: { type: Object as PropType<Observer<Omix>>, required: true },
         server: { type: Object as PropType<MediaConnection>, required: true },
         source: { type: String as PropType<'initiate' | 'receiver'>, required: true },
-        clientId: { type: String, required: true },
         localStream: { type: Object as PropType<MediaStream> }
     },
     setup(props, { emit }) {
-        const element = ref<HTMLElement>() as Ref<HTMLElement>
-        const { play, pause } = useSounder(call, { loop: true })
-        const { avatar, nickname } = useStore(useUser)
-        const { state, setState } = useState({
-            visible: false,
-            zoom: false,
-            width: 320,
-            height: 250,
-            right: 10,
-            bottom: 10,
-            stream: [] as Array<MediaStream>
+        const localStream = ref(props.localStream) as Ref<MediaStream>
+        const { state, setState } = useState({ visible: false, mike: true, mute: true, connect: false })
+        const { root, style, start, stop } = useCallController()
+        const { play, pause, mute } = useSounder(callAudio, { loop: true })
+        const { connection, fetchSender } = useConnection(props.server.metadata.initiate.socketId, {
+            source: props.source,
+            callback: fetchCallback
         })
-        const position = useDraggable(element, {
-            onMove: onMoveCallmer,
-            containerElement: document.body,
-            preventDefault: true,
-            stopPropagation: true,
-            initialValue: {
-                x: document.body.clientWidth - state.width - 10,
-                y: document.body.clientHeight - state.height - 10
-            }
-        })
-        const chunk = computed<CSSProperties>(() => ({
-            zIndex: 2000,
-            position: 'fixed',
-            right: state.right + 'px',
-            bottom: state.bottom + 'px',
-            '--chunk-width': state.width + 'px',
-            '--chunk-height': state.height + 'px'
-        }))
 
         onMounted(async () => {
             return await setState({ visible: true }).then(async () => {
-                console.log(props.server)
-                return play()
+                await play()
+                return await divineHandler(Boolean(localStream.value), {
+                    handler: async function () {
+                        const audio = new Audio()
+                        audio.srcObject = localStream.value
+                        audio.play()
+                        return await fetchRemoteStream()
+                    }
+                })
             })
         })
 
-        /**设置样式位置**/
-        async function onMoveCallmer(evt: { x: number; y: number }) {
-            const right = document.body.clientWidth - (evt.x + state.width)
-            const bottom = document.body.clientHeight - (evt.y + state.height)
-            const distance = document.body.clientWidth - state.width - 61
-            return await setState({ bottom, right: right > distance ? distance : right })
+        /**麦克风切换**/
+        async function fetchMike() {
+            return setState({ mike: !state.mike }).then(() => {})
         }
 
-        /**放大、或者缩小**/
-        async function onZoomCallmer() {
-            if (state.zoom) {
-                await setState({ zoom: false, width: 320, height: 250 })
-            } else {
-                await setState({ zoom: true, width: 640, height: 500 })
+        /**静音切换**/
+        async function fetchMute() {
+            return setState({ mute: !state.mute }).then(() => {
+                return mute()
+            })
+        }
+
+        /**关闭流推送**/
+        async function fetchStreamClosure() {
+            return await divineHandler(Boolean(localStream.value), {
+                handler: async function () {
+                    return await localStream.value.getTracks().forEach(track => track.stop())
+                }
+            })
+        }
+
+        /**接收远程流**/
+        async function fetchRemoteStream() {
+            props.server.on('stream', async remoteStream => {
+                console.log('接收远程流:', remoteStream)
+
+                const audio = new Audio()
+                audio.srcObject = localStream.value
+                audio.play()
+
+                return await setState({ connect: true }).then(async () => {
+                    await pause()
+                    return await start()
+                })
+            })
+        }
+
+        /**远程消息回调**/
+        async function fetchCallback(scope: { data: Omix; source: typeof props.source }) {
+            if (scope.source === 'receiver' && scope.data.type === 'reject') {
+                /**接收端拒接**/
+                return await setState({ visible: false }).then(async () => {
+                    await pause()
+                    await connection.value.close()
+                    await fetchStreamClosure()
+                    return emit('close', { done: setState })
+                })
+            } else if (scope.source === 'initiate' && scope.data.type === 'reject') {
+                /**发起端拒接**/
+                return await setState({ visible: false }).then(async () => {
+                    await pause()
+                    await connection.value.close()
+                    await fetchStreamClosure()
+                    return emit('close', { done: setState })
+                })
             }
+
+            console.log(scope)
         }
 
-        /**关闭、挂断**/
-        async function onClose() {
-            await pause()
-            await setState({ visible: false }).then(() => {
+        /**挂断**/
+        async function fetchClosure() {
+            return await fetchSender({ type: 'closure' })
+        }
+
+        /**拒接呼叫**/
+        async function fetchReject() {
+            return await fetchSender({ type: 'reject' }).then(async () => {
+                await setState({ visible: false })
+                await connection.value.close()
+                await pause()
+                await stop()
                 return emit('close', { done: setState })
             })
         }
 
-        async function onSubmit() {
+        /**接收呼叫**/
+        async function fetchSubmit() {
             try {
-                await window.navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(async remoteStream => {})
+                return await window.navigator.mediaDevices.getUserMedia(props.server.metadata.option).then(async stream => {
+                    localStream.value = stream
+                    props.server.answer(stream)
+                    return await fetchRemoteStream()
+                })
             } catch (e) {
                 console.log(e)
                 return await divineNotice({ type: 'error', title: '呼叫失败，请检查麦克风是否正常' })
@@ -96,37 +135,71 @@ export default defineComponent({
             <Teleport to={document.body}>
                 <Transition name="fade-callmer" appear>
                     {state.visible && (
-                        <div ref={element} style={chunk.value}>
+                        <div ref={root} style={style.value}>
                             <n-element class="chunk-callmer n-chunk n-column">
                                 <div style={{ height: '32px' }}></div>
                                 {props.source === 'initiate' ? (
-                                    <div class="n-chunk n-column n-center n-auto n-disover" style={{ gap: '14px' }}>
-                                        <chat-avatar size={68} radius={34} src={props.server.metadata.avatar}></chat-avatar>
-                                        <n-h2 style={{ fontSize: '18px', lineHeight: '26px', fontWeight: 500, margin: 0 }}>
-                                            <n-ellipsis tooltip={false}>{props.server.metadata.nickname}</n-ellipsis>
+                                    <div class="n-chunk n-column n-center n-auto n-disover">
+                                        <chat-avatar size={68} radius={34} src={props.server.metadata.receiver.avatar}></chat-avatar>
+                                        <n-h2 class="chunk-nickname">
+                                            <n-ellipsis tooltip={false}>{props.server.metadata.receiver.nickname}</n-ellipsis>
                                         </n-h2>
+                                        <div class="n-chunk n-column" style={{ height: '22px', lineHeight: '22px' }}>
+                                            <n-text depth={3}>正在等待对方接受邀请...</n-text>
+                                        </div>
+                                        <div style={{ marginTop: 'auto', height: '20px', lineHeight: '20px' }}>
+                                            {state.connect && <n-text>05:10</n-text>}
+                                        </div>
                                     </div>
                                 ) : (
-                                    <div class="n-chunk n-column n-center n-auto n-disover" style={{ gap: '14px' }}>
-                                        <chat-avatar size={68} radius={34} src={avatar.value}></chat-avatar>
-                                        <n-h2 style={{ fontSize: '18px', lineHeight: '26px', fontWeight: 500, margin: 0 }}>
-                                            <n-ellipsis tooltip={false}>{nickname.value}</n-ellipsis>
+                                    <div class="n-chunk n-column n-center n-auto n-disover">
+                                        <chat-avatar size={68} radius={34} src={props.server.metadata.initiate.avatar}></chat-avatar>
+                                        <n-h2 class="chunk-nickname">
+                                            <n-ellipsis tooltip={false}>{props.server.metadata.initiate.nickname}</n-ellipsis>
                                         </n-h2>
-                                        <n-text>正在等待对方接受邀请...</n-text>
+                                        <div class="n-chunk n-column" style={{ height: '22px', lineHeight: '22px' }}>
+                                            {props.server.metadata.callType === 'audio' ? (
+                                                <n-text depth={3}>邀请你进行语音通话...</n-text>
+                                            ) : (
+                                                <n-text depth={3}>邀请你进行视频通话...</n-text>
+                                            )}
+                                        </div>
+                                        <div style={{ marginTop: 'auto', height: '20px', lineHeight: '20px' }}>
+                                            {state.connect && <n-text>05:10</n-text>}
+                                        </div>
                                     </div>
                                 )}
                                 <div class="chunk-callmer__footer n-chunk n-middle n-center n-disover">
-                                    <n-button circle color="#07c160" onClick={onSubmit}>
-                                        <n-icon size={28} color="#ffffff" component={<Iv-BsCaller />}></n-icon>
-                                    </n-button>
-                                    <n-button circle color="#ff0000" onClick={onClose}>
-                                        <n-icon
-                                            size={28}
-                                            color="#ffffff"
-                                            style={{ transform: 'rotate(134deg)' }}
-                                            component={<Iv-BsCaller />}
-                                        ></n-icon>
-                                    </n-button>
+                                    {props.source === 'initiate' ? (
+                                        <n-space wrap-item={false} size={[40, 0]}>
+                                            <n-button circle secondary onClick={fetchMike}>
+                                                {state.mike ? (
+                                                    <n-icon size={28} color="#ffffff" component={<Iv-RsVoice />}></n-icon>
+                                                ) : (
+                                                    <n-icon size={28} color="var(--text-color-3)" component={<Iv-BsVoice />}></n-icon>
+                                                )}
+                                            </n-button>
+                                            <n-button circle color="#ff0000" onClick={fetchReject}>
+                                                <n-icon class="is-closure" size={28} color="#ffffff" component={<Iv-BsCaller />}></n-icon>
+                                            </n-button>
+                                            <n-button circle secondary onClick={fetchMute}>
+                                                {state.mute ? (
+                                                    <n-icon size={28} color="#ffffff" component={<Iv-RsSpeaker />}></n-icon>
+                                                ) : (
+                                                    <n-icon size={28} color="var(--text-color-3)" component={<Iv-BsSpeaker />}></n-icon>
+                                                )}
+                                            </n-button>
+                                        </n-space>
+                                    ) : (
+                                        <n-space wrap-item={false} size={[80, 0]}>
+                                            <n-button circle color="#07c160" onClick={fetchSubmit}>
+                                                <n-icon size={28} color="#ffffff" component={<Iv-BsCaller />}></n-icon>
+                                            </n-button>
+                                            <n-button circle color="#ff0000" onClick={fetchReject}>
+                                                <n-icon class="is-closure" size={28} color="#ffffff" component={<Iv-BsCaller />}></n-icon>
+                                            </n-button>
+                                        </n-space>
+                                    )}
                                 </div>
                             </n-element>
                         </div>
@@ -160,12 +233,20 @@ export default defineComponent({
     transition: background-color 0.3s var(--cubic-bezier-ease-in-out), box-shadow 0.3s var(--cubic-bezier-ease-in-out),
         width 0.3s var(--cubic-bezier-ease-in-out), height 0.3s var(--cubic-bezier-ease-in-out);
     &__footer {
-        column-gap: 80px;
-        padding-top: 20px;
+        padding-top: 10px;
         .n-button {
             --n-width: 48px;
             --n-height: 48px;
         }
+        .n-icon.is-closure {
+            transform: rotate(134deg);
+        }
+    }
+    .chunk-nickname {
+        font-size: 18px;
+        line-height: 26px;
+        font-weight: 500;
+        margin: 16px 0 0;
     }
 }
 </style>

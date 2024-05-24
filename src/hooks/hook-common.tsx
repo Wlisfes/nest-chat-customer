@@ -8,9 +8,11 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import weekday from 'dayjs/plugin/weekday'
+import duration from 'dayjs/plugin/duration'
 dayjs.extend(timezone)
 dayjs.extend(utc)
 dayjs.extend(weekday)
+dayjs.extend(duration)
 
 /**dayjs实例**/
 export const moment = dayjs

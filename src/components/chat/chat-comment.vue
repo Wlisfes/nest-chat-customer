@@ -31,17 +31,17 @@ export default defineComponent({
             })
             if (schema.value.source === env.EnumSessionSource.contact) {
                 /**私聊通话**/
-                const { online, socketId } = divineWherer(uid.value === data.user.uid, data.nive, data.user)
                 const initiate = divineWherer(uid.value === data.user.uid, data.user, data.nive)
                 const receiver = divineWherer(uid.value === data.user.uid, data.nive, data.user)
-                return await divineHandler(online, {
+                const option = { audio: true, video: callType === 'video' }
+                return await divineHandler(receiver.online && Boolean(receiver.socketId), {
                     failure: async function () {
                         return await divineNotice({ type: 'warning', title: '当前用户不在线，呼叫失败！' })
                     },
                     handler: async function () {
-                        return await fetchCallRemote(socketId, {
-                            option: { audio: true, video: callType === 'video' },
-                            metadata: { callType, initiate, receiver }
+                        return await fetchCallRemote(receiver.socketId, {
+                            option: option,
+                            metadata: { option, callType, initiate, receiver }
                         })
                     }
                 })

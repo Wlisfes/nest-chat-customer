@@ -1,10 +1,10 @@
-import { ref, Ref, onUnmounted } from 'vue'
-import { useNotification } from 'naive-ui'
-import { Peer } from 'peerjs'
-import { useUser, useStore } from '@/store'
+import { ref, Ref, computed, onUnmounted, CSSProperties } from 'vue'
+import { useDraggable, useIntervalFn } from '@vueuse/core'
+import { Peer, DataConnection } from 'peerjs'
+import { useState } from '@/hooks/hook-state'
 import { APP_COMMON, getStore } from '@/utils/utils-storage'
 import { Observer } from '@/utils/utils-observer'
-import { divineHandler, divineWherer } from '@/utils/utils-common'
+import { divineHandler } from '@/utils/utils-common'
 import { divineNotice } from '@/utils/utils-component'
 import { fetchRemote } from '@/components/layer/layer.instance'
 export { default as tipAudio } from '@/assets/audio/tip.wav'
@@ -13,20 +13,9 @@ export { default as callAudio } from '@/assets/audio/call.wav'
 /**Peer连接实例**/
 export const client = ref<Peer>() as Ref<Peer>
 
-export function useSounder(src: string, scope: { loop: boolean }) {
-    const audio = ref<HTMLAudioElement>(new Audio(src))
-    audio.value.loop = scope.loop ?? false
-    return {
-        audio,
-        remove: async () => audio.value.remove(),
-        play: async () => audio.value.paused && audio.value.play(),
-        pause: async () => !audio.value.paused && audio.value.pause()
-    }
-}
-
+/**创建peer实例**/
 export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
     const observer = new Observer()
-    const notification = useNotification()
 
     onUnmounted(async () => {
         return await divineHandler((option.unmounted ?? false) && Boolean(client.value), {
@@ -45,7 +34,12 @@ export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
 
         /**收到呼叫**/
         server.on('call', async call => {
-            return await fetchRemote({ observer, clientId, server: call, source: 'receiver' })
+            return await fetchRemote({
+                observer,
+                server: call,
+                source: 'receiver',
+                onClose: async (evt: Omix<{ unmount: Function }>) => evt.unmount()
+            })
         })
 
         return (client.value = server)
@@ -73,24 +67,12 @@ export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
     async function fetchCallRemote(clientId: string, scope: { option: { video: boolean; audio: boolean }; metadata: Omix }) {
         try {
             await window.navigator.mediaDevices.getUserMedia(scope.option).then(async localStream => {
-                const call = client.value.call(clientId, localStream, { metadata: scope.metadata })
-                /**接收远程流**/
-                // call.on('stream', remoteStream => {
-                //     // remoteVideo.srcObject = remoteStream
-                //     console.log({ localStream, remoteStream })
-                // })
-
                 return await fetchRemote({
                     localStream,
                     observer,
-                    clientId,
-                    server: call,
                     source: 'initiate',
-                    onClose: async ({ unmount }: Omix<{ unmount: Function }>) => {
-                        return await unmount()
-                    }
-                }).then(async app => {
-                    console.log(app)
+                    server: client.value.call(clientId, localStream, { metadata: scope.metadata }),
+                    onClose: async (evt: Omix<{ unmount: Function }>) => evt.unmount()
                 })
             })
         } catch (e) {
@@ -103,7 +85,93 @@ export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
         fetchConnectRemote,
         fetchDisconnectRemote,
         fetchDestroyRemote,
-
         fetchCallRemote
     }
+}
+
+/**
+ * 创建连接实例
+ * @param clientId 发起者ID
+ */
+export function useConnection(clientId: string, option: Omix<{ source: 'initiate' | 'receiver'; callback: Function }>) {
+    const connection = ref<DataConnection>() as Ref<DataConnection>
+    if (option.source === 'initiate') {
+        client.value.on('connection', conn => {
+            conn.on('data', data => option.callback(data))
+            connection.value = conn
+        })
+    } else {
+        connection.value = client.value.connect(clientId, { reliable: true })
+        connection.value.on('data', data => option.callback(data))
+    }
+
+    async function fetchSender<T>(data: Omix<T>) {
+        return await connection.value.send({ source: option.source, data })
+    }
+
+    return { connection, fetchSender }
+}
+
+/**呼叫弹窗交互控制器**/
+export function useCallController() {
+    const root = ref<HTMLElement>() as Ref<HTMLElement>
+    const { state, setState } = useState({ date: 0, width: 320, height: 300, right: 10, bottom: 10 })
+    const { pause: stop, resume: start } = useIntervalFn(() => setState({ date: state.date + 1 }), 1000, { immediate: false })
+    const position = useDraggable(root, {
+        containerElement: document.body,
+        preventDefault: true,
+        stopPropagation: true,
+        initialValue: {
+            x: document.body.clientWidth - state.width - 10,
+            y: document.body.clientHeight - state.height - 10
+        },
+        onMove: async function (evt: { x: number; y: number }) {
+            const right = document.body.clientWidth - (evt.x + state.width)
+            const bottom = document.body.clientHeight - (evt.y + state.height)
+            const distance = document.body.clientWidth - state.width - 61
+            return await setState({ bottom, right: right > distance ? distance : right })
+        }
+    })
+    const style = computed<CSSProperties>(() => ({
+        zIndex: 2000,
+        position: 'fixed',
+        right: state.right + 'px',
+        bottom: state.bottom + 'px',
+        '--chunk-width': state.width + 'px',
+        '--chunk-height': state.height + 'px'
+    }))
+
+    return { root, state, position, style, setState, start, stop }
+}
+
+/**创建铃声实例**/
+export function useSounder(src: string, option: { loop: boolean }) {
+    const audio = ref<HTMLAudioElement>(new Audio(src))
+    audio.value.loop = option.loop ?? false
+
+    async function play() {
+        return await divineHandler(Boolean(audio.value) && audio.value.paused, {
+            handler: audio.value.play.bind(audio.value)
+        })
+    }
+
+    async function pause() {
+        return await divineHandler(Boolean(audio.value) && !audio.value.paused, {
+            handler: audio.value.pause.bind(audio.value)
+        })
+    }
+
+    async function mute(muted: boolean = !audio.value.muted) {
+        return await divineHandler(Boolean(audio.value), {
+            handler: () => (audio.value.muted = muted ?? !audio.value.muted)
+        })
+    }
+
+    async function remove() {
+        return await divineHandler(Boolean(audio.value), {
+            handler: audio.value.remove.bind(audio.value)
+        })
+    }
+
+    return { audio, remove, play, pause, mute }
 }
