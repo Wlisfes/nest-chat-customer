@@ -72,7 +72,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .ctx-messenger {
     position: relative;
-    padding: 40px 20px 60px;
+    padding: 60px 20px 60px;
     :deep(.chat-node-messenger) {
         margin-bottom: 24px;
         &:first-child {
