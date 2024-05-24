@@ -94,21 +94,31 @@ export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
  * 创建连接实例
  * @param clientId 发起者ID
  */
-export function useConnection(clientId: string, option: Omix<{ source: 'initiate' | 'receiver'; callback: Function }>) {
-    const connection = ref<DataConnection>() as Ref<DataConnection>
+export function useConnection(clientId: string, option: Omix<{ source: 'initiate' | 'receiver'; callback: Function; closure?: Function }>) {
+    const connect = ref<DataConnection>() as Ref<DataConnection>
     const stream = ref<Array<MediaStream>>([])
     if (option.source === 'initiate') {
         client.value.on('connection', conn => {
+            connect.value = conn
             conn.on('data', data => option.callback(data))
-            connection.value = conn
+            conn.on('close', () => {
+                return divineHandler(Boolean(option.closure), {
+                    handler: option.closure as Function
+                })
+            })
         })
     } else {
-        connection.value = client.value.connect(clientId, { reliable: true })
-        connection.value.on('data', data => option.callback(data))
+        connect.value = client.value.connect(clientId, { reliable: true })
+        connect.value.on('data', data => option.callback(data))
+        connect.value.on('close', () => {
+            return divineHandler(Boolean(option.closure), {
+                handler: option.closure as Function
+            })
+        })
     }
 
     async function close() {
-        return await connection.value.close()
+        return await connect.value.close()
     }
 
     async function setStream(nodeStream: Array<MediaStream>) {
@@ -116,10 +126,10 @@ export function useConnection(clientId: string, option: Omix<{ source: 'initiate
     }
 
     async function fetchSender<T>(data: Omix<T>) {
-        return await connection.value.send({ source: option.source, data })
+        return await connect.value.send({ source: option.source, data })
     }
 
-    return { connection, stream, close, setStream, fetchSender }
+    return { connect, stream, close, setStream, fetchSender }
 }
 
 /**呼叫弹窗交互控制器**/

@@ -1,5 +1,6 @@
 <script lang="tsx">
-import { defineComponent, ref, Ref, onMounted, Fragment, PropType, Transition, Teleport } from 'vue'
+import { defineComponent, ref, Ref, onMounted, onUnmounted, Fragment, PropType, Transition, Teleport } from 'vue'
+import { useEventListener } from '@vueuse/core'
 import { MediaConnection } from 'peerjs'
 import { useState } from '@/hooks/hook-state'
 import { useCallController, useConnection, useSounder, callAudio } from '@/hooks/hook-remote'
@@ -27,6 +28,10 @@ export default defineComponent({
             callback: fetchCallback
         })
 
+        const destroy = useEventListener(window, 'beforeunload', () => {
+            return fetchCommand('closure')
+        })
+
         onMounted(async () => {
             return await setState({ visible: true }).then(async () => {
                 await play()
@@ -40,9 +45,21 @@ export default defineComponent({
             })
         })
 
+        onUnmounted(async () => {
+            await destroy()
+            return await fetchCommand('closure')
+        })
+
         /**麦克风切换**/
         async function fetchMike() {
-            return setState({ mike: !state.mike }).then(() => {})
+            await setState({ mike: !state.mike })
+            return await divineHandler(Boolean(localStream.value), {
+                handler: async function () {
+                    return await localStream.value.getAudioTracks().forEach(track => {
+                        return (track.enabled = state.mike)
+                    })
+                }
+            })
         }
 
         /**静音切换**/
@@ -76,18 +93,8 @@ export default defineComponent({
 
         /**远程消息回调**/
         async function fetchCallback(scope: { data: Omix; source: typeof props.source }) {
-            console.log(scope)
-            if (scope.source === 'receiver' && scope.data.type === 'reject') {
-                /**接收端拒接**/
-                return await setState({ visible: false }).then(async () => {
-                    await pause()
-                    await stop()
-                    await close()
-                    await fetchStreamClosure()
-                    return emit('close', { done: setState })
-                })
-            } else if (scope.source === 'initiate' && scope.data.type === 'closure') {
-                /**发起端挂断**/
+            if (['closure', 'reject'].includes(scope.data.type)) {
+                /**拒接、挂断事件**/
                 return await setState({ visible: false }).then(async () => {
                     await pause()
                     await stop()
@@ -98,21 +105,9 @@ export default defineComponent({
             }
         }
 
-        /**挂断**/
-        async function fetchClosure() {
-            return await fetchSender({ type: 'closure' }).then(async () => {
-                await setState({ visible: false })
-                await pause()
-                await stop()
-                await close()
-                await fetchStreamClosure()
-                return emit('close', { done: setState })
-            })
-        }
-
-        /**拒接呼叫**/
-        async function fetchReject() {
-            return await fetchSender({ type: 'reject' }).then(async () => {
+        /**挂断、拒接事件触发**/
+        async function fetchCommand(type: 'closure' | 'reject') {
+            return await fetchSender({ type }).then(async () => {
                 await setState({ visible: false })
                 await pause()
                 await stop()
@@ -192,7 +187,7 @@ export default defineComponent({
                                                     <n-icon size={28} color="var(--text-color-3)" component={<Iv-BsVoice />}></n-icon>
                                                 )}
                                             </n-button>
-                                            <n-button circle color="#ff0000" onClick={fetchClosure}>
+                                            <n-button circle color="#ff0000" onClick={() => fetchCommand('closure')}>
                                                 <n-icon class="is-closure" size={28} color="#ffffff" component={<Iv-BsCaller />}></n-icon>
                                             </n-button>
                                             <n-button circle secondary onClick={fetchMute}>
@@ -218,7 +213,7 @@ export default defineComponent({
                                                             ></n-icon>
                                                         )}
                                                     </n-button>
-                                                    <n-button circle color="#ff0000" onClick={fetchReject}>
+                                                    <n-button circle color="#ff0000" onClick={() => fetchCommand('reject')}>
                                                         <n-icon
                                                             class="is-closure"
                                                             size={28}
@@ -239,11 +234,11 @@ export default defineComponent({
                                                     </n-button>
                                                 </n-space>
                                             ) : (
-                                                <n-space wrap-item={false} size={[80, 0]}>
+                                                <n-space wrap-item={false} size={[128, 0]}>
                                                     <n-button circle color="#07c160" onClick={fetchSubmit}>
                                                         <n-icon size={28} color="#ffffff" component={<Iv-BsCaller />}></n-icon>
                                                     </n-button>
-                                                    <n-button circle color="#ff0000" onClick={fetchReject}>
+                                                    <n-button circle color="#ff0000" onClick={() => fetchCommand('closure')}>
                                                         <n-icon
                                                             class="is-closure"
                                                             size={28}
