@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, ref, Ref } from 'vue'
 import { isEmpty, isEmail } from 'class-validator'
-import { useConfiger, useUser } from '@/store'
+import { useConfiger, useUser, useChat } from '@/store'
 import { setupNotice } from '@/i18n'
 import { useFormCustomize } from '@/hooks/hook-customize'
 import { enter, divineHandler } from '@/utils/utils-common'
@@ -13,6 +13,7 @@ export default defineComponent({
     name: 'AuthLogin',
     setup(props) {
         const refresh = ref() as Ref<Omix<{ done: Function }>>
+        const { setState } = useChat()
         const { setAuthorize } = useConfiger()
         const { setToken, fetchUserResolver } = useUser()
         const { formRef, form, rules, loading, setLoading, divineFormValidater } = useFormCustomize({
@@ -56,10 +57,12 @@ export default defineComponent({
                                     return await unmount(300)
                                 },
                                 onSubmit: async (scope: Omix<{ token: string; expire: number }>) => {
+                                    await setState({ percentage: 0 })
                                     return await setToken(scope.token, scope.expire * 1000)
                                 }
                             })
                         } else {
+                            await setState({ percentage: 0 })
                             await setToken(data.token, data.expire * 1000)
                             return await divineNotice({ content: setupNotice(message) }).then(() => {
                                 return setLoading(false)

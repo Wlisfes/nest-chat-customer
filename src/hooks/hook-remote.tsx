@@ -1,7 +1,8 @@
-import { ref, Ref, computed, onUnmounted, CSSProperties } from 'vue'
+import { ref, Ref, toRefs, computed, onUnmounted, CSSProperties } from 'vue'
 import { useDraggable, useIntervalFn } from '@vueuse/core'
 import { Peer, DataConnection } from 'peerjs'
 import { useState } from '@/hooks/hook-state'
+import { moment } from '@/hooks/hook-common'
 import { APP_COMMON, getStore } from '@/utils/utils-storage'
 import { Observer } from '@/utils/utils-observer'
 import { divineHandler } from '@/utils/utils-common'
@@ -95,6 +96,7 @@ export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
  */
 export function useConnection(clientId: string, option: Omix<{ source: 'initiate' | 'receiver'; callback: Function }>) {
     const connection = ref<DataConnection>() as Ref<DataConnection>
+    const stream = ref<Array<MediaStream>>([])
     if (option.source === 'initiate') {
         client.value.on('connection', conn => {
             conn.on('data', data => option.callback(data))
@@ -105,11 +107,19 @@ export function useConnection(clientId: string, option: Omix<{ source: 'initiate
         connection.value.on('data', data => option.callback(data))
     }
 
+    async function close() {
+        return await connection.value.close()
+    }
+
+    async function setStream(nodeStream: Array<MediaStream>) {
+        return (stream.value = nodeStream)
+    }
+
     async function fetchSender<T>(data: Omix<T>) {
         return await connection.value.send({ source: option.source, data })
     }
 
-    return { connection, fetchSender }
+    return { connection, stream, close, setStream, fetchSender }
 }
 
 /**呼叫弹窗交互控制器**/
@@ -140,14 +150,28 @@ export function useCallController() {
         '--chunk-width': state.width + 'px',
         '--chunk-height': state.height + 'px'
     }))
+    const dateUnit = computed(() => {
+        if (state.date > 3600) {
+            return moment.duration(state.date, 'seconds').format('HH:mm:ss')
+        }
+        return moment.duration(state.date, 'seconds').format('mm:ss')
+    })
 
-    return { root, state, position, style, setState, start, stop }
+    return { root, state, position, style, dateUnit, ...toRefs(state), setState, start, stop }
 }
 
 /**创建铃声实例**/
-export function useSounder(src: string, option: { loop: boolean }) {
+export function useSounder(src: string, option: { loop: boolean; volume?: number }) {
     const audio = ref<HTMLAudioElement>(new Audio(src))
-    audio.value.loop = option.loop ?? false
+
+    audio.value.volume = option.volume ?? 1
+    if (option.loop) {
+        audio.value.loop = option.loop ?? false
+    }
+
+    async function setStream(stream: MediaStream) {
+        return (audio.value.srcObject = stream)
+    }
 
     async function play() {
         return await divineHandler(Boolean(audio.value) && audio.value.paused, {
@@ -173,5 +197,5 @@ export function useSounder(src: string, option: { loop: boolean }) {
         })
     }
 
-    return { audio, remove, play, pause, mute }
+    return { audio, setStream, remove, play, pause, mute }
 }
