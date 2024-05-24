@@ -182,9 +182,9 @@ export default defineComponent({
                                         <n-space wrap-item={false} size={[40, 0]}>
                                             <n-button circle secondary onClick={fetchMike}>
                                                 {state.mike ? (
-                                                    <n-icon size={28} color="#ffffff" component={<Iv-RsVoice />}></n-icon>
+                                                    <n-icon size={28} component={<Iv-RsVoice />}></n-icon>
                                                 ) : (
-                                                    <n-icon size={28} color="var(--text-color-3)" component={<Iv-BsVoice />}></n-icon>
+                                                    <n-icon class="is-cancel" size={28} component={<Iv-BsVoice />}></n-icon>
                                                 )}
                                             </n-button>
                                             <n-button circle color="#ff0000" onClick={() => fetchCommand('closure')}>
@@ -192,9 +192,9 @@ export default defineComponent({
                                             </n-button>
                                             <n-button circle secondary onClick={fetchMute}>
                                                 {state.mute ? (
-                                                    <n-icon size={28} color="#ffffff" component={<Iv-RsSpeaker />}></n-icon>
+                                                    <n-icon size={28} component={<Iv-RsSpeaker />}></n-icon>
                                                 ) : (
-                                                    <n-icon size={28} color="var(--text-color-3)" component={<Iv-BsSpeaker />}></n-icon>
+                                                    <n-icon class="is-cancel" size={28} component={<Iv-BsSpeaker />}></n-icon>
                                                 )}
                                             </n-button>
                                         </n-space>
@@ -204,32 +204,19 @@ export default defineComponent({
                                                 <n-space wrap-item={false} size={[40, 0]}>
                                                     <n-button circle secondary onClick={fetchMike}>
                                                         {state.mike ? (
-                                                            <n-icon size={28} color="#ffffff" component={<Iv-RsVoice />}></n-icon>
+                                                            <n-icon size={28} component={<Iv-RsVoice />}></n-icon>
                                                         ) : (
-                                                            <n-icon
-                                                                size={28}
-                                                                color="var(--text-color-3)"
-                                                                component={<Iv-BsVoice />}
-                                                            ></n-icon>
+                                                            <n-icon class="is-cancel" size={28} component={<Iv-BsVoice />}></n-icon>
                                                         )}
                                                     </n-button>
                                                     <n-button circle color="#ff0000" onClick={() => fetchCommand('reject')}>
-                                                        <n-icon
-                                                            class="is-closure"
-                                                            size={28}
-                                                            color="#ffffff"
-                                                            component={<Iv-BsCaller />}
-                                                        ></n-icon>
+                                                        <n-icon class="is-closure" size={28} component={<Iv-BsCaller />}></n-icon>
                                                     </n-button>
                                                     <n-button circle secondary onClick={fetchMute}>
                                                         {state.mute ? (
-                                                            <n-icon size={28} color="#ffffff" component={<Iv-RsSpeaker />}></n-icon>
+                                                            <n-icon size={28} component={<Iv-RsSpeaker />}></n-icon>
                                                         ) : (
-                                                            <n-icon
-                                                                size={28}
-                                                                color="var(--text-color-3)"
-                                                                component={<Iv-BsSpeaker />}
-                                                            ></n-icon>
+                                                            <n-icon class="is-cancel" size={28} component={<Iv-BsSpeaker />}></n-icon>
                                                         )}
                                                     </n-button>
                                                 </n-space>
@@ -241,8 +228,8 @@ export default defineComponent({
                                                     <n-button circle color="#ff0000" onClick={() => fetchCommand('closure')}>
                                                         <n-icon
                                                             class="is-closure"
-                                                            size={28}
                                                             color="#ffffff"
+                                                            size={28}
                                                             component={<Iv-BsCaller />}
                                                         ></n-icon>
                                                     </n-button>
@@ -291,6 +278,11 @@ export default defineComponent({
         .n-icon.is-closure {
             transform: rotate(134deg);
         }
+        .n-icon.is-cancel {
+            color: var(--text-color-3);
+            transition: color 0.3s var(--cubic-bezier-ease-in-out);
+        }
+        // color="var(--text-color-3)"
     }
     .chunk-nickname {
         font-size: 18px;
