@@ -4,8 +4,10 @@ import { MediaConnection } from 'peerjs'
 import { useDraggable } from '@vueuse/core'
 import { useUser, useStore } from '@/store'
 import { useState } from '@/hooks/hook-state'
+import { useCallRemote, useSounder } from '@/hooks/hook-remote'
 import { Observer } from '@/utils/utils-observer'
 import { divineNotice } from '@/utils/utils-component'
+import call from '@/assets/audio/call.wav'
 
 export default defineComponent({
     name: 'LayerCallmer',
@@ -13,13 +15,23 @@ export default defineComponent({
     props: {
         observer: { type: Object as PropType<Observer<Omix>>, required: true },
         server: { type: Object as PropType<MediaConnection>, required: true },
-        source: { type: String as PropType<'initiate' | 'income'>, required: true },
-        clientId: { type: String, required: true }
+        source: { type: String as PropType<'initiate' | 'receiver'>, required: true },
+        clientId: { type: String, required: true },
+        localStream: { type: Object as PropType<MediaStream> }
     },
     setup(props, { emit }) {
-        const { avatar, nickname } = useStore(useUser)
-        const { state, setState } = useState({ visible: false, zoom: false, width: 320, height: 250, right: 10, bottom: 10 })
         const element = ref<HTMLElement>() as Ref<HTMLElement>
+        const { play, pause } = useSounder(call, { loop: true })
+        const { avatar, nickname } = useStore(useUser)
+        const { state, setState } = useState({
+            visible: false,
+            zoom: false,
+            width: 320,
+            height: 250,
+            right: 10,
+            bottom: 10,
+            stream: [] as Array<MediaStream>
+        })
         const position = useDraggable(element, {
             onMove: onMoveCallmer,
             containerElement: document.body,
@@ -40,7 +52,10 @@ export default defineComponent({
         }))
 
         onMounted(async () => {
-            await setState({ visible: true })
+            return await setState({ visible: true }).then(async () => {
+                console.log(props.server)
+                return play()
+            })
         })
 
         /**设置样式位置**/
@@ -60,14 +75,19 @@ export default defineComponent({
             }
         }
 
+        /**关闭、挂断**/
         async function onClose() {
-            return emit('close', { done: setState })
+            await pause()
+            await setState({ visible: false }).then(() => {
+                return emit('close', { done: setState })
+            })
         }
 
         async function onSubmit() {
             try {
                 await window.navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(async remoteStream => {})
             } catch (e) {
+                console.log(e)
                 return await divineNotice({ type: 'error', title: '呼叫失败，请检查麦克风是否正常' })
             }
         }
@@ -79,12 +99,22 @@ export default defineComponent({
                         <div ref={element} style={chunk.value}>
                             <n-element class="chunk-callmer n-chunk n-column">
                                 <div style={{ height: '32px' }}></div>
-                                <div class="n-chunk n-column n-center n-auto n-disover" style={{ gap: '14px' }}>
-                                    <chat-avatar size={68} radius={34} src={avatar.value}></chat-avatar>
-                                    <n-h2 style={{ fontSize: '18px', lineHeight: '26px', fontWeight: 500, margin: 0 }}>
-                                        <n-ellipsis tooltip={false}>{nickname.value}</n-ellipsis>
-                                    </n-h2>
-                                </div>
+                                {props.source === 'initiate' ? (
+                                    <div class="n-chunk n-column n-center n-auto n-disover" style={{ gap: '14px' }}>
+                                        <chat-avatar size={68} radius={34} src={props.server.metadata.avatar}></chat-avatar>
+                                        <n-h2 style={{ fontSize: '18px', lineHeight: '26px', fontWeight: 500, margin: 0 }}>
+                                            <n-ellipsis tooltip={false}>{props.server.metadata.nickname}</n-ellipsis>
+                                        </n-h2>
+                                    </div>
+                                ) : (
+                                    <div class="n-chunk n-column n-center n-auto n-disover" style={{ gap: '14px' }}>
+                                        <chat-avatar size={68} radius={34} src={avatar.value}></chat-avatar>
+                                        <n-h2 style={{ fontSize: '18px', lineHeight: '26px', fontWeight: 500, margin: 0 }}>
+                                            <n-ellipsis tooltip={false}>{nickname.value}</n-ellipsis>
+                                        </n-h2>
+                                        <n-text>正在等待对方接受邀请...</n-text>
+                                    </div>
+                                )}
                                 <div class="chunk-callmer__footer n-chunk n-middle n-center n-disover">
                                     <n-button circle color="#07c160" onClick={onSubmit}>
                                         <n-icon size={28} color="#ffffff" component={<Iv-BsCaller />}></n-icon>

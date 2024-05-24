@@ -100,7 +100,13 @@ export async function fetchClosure(props: Omix = {}) {
 
 /**远程呼叫组件**/
 export async function fetchRemote(
-    props: Omix<{ observer: Observer<Omix>; server: MediaConnection; clientId: string; source: 'initiate' | 'income' }>
+    props: Omix<{
+        observer: Observer<Omix>
+        server: MediaConnection
+        clientId: string
+        source: 'initiate' | 'receiver'
+        localStream?: MediaStream
+    }>
 ) {
     return await import('@/components/layer/layer-remote.vue').then(async component => {
         return await createComponent(component.default, props)

@@ -8,6 +8,7 @@ import { useWebSocket } from '@/hooks/hook-websocket'
 import { instance } from '@/store/messenger'
 import { useUser, useSession, useMessenger, useComment, useStore } from '@/store'
 import { divineHandler, divineWherer } from '@/utils/utils-common'
+import { divineNotice } from '@/utils/utils-component'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
@@ -21,7 +22,7 @@ export default defineComponent({
         const { socket, fetchSocketCallRemoteResolver } = useWebSocket()
 
         /**远程呼叫**/
-        async function fetchUseCallRemote() {
+        async function fetchUseCallRemote(callType: 'audio' | 'video') {
             const { code, data } = await fetchSocketCallRemoteResolver(socket.value, {
                 sid: sid.value,
                 source: schema.value.source,
@@ -30,13 +31,18 @@ export default defineComponent({
             })
             if (schema.value.source === env.EnumSessionSource.contact) {
                 /**私聊通话**/
-                console.log(data)
                 const { online, socketId } = divineWherer(uid.value === data.user.uid, data.nive, data.user)
+                const initiate = divineWherer(uid.value === data.user.uid, data.user, data.nive)
+                const receiver = divineWherer(uid.value === data.user.uid, data.nive, data.user)
                 return await divineHandler(online, {
-                    failure: async function () {},
+                    failure: async function () {
+                        return await divineNotice({ type: 'warning', title: '当前用户不在线，呼叫失败！' })
+                    },
                     handler: async function () {
-                        console.log(online, socketId)
-                        return await fetchCallRemote(socketId, { audio: true })
+                        return await fetchCallRemote(socketId, {
+                            option: { audio: true, video: callType === 'video' },
+                            metadata: { callType, initiate, receiver }
+                        })
                     }
                 })
             } else if (schema.value.source === env.EnumSessionSource.communit) {
@@ -138,10 +144,10 @@ export default defineComponent({
                     <n-button text focusable={false}>
                         <n-icon size={22} component={<Iv-RsVoice />}></n-icon>
                     </n-button>
-                    <n-button text focusable={false} onClick={fetchUseCallRemote}>
+                    <n-button text focusable={false} onClick={(evt: MouseEvent) => fetchUseCallRemote('audio')}>
                         <n-icon size={22} component={<Iv-RsCall />}></n-icon>
                     </n-button>
-                    <n-button text focusable={false}>
+                    <n-button text focusable={false} onClick={(evt: MouseEvent) => fetchUseCallRemote('video')}>
                         <n-icon size={24} component={<Iv-RsVideo />}></n-icon>
                     </n-button>
                 </div>

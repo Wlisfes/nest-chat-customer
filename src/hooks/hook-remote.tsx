@@ -4,19 +4,29 @@ import { Peer } from 'peerjs'
 import { useUser, useStore } from '@/store'
 import { APP_COMMON, getStore } from '@/utils/utils-storage'
 import { Observer } from '@/utils/utils-observer'
-import { divineHandler } from '@/utils/utils-common'
+import { divineHandler, divineWherer } from '@/utils/utils-common'
 import { divineNotice } from '@/utils/utils-component'
 import { fetchRemote } from '@/components/layer/layer.instance'
-import tip from '@/assets/audio/tip.wav'
-import call from '@/assets/audio/call.wav'
+export { default as tipAudio } from '@/assets/audio/tip.wav'
+export { default as callAudio } from '@/assets/audio/call.wav'
 
 /**Peer连接实例**/
 export const client = ref<Peer>() as Ref<Peer>
 
+export function useSounder(src: string, scope: { loop: boolean }) {
+    const audio = ref<HTMLAudioElement>(new Audio(src))
+    audio.value.loop = scope.loop ?? false
+    return {
+        audio,
+        remove: async () => audio.value.remove(),
+        play: async () => audio.value.paused && audio.value.play(),
+        pause: async () => !audio.value.paused && audio.value.pause()
+    }
+}
+
 export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
     const observer = new Observer()
     const notification = useNotification()
-    const { uid, avatar, nickname } = useStore(useUser)
 
     onUnmounted(async () => {
         return await divineHandler((option.unmounted ?? false) && Boolean(client.value), {
@@ -35,12 +45,7 @@ export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
 
         /**收到呼叫**/
         server.on('call', async call => {
-            return await fetchRemote({
-                observer,
-                clientId,
-                server: call,
-                source: 'income'
-            })
+            return await fetchRemote({ observer, clientId, server: call, source: 'receiver' })
         })
 
         return (client.value = server)
@@ -64,31 +69,28 @@ export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
         })
     }
 
-    /**消息通知声音**/
-    async function fetchRemoteSounder(scope: Omix<{ sound: boolean; type: 'tip' | 'call'; loop?: boolean; end?: Function }>) {
-        const src = { tip: tip, call: call }
-        const audio = new Audio(src[scope.type])
-        audio.loop = scope.loop ?? false
-        audio.onended = evt => scope.end && scope.end(evt)
-        scope.sound && audio.play()
-        return {
-            audio,
-            remove: audio.remove.bind(audio),
-            pause: audio.pause.bind(audio)
-        }
-    }
-
     /**远程呼叫**/
-    async function fetchCallRemote(socketId: string, scope: { audio: boolean; video?: boolean }) {
+    async function fetchCallRemote(clientId: string, scope: { option: { video: boolean; audio: boolean }; metadata: Omix }) {
         try {
-            await window.navigator.mediaDevices.getUserMedia(scope).then(localStream => {
-                const call = client.value.call(socketId, localStream, {
-                    metadata: { uid: uid.value, avatar: avatar.value, nickname: nickname.value }
-                })
+            await window.navigator.mediaDevices.getUserMedia(scope.option).then(async localStream => {
+                const call = client.value.call(clientId, localStream, { metadata: scope.metadata })
                 /**接收远程流**/
-                call.on('stream', remoteStream => {
-                    // remoteVideo.srcObject = remoteStream
-                    console.log({ localStream, remoteStream })
+                // call.on('stream', remoteStream => {
+                //     // remoteVideo.srcObject = remoteStream
+                //     console.log({ localStream, remoteStream })
+                // })
+
+                return await fetchRemote({
+                    localStream,
+                    observer,
+                    clientId,
+                    server: call,
+                    source: 'initiate',
+                    onClose: async ({ unmount }: Omix<{ unmount: Function }>) => {
+                        return await unmount()
+                    }
+                }).then(async app => {
+                    console.log(app)
                 })
             })
         } catch (e) {
@@ -101,7 +103,7 @@ export function useCallRemote(option: Omix<{ unmounted?: boolean }> = {}) {
         fetchConnectRemote,
         fetchDisconnectRemote,
         fetchDestroyRemote,
-        fetchRemoteSounder,
+
         fetchCallRemote
     }
 }

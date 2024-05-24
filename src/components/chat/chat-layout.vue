@@ -2,7 +2,7 @@
 import { defineComponent, onMounted } from 'vue'
 import { useUser, useConfiger, useMessenger, useSession, useChat, useNotification, useContact, useCommunit, useStore } from '@/store'
 import { useWebSocket } from '@/hooks/hook-websocket'
-import { useCallRemote } from '@/hooks/hook-remote'
+import { useCallRemote, useSounder, tipAudio } from '@/hooks/hook-remote'
 import { divineHandler, divineDelay } from '@/utils/utils-common'
 import { fetchClosure } from '@/components/layer/layer.instance'
 import * as env from '@/interface/instance.resolver'
@@ -19,7 +19,8 @@ export default defineComponent({
         const { fetchContactColumn, fetchContactColumnSearch } = useStore(useContact)
         const { fetchCommunitColumn, fetchCommunitColumnSearch } = useStore(useCommunit)
         const { connectClient } = useWebSocket({ unmounted: true })
-        const { fetchConnectRemote, fetchDisconnectRemote, fetchDestroyRemote, fetchRemoteSounder } = useCallRemote({ unmounted: true })
+        const { play } = useSounder(tipAudio, { loop: false })
+        const { fetchConnectRemote, fetchDisconnectRemote, fetchDestroyRemote } = useCallRemote({ unmounted: true })
 
         onMounted(async () => {
             await setState({ percentage: 80 })
@@ -75,7 +76,7 @@ export default defineComponent({
 
                     /**监听消息推送**/
                     client.on('server-customize-messager', async (data: Omix<env.SchemaMessager>) => {
-                        await fetchRemoteSounder({ sound: sound.value, type: 'tip' })
+                        await divineHandler(sound.value, { handler: play })
                         /**消息列表处理**/
                         await fetchSocketServerMessager(data)
                         /**会话列表**/
