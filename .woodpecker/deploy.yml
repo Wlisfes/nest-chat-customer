@@ -1,0 +1,22 @@
+# Woodpecker CI 流水线 - 合并到 master 自动构建部署
+# 触发条件: push 到 master 分支
+# 流程: npm install -> vite build -> 复制到 nginx 容器 -> reload
+
+when:
+  branch: master
+  event: push
+
+steps:
+  - name: build
+    image: node:20-alpine
+    pull: true
+    commands:
+      - npm install --registry=https://registry.npmmirror.com
+      - npx vite build
+      - rm -rf /deploy/* 2>/dev/null || true
+      - cp -r dist/* /deploy/
+
+  - name: deploy
+    image: docker:cli
+    commands:
+      - docker exec nginx nginx -s reload
