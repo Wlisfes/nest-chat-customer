@@ -1,6 +1,6 @@
 # Woodpecker CI 流水线 - 合并到 master 自动构建部署
 # 触发条件: push 到 master 分支
-# 流程: npm install -> vite build -> 复制到 nginx 容器 -> reload
+# 流程: npm install -> vite build -> 复制到 nginx 卷 -> 验证
 
 when:
   branch: master
@@ -16,7 +16,8 @@ steps:
       - rm -rf /deploy/* 2>/dev/null || true
       - cp -r dist/* /deploy/
 
-  - name: deploy
-    image: docker:cli
+  - name: verify
+    image: alpine
     commands:
-      - docker exec nginx nginx -s reload
+      - ls -la /deploy/
+      - echo "Deploy complete - nginx serving from volume"
