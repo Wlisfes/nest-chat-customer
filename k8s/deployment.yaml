@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nest-chat-customer
+  labels:
+    app: nest-chat-customer
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3        # 保留3个历史版本, 支持快速回滚
+  selector:
+    matchLabels:
+      app: nest-chat-customer
+  strategy:
+    type: RollingUpdate          # 滚动更新, 零停机
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: nest-chat-customer
+    spec:
+      containers:
+        - name: app
+          image: nest-chat-customer:latest
+          imagePullPolicy: IfNotPresent   # 本地构建镜像, 不从远程拉取
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: 32Mi
+              cpu: 50m
+            limits:
+              memory: 128Mi
+              cpu: 300m
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 2
+            periodSeconds: 5
